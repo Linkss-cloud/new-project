@@ -374,6 +374,52 @@ return;
 
 }
 
+/* ======================
+FANCODE / NATIVE HLS
+====================== */
+
+if(
+    stream.type==="fancode" ||
+    stream.url.includes(".m3u8") ||
+    stream.url.toLowerCase().includes("fancode")
+){
+
+    iosBox.style.display="block";
+
+
+    iosVideo.style.width="100%";
+    iosVideo.style.height="100%";
+
+
+    iosVideo.src =
+    stream.url;
+
+
+    iosVideo.play()
+    .catch(()=>{
+        console.log("Autoplay blocked");
+    });
+
+
+
+    iosVideo.onplaying=()=>{
+
+        hideLoader();
+
+    };
+
+
+
+    setTimeout(
+        hideLoader,
+        5000
+    );
+
+
+    return;
+
+}
+
 
 
 
