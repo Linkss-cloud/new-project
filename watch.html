@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="referrer" content="no-referrer">
+
+<title>Watch - Sports Zone</title>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/shaka-player.ui.min.js"></script>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+
+<link rel="stylesheet" href="css/watch.css">
+
+
+</head>
+
+
+<body>
+
+
+<header class="player-header">
+
+<div class="player-header-inner">
+
+
+<a href="index.html"
+class="player-brand gradient-text">
+
+SPORTS ZONE
+
+</a>
+
+
+<a href="https://t.me/+rtK_sfY8t_A2NDU1"
+class="btn-telegram">
+
+JOIN TELEGRAM
+
+</a>
+
+
+</div>
+
+</header>
+
+
+
+
+
+<main class="player-container">
+
+
+
+<section class="match-header-info">
+
+
+<div class="title-row">
+
+
+<span class="live-indicator">
+LIVE
+</span>
+
+
+<h1 id="matchName">
+LOADING...
+</h1>
+
+
+</div>
+
+
+<h2 id="matchTitle">
+PLEASE WAIT
+</h2>
+
+
+
+</section>
+
+
+
+
+
+
+<div class="video-wrapper">
+
+
+<div id="loader">
+Loading Stream...
+</div>
+
+
+
+
+<div id="shaka-container"
+class="shaka-video-container">
+
+
+<video
+id="videoPlayer"
+playsinline
+autoplay
+muted>
+
+</video>
+
+
+</div>
+
+
+
+
+<div id="ios-container">
+
+
+<video
+id="ios-video"
+controls
+playsinline
+autoplay>
+
+</video>
+
+
+</div>
+
+
+
+
+<div id="iframe-container">
+
+
+<iframe
+id="stream-frame"
+width="100%"
+height="100%"
+frameborder="0"
+allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+allowfullscreen
+sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-modals">
+</iframe>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div id="serverList"
+class="server-list">
+
+</div>
+
+
+
+</main>
+
+
+
+
+<footer class="player-footer">
+
+© SPORTS ZONE • ALL RIGHTS RESERVED
+
+</footer>
+
+
+
+
+<script type="module" src="js/watch.js"></script>
+
+
+</body>
+
+</html>

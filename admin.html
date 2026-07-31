@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SPORTS ZONE ADMIN</title>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/admin.css">
+
+</head>
+
+
+<body>
+
+
+<div id="loginScreen" class="login-wrapper">
+
+
+<div class="dash-panel login-card">
+
+
+<div class="brand-logo">
+
+<span class="gradient-text">
+SPORTS
+</span>
+
+ADMIN
+
+</div>
+
+
+<p class="login-sub">
+MANAGE LIVE STREAMS & MATCHES
+</p>
+
+
+
+
+<form id="loginForm">
+
+
+<div class="input-group">
+
+<label>Email</label>
+
+<input 
+type="email"
+id="adminEmail"
+required>
+
+</div>
+
+
+
+<div class="input-group">
+
+<label>Password</label>
+
+<input
+type="password"
+id="adminPassword"
+required>
+
+</div>
+
+
+
+<p id="loginError"
+class="error-text">
+</p>
+
+
+
+<button 
+class="btn-primary btn-block">
+
+LOGIN
+
+</button>
+
+
+
+</form>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<main id="dashboardScreen"
+style="display:none;">
+
+
+
+<header class="site-header">
+
+
+<div class="header-inner">
+
+
+<div class="brand-logo">
+
+<span class="gradient-text">
+SPORTS
+</span>
+
+ADMIN
+
+</div>
+
+
+<button id="logoutBtn"
+class="btn-logout">
+
+LOGOUT
+
+</button>
+
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+<div class="dashboard-wrapper">
+
+
+<div class="dash-grid">
+
+
+
+
+
+<section class="dash-panel">
+
+
+
+<div class="panel-header">
+
+
+<h2 id="formTitle">
+CREATE MATCH
+</h2>
+
+
+<button
+id="cancelEditBtn"
+style="display:none;">
+
+CANCEL
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<form id="matchForm">
+
+
+
+<div class="input-group">
+
+<label>Match Name</label>
+
+<input id="matchName" required>
+
+</div>
+
+
+
+<div class="input-group">
+
+<label>Match Title</label>
+
+<input id="matchTitle" required>
+
+</div>
+
+
+
+
+<div class="input-group">
+
+<label>Poster URL</label>
+
+<input id="posterUrl" required>
+
+</div>
+
+
+
+
+
+<div class="input-group">
+
+<label>Status</label>
+
+
+<select id="matchStatus">
+
+
+<option value="Live">
+LIVE
+</option>
+
+
+<option value="Upcoming">
+UPCOMING
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="servers-section">
+
+
+<button 
+type="button"
+id="addServerBtn"
+class="btn-add-server">
+
++ ADD SERVER
+
+</button>
+
+
+
+<div id="serverFieldsContainer">
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<button
+class="btn-primary btn-block">
+
+PUBLISH MATCH
+
+</button>
+
+
+
+</form>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<section class="dash-panel">
+
+
+<div class="panel-header">
+
+<h2>
+MANAGE MATCHES
+</h2>
+
+
+</div>
+
+
+
+<div id="matchList">
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+</main>
+
+
+
+
+
+
+
+<script type="module" src="admin.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,762 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+:root{
+
+    --bg-main:#020817;
+    --bg-panel:#071229;
+    --bg-input:#1E293B;
+    --border:#334155;
+
+    --accent:#00E5FF;
+    --danger:#EF4444;
+
+    --text:#ffffff;
+    --muted:#94A3B8;
+
+    --font:'Sora',sans-serif;
+
+}
+
+
+
+body{
+
+    font-family:var(--font);
+
+    background:var(--bg-main);
+
+    color:var(--text);
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+
+
+
+
+/* HEADER */
+
+
+.player-header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    padding:22px 20px;
+
+    background:var(--bg-panel);
+
+    border-bottom:1px solid var(--border);
+
+}
+
+
+
+.player-header-inner{
+
+    max-width:1200px;
+
+    margin:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+}
+
+
+
+
+
+.player-brand{
+
+    font-size:32px;
+
+    font-weight:800;
+
+    letter-spacing:2px;
+
+}
+
+
+
+
+
+.gradient-text{
+
+    background:
+
+    linear-gradient(
+    90deg,
+    #fff,
+    var(--accent)
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+}
+
+
+
+
+
+.btn-telegram{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:11px 16px;
+
+    background:var(--bg-input);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    font-size:12px;
+
+    font-weight:800;
+
+}
+
+
+
+
+
+.btn-telegram:hover{
+
+    border-color:var(--accent);
+
+    color:var(--accent);
+
+}
+
+
+
+
+
+/* MAIN */
+
+
+.player-container{
+
+    width:100%;
+
+    max-width:1100px;
+
+    margin:40px auto;
+
+    padding:0 20px;
+
+}
+
+
+
+
+
+
+/* MATCH INFO */
+
+
+.match-header-info{
+
+    margin-bottom:25px;
+
+}
+
+
+
+.title-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+
+
+
+.live-indicator{
+
+    background:
+
+    rgba(239,68,68,.15);
+
+
+    border:1px solid rgba(239,68,68,.4);
+
+
+    color:var(--danger);
+
+
+    padding:5px 10px;
+
+
+    border-radius:8px;
+
+
+    font-size:11px;
+
+
+    font-weight:800;
+
+}
+
+
+
+
+
+
+#matchName{
+
+    font-size:25px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+}
+
+
+
+#matchTitle{
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    margin-top:6px;
+
+}
+
+/* =========================
+      VIDEO PLAYER
+========================= */
+
+
+.video-wrapper{
+
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:16/9;
+
+    min-height:300px;
+
+    background:#000;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    border:1px solid var(--border);
+
+}
+
+
+
+/* ALL PLAYER BOX */
+
+#shaka-container,
+#ios-container,
+#iframe-container{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+
+    height:100%;
+
+}
+
+
+
+/* VIDEO SIZE */
+
+
+#videoPlayer,
+#ios-video{
+
+    width:100% !important;
+
+    height:100% !important;
+
+    display:block;
+
+    object-fit:contain;
+
+    background:#000;
+
+}
+
+
+
+
+#stream-frame{
+
+    width:100%;
+
+    height:100%;
+
+    border:0;
+
+    display:block;
+
+}
+
+
+
+
+
+
+/* SHAKA UI FIX */
+
+
+/* remove full black bottom overlay */
+
+.shaka-controls-container{
+
+    background:transparent !important;
+
+}
+
+
+
+.shaka-bottom-controls{
+
+    background:transparent !important;
+
+}
+
+
+
+.shaka-controls-button-panel{
+
+    background:rgba(0,0,0,.35) !important;
+
+}
+
+
+
+
+
+/* LOADER */
+
+
+#loader{
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+
+    transform:translate(-50%,-50%);
+
+
+    background:rgba(0,0,0,.8);
+
+
+    padding:15px 25px;
+
+
+    border-radius:30px;
+
+
+    font-weight:700;
+
+
+    z-index:50;
+
+
+    display:none;
+
+}
+
+
+
+
+
+/* SERVER BUTTONS */
+
+
+.server-list{
+
+    margin-top:25px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:15px;
+
+}
+
+
+
+
+
+.server-btn-play{
+
+
+    padding:18px;
+
+
+    background:var(--bg-panel);
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:12px;
+
+
+    color:white;
+
+
+    font-family:inherit;
+
+
+    font-weight:800;
+
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+.server-btn-play:hover{
+
+
+    border-color:var(--accent);
+
+
+}
+
+
+
+
+
+
+.server-btn-play.active{
+
+
+    border-color:var(--accent);
+
+
+    color:var(--accent);
+
+
+    box-shadow:
+
+    0 0 15px rgba(0,229,255,.2);
+
+
+}
+
+/* =========================
+        FOOTER
+========================= */
+
+
+.player-footer{
+
+    margin-top:auto;
+
+    padding:25px;
+
+
+    background:var(--bg-panel);
+
+
+    border-top:1px solid var(--border);
+
+
+    text-align:center;
+
+
+    color:var(--muted);
+
+
+    font-size:12px;
+
+
+    letter-spacing:2px;
+
+}
+
+
+
+
+
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+
+
+.player-header{
+
+    padding:16px;
+
+}
+
+
+
+
+.player-brand{
+
+    font-size:24px;
+
+}
+
+
+
+
+.btn-telegram span{
+
+    display:none;
+
+}
+
+
+
+
+.player-container{
+
+    margin:25px auto;
+
+    padding:0 15px;
+
+}
+
+
+
+
+
+#matchName{
+
+    font-size:19px;
+
+}
+
+
+
+
+.video-wrapper{
+
+    aspect-ratio:16/9;
+
+    min-height:220px;
+
+}
+
+
+
+
+.server-list{
+
+
+    grid-template-columns:1fr;
+
+
+}
+
+
+
+
+.server-btn-play{
+
+
+    padding:15px;
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+/* SMALL DEVICES */
+
+
+@media(max-width:450px){
+
+
+
+.player-brand{
+
+    font-size:21px;
+
+}
+
+
+
+.video-wrapper{
+
+    min-height:200px;
+
+}
+
+
+
+#matchTitle{
+
+    font-size:12px;
+
+}
+
+
+
+}
+
+/* =====================================
+   SHAKA PLAYER CONTROL OVERLAY FIX
+===================================== */
+
+
+/* Main control background remove */
+
+.shaka-controls-container{
+
+    background:transparent !important;
+
+    background-image:none !important;
+
+}
+
+
+
+/* Bottom control bar */
+
+.shaka-bottom-controls{
+
+    background:linear-gradient(
+        transparent,
+        rgba(0,0,0,0.25)
+    ) !important;
+
+}
+
+
+
+/* Remove extra black panels */
+
+.shaka-controls-button-panel{
+
+    background:transparent !important;
+
+}
+
+
+
+/* Control buttons */
+
+.shaka-control-button{
+
+    background:transparent !important;
+
+}
+
+
+
+/* Video always full */
+
+.shaka-video-container{
+
+    width:100% !important;
+
+    height:100% !important;
+
+    background:#000 !important;
+
+}
+
+
+
+.shaka-video-container video{
+
+    width:100% !important;
+
+    height:100% !important;
+
+    object-fit:contain !important;
+
+}
+
+
+
+/* Hide empty black overlay */
+
+.shaka-controls-container:not(.shaka-controls-visible){
+
+    opacity:0;
+
+}
+
+
+
+/* Mobile */
+
+@media(max-width:768px){
+
+
+.shaka-bottom-controls{
+
+    padding-bottom:5px !important;
+
+}
+
+
+}

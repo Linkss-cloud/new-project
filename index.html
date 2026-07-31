@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SPORTS ZONE – Live Sports Streaming</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="site-header">
+
+<div class="header-inner">
+
+<a href="index.html" class="brand-logo gradient-text">
+SPORTS ZONE
+</a>
+
+
+<div class="header-actions">
+
+<input 
+id="search"
+type="text"
+placeholder="Search matches...">
+
+
+<a href="https://t.me/+rtK_sfY8t_A2NDU1"
+target="_blank"
+class="btn-telegram">
+
+JOIN TELEGRAM
+
+</a>
+
+
+</div>
+
+</div>
+
+</header>
+
+
+
+<div id="popup" class="popup-overlay">
+
+<div class="popup-box">
+
+<button id="popup-close" class="popup-close">
+×
+</button>
+
+<h2>
+Welcome to Sports Zone
+</h2>
+
+<p>
+Join our Telegram channel for live match updates.
+</p>
+
+<a href="https://t.me/+rtK_sfY8t_A2NDU1"
+target="_blank">
+JOIN TELEGRAM
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+<main>
+
+
+<section class="matches-section">
+
+<div class="section-header">
+
+<h2>
+🔴 LIVE MATCHES
+</h2>
+
+</div>
+
+
+<div id="matches" class="match-grid">
+
+</div>
+
+</section>
+
+
+
+
+
+<section class="matches-section">
+
+
+<div class="section-header">
+
+<h2>
+⏰ UPCOMING MATCHES
+</h2>
+
+</div>
+
+
+<div id="upcoming" class="match-grid">
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section id="favorites-section"
+class="matches-section hidden">
+
+
+<div class="section-header">
+
+<h2>
+⭐ FAVORITES
+</h2>
+
+</div>
+
+
+<div id="favorites" class="match-grid">
+
+</div>
+
+
+</section>
+
+
+
+</main>
+
+
+
+
+<footer class="site-footer">
+
+© SPORTS ZONE • ALL RIGHTS RESERVED
+
+</footer>
+
+
+
+
+<script type="module" src="js/home.js"></script>
+
+
+<script>
+
+const popup=document.getElementById("popup");
+
+document.getElementById("popup-close").onclick=()=>{
+
+popup.style.display="none";
+
+}
+
+</script>
+
+
+</body>
+</html>
+```
