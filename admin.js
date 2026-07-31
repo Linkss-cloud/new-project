@@ -8,14 +8,18 @@ import {
     deleteDoc,
     doc,
     updateDoc
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
 import {
     signInWithEmailAndPassword,
     onAuthStateChanged,
     signOut
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
 
@@ -78,6 +82,7 @@ let matchesData = {};
 
 
 
+
 onAuthStateChanged(auth,(user)=>{
 
 
@@ -105,6 +110,8 @@ dashboardScreen.style.display="none";
 
 
 });
+
+
 
 
 
@@ -169,10 +176,6 @@ signOut(auth);
 
 
 
-
-// ADD SERVER
-
-
 addServerBtn.onclick=()=>{
 
 
@@ -180,6 +183,10 @@ addServerField();
 
 
 };
+
+
+
+
 
 
 
@@ -201,7 +208,9 @@ cookie=""
 ){
 
 
+
 serverCount++;
+
 
 
 let div =
@@ -209,15 +218,18 @@ document.createElement("div");
 
 
 
-div.className="server-block";
+div.className =
+"server-block";
+
 
 div.id =
 "server_"+serverCount;
 
 
 
-div.innerHTML=`
 
+
+div.innerHTML = `
 
 
 <button
@@ -250,7 +262,6 @@ class="srv-name"
 value="${name}"
 
 required>
-
 
 </div>
 
@@ -286,6 +297,16 @@ HLS / IOS
 </option>
 
 
+
+<option value="fancode"
+${type==="fancode"?"selected":""}>
+
+FANCODE
+
+</option>
+
+
+
 <option value="iframe"
 ${type==="iframe"?"selected":""}>
 
@@ -296,9 +317,7 @@ IFRAME
 
 </select>
 
-
 </div>
-
 
 
 
@@ -319,7 +338,9 @@ class="srv-url"
 
 value="${url}"
 
-placeholder="MPD / M3U8 / IFRAME">
+placeholder="MPD / M3U8 / IFRAME"
+
+oninput="detectStreamType(this)">
 
 
 </div>
@@ -358,6 +379,7 @@ value="${key}">
 
 <label>
 COOKIE
+
 </label>
 
 
@@ -387,11 +409,89 @@ serverContainer.appendChild(div);
 
 
 
+
+
+
+window.detectStreamType=function(input){
+
+
+
+let block =
+input.closest(".server-block");
+
+
+
+let type =
+block.querySelector(".srv-type");
+
+
+
+let url =
+input.value.toLowerCase();
+
+
+
+
+if(
+
+url.includes("fancode") ||
+
+url.includes("cloudfront.net")
+
+){
+
+
+type.value="fancode";
+
+
+}
+
+else if(
+
+url.includes(".m3u8")
+
+){
+
+
+type.value="hls";
+
+
+}
+
+else if(
+
+url.includes(".mpd")
+
+){
+
+
+type.value="shaka";
+
+
+}
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
 window.removeServerField=function(id){
+
 
 document.getElementById(id).remove();
 
+
 };
+
+
 
 
 
@@ -407,8 +507,6 @@ addServerField();
 
 
 
-// SAVE MATCH
-
 
 matchForm.addEventListener(
 "submit",
@@ -416,6 +514,8 @@ async(e)=>{
 
 
 e.preventDefault();
+
+
 
 
 
@@ -440,11 +540,14 @@ document.getElementById("matchStatus").value,
 
 servers:[],
 
+
 updatedAt:
 new Date().toISOString()
 
 
 };
+
+
 
 
 
@@ -495,6 +598,8 @@ block.querySelector(".srv-cookie").value
 
 
 
+
+
 if(editId){
 
 
@@ -527,6 +632,7 @@ payload
 
 resetForm();
 
+
 loadMatches();
 
 
@@ -541,8 +647,8 @@ loadMatches();
 
 
 
-
 async function loadMatches(){
+
 
 
 matchList.innerHTML="Loading...";
@@ -563,17 +669,21 @@ let html="";
 
 
 
+
 snap.forEach(item=>{
 
 
 let data=item.data();
 
 
+
 matchesData[item.id]=data;
 
 
 
+
 html+=`
+
 
 <div class="match-item">
 
@@ -601,7 +711,10 @@ DELETE
 </button>
 
 
+
 </div>
+
+
 
 `;
 
@@ -625,21 +738,25 @@ matchList.innerHTML=html;
 
 
 
-
 window.editMatch=function(id){
+
 
 
 let data =
 matchesData[id];
 
 
+
 editId=id;
 
 
-formTitle.innerText="EDIT MATCH";
+
+formTitle.innerText=
+"EDIT MATCH";
 
 
-cancelEditBtn.style.display="block";
+cancelEditBtn.style.display=
+"block";
 
 
 
@@ -650,7 +767,6 @@ matchTitle.value=data.matchTitle;
 posterUrl.value=data.posterUrl;
 
 matchStatus.value=data.status;
-
 
 
 
@@ -676,6 +792,7 @@ server.cookie
 );
 
 
+
 });
 
 
@@ -692,9 +809,12 @@ server.cookie
 
 cancelEditBtn.onclick=()=>{
 
+
 resetForm();
 
+
 };
+
 
 
 
@@ -709,13 +829,17 @@ function resetForm(){
 editId=null;
 
 
-formTitle.innerText="CREATE MATCH";
+formTitle.innerText=
+"CREATE MATCH";
 
 
-cancelEditBtn.style.display="none";
+cancelEditBtn.style.display=
+"none";
+
 
 
 matchForm.reset();
+
 
 
 serverContainer.innerHTML="";
@@ -734,8 +858,8 @@ addServerField();
 
 
 
-
 window.deleteMatch=async function(id){
+
 
 
 if(confirm("Delete Match?")){
@@ -748,10 +872,13 @@ doc(db,"matches",id)
 );
 
 
+
 loadMatches();
 
 
+
 }
+
 
 
 };
