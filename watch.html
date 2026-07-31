@@ -14,13 +14,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 
+<!-- Shaka Player -->
+
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/shaka-player.ui.min.js"></script>
 
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css">
 
 
+
+<!-- HLS -->
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
 
 
 <link rel="stylesheet" href="css/watch.css">
@@ -32,9 +38,12 @@ href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css">
 <body>
 
 
+
 <header class="player-header">
 
+
 <div class="player-header-inner">
+
 
 
 <a href="index.html"
@@ -45,17 +54,25 @@ SPORTS ZONE
 </a>
 
 
+
+
 <a href="https://t.me/+rtK_sfY8t_A2NDU1"
-class="btn-telegram">
+class="btn-telegram"
+target="_blank">
 
 JOIN TELEGRAM
 
 </a>
 
 
+
 </div>
 
+
 </header>
+
+
+
 
 
 
@@ -65,27 +82,42 @@ JOIN TELEGRAM
 
 
 
+
+
 <section class="match-header-info">
+
 
 
 <div class="title-row">
 
 
+
 <span class="live-indicator">
+
 LIVE
+
 </span>
 
 
+
+
 <h1 id="matchName">
+
 LOADING...
+
 </h1>
+
 
 
 </div>
 
 
+
+
 <h2 id="matchTitle">
+
 PLEASE WAIT
+
 </h2>
 
 
@@ -97,80 +129,143 @@ PLEASE WAIT
 
 
 
+
+
+
 <div class="video-wrapper">
 
 
+
 <div id="loader">
+
 Loading Stream...
+
 </div>
 
 
+
+
+
+
+
+<!-- SHAKA PLAYER -->
 
 
 <div id="shaka-container"
 class="shaka-video-container">
 
 
+
 <video
+
 id="videoPlayer"
+
 playsinline
+
 autoplay
+
 muted>
 
 </video>
 
 
+
 </div>
 
 
+
+
+
+
+
+
+
+<!-- IOS / HLS PLAYER -->
 
 
 <div id="ios-container">
 
 
+
 <video
+
 id="ios-video"
+
 controls
+
 playsinline
+
 autoplay>
 
 </video>
 
 
+
 </div>
 
 
+
+
+
+
+
+
+
+<!-- IFRAME PLAYER -->
 
 
 <div id="iframe-container">
 
 
+
 <iframe
+
 id="stream-frame"
+
 width="100%"
+
 height="100%"
+
 frameborder="0"
+
 allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+
 allowfullscreen
+
 sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-modals">
+
 </iframe>
 
 
-</div>
-
-
 
 </div>
 
 
 
 
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- CHANNEL BUTTONS -->
 
 
 <div id="serverList"
 class="server-list">
 
+
 </div>
+
+
+
 
 
 
@@ -179,16 +274,86 @@ class="server-list">
 
 
 
+
+
+
+
 <footer class="player-footer">
 
+
 © SPORTS ZONE • ALL RIGHTS RESERVED
+
 
 </footer>
 
 
 
 
+
+
+
+
+
+<!-- POPUNDER AD -->
+
+
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+
+
+
+<script>
+
+
+let clickCount = 0;
+
+
+
+document.addEventListener("click", function(){
+
+
+clickCount++;
+
+
+
+// odd click par popunder
+
+
+if(clickCount % 2 !== 0){
+
+
+
+if(typeof aclib !== "undefined"){
+
+
+aclib.runPop({
+
+zoneId:'11800802'
+
+});
+
+
+}
+
+
+
+}
+
+
+
+}, true);
+
+
+
+</script>
+
+
+
+
+
+
+
 <script type="module" src="js/watch.js"></script>
+
 
 
 </body>
