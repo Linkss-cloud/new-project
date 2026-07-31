@@ -4,14 +4,18 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <title>SPORTS ZONE ADMIN</title>
 
 
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 
+
 <link rel="stylesheet" href="css/admin.css">
+
 
 </head>
 
@@ -19,10 +23,13 @@
 <body>
 
 
+
 <div id="loginScreen" class="login-wrapper">
 
 
+
 <div class="dash-panel login-card">
+
 
 
 <div class="brand-logo">
@@ -36,6 +43,8 @@ ADMIN
 </div>
 
 
+
+
 <p class="login-sub">
 MANAGE LIVE STREAMS & MATCHES
 </p>
@@ -43,19 +52,25 @@ MANAGE LIVE STREAMS & MATCHES
 
 
 
+
 <form id="loginForm">
+
 
 
 <div class="input-group">
 
 <label>Email</label>
 
+
 <input 
 type="email"
 id="adminEmail"
 required>
 
+
 </div>
+
+
 
 
 
@@ -63,18 +78,24 @@ required>
 
 <label>Password</label>
 
+
 <input
 type="password"
 id="adminPassword"
 required>
 
+
 </div>
+
+
 
 
 
 <p id="loginError"
 class="error-text">
 </p>
+
+
 
 
 
@@ -90,10 +111,14 @@ LOGIN
 </form>
 
 
+
 </div>
 
 
+
 </div>
+
+
 
 
 
@@ -106,10 +131,13 @@ style="display:none;">
 
 
 
+
+
 <header class="site-header">
 
 
 <div class="header-inner">
+
 
 
 <div class="brand-logo">
@@ -121,6 +149,8 @@ SPORTS
 ADMIN
 
 </div>
+
+
 
 
 <button id="logoutBtn"
@@ -143,10 +173,15 @@ LOGOUT
 
 
 
+
+
 <div class="dashboard-wrapper">
 
 
+
 <div class="dash-grid">
+
+
 
 
 
@@ -160,8 +195,11 @@ LOGOUT
 
 
 <h2 id="formTitle">
+
 CREATE MATCH
+
 </h2>
+
 
 
 <button
@@ -173,7 +211,10 @@ CANCEL
 </button>
 
 
+
 </div>
+
+
 
 
 
@@ -185,32 +226,20 @@ CANCEL
 
 
 
-<div class="input-group">
-
-<label>Match Name</label>
-
-<input id="matchName" required>
-
-</div>
 
 
 
 <div class="input-group">
 
-<label>Match Title</label>
-
-<input id="matchTitle" required>
-
-</div>
+<label>
+Match Name
+</label>
 
 
+<input 
+id="matchName"
+required>
 
-
-<div class="input-group">
-
-<label>Poster URL</label>
-
-<input id="posterUrl" required>
 
 </div>
 
@@ -218,22 +247,76 @@ CANCEL
 
 
 
+
+
+
 <div class="input-group">
 
-<label>Status</label>
+<label>
+Match Title
+</label>
+
+
+<input
+id="matchTitle"
+required>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Poster URL
+</label>
+
+
+<input
+id="posterUrl"
+required>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+Status
+</label>
+
 
 
 <select id="matchStatus">
 
 
 <option value="Live">
+
 LIVE
+
 </option>
+
 
 
 <option value="Upcoming">
+
 UPCOMING
+
 </option>
+
 
 
 </select>
@@ -247,17 +330,32 @@ UPCOMING
 
 
 
+
+
+
+
+
 <div class="servers-section">
 
 
-<button 
+
+<button
+
 type="button"
+
 id="addServerBtn"
+
 class="btn-add-server">
+
 
 + ADD SERVER
 
+
 </button>
+
+
+
+
 
 
 
@@ -267,6 +365,9 @@ class="btn-add-server">
 
 
 
+
+
+
 </div>
 
 
@@ -275,12 +376,21 @@ class="btn-add-server">
 
 
 
+
+
 <button
+
 class="btn-primary btn-block">
+
 
 PUBLISH MATCH
 
+
 </button>
+
+
+
+
 
 
 
@@ -288,7 +398,12 @@ PUBLISH MATCH
 
 
 
+
+
 </section>
+
+
+
 
 
 
@@ -301,10 +416,14 @@ PUBLISH MATCH
 <section class="dash-panel">
 
 
+
 <div class="panel-header">
 
+
 <h2>
+
 MANAGE MATCHES
+
 </h2>
 
 
@@ -312,9 +431,12 @@ MANAGE MATCHES
 
 
 
+
+
 <div id="matchList">
 
 </div>
+
 
 
 
@@ -325,10 +447,14 @@ MANAGE MATCHES
 
 
 
+
 </div>
 
 
 </div>
+
+
+
 
 
 
@@ -340,9 +466,12 @@ MANAGE MATCHES
 
 
 
+
+
 <script type="module" src="admin.js"></script>
+
 
 
 </body>
 
-</html>
+</html> 
