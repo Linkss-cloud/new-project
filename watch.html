@@ -4,17 +4,21 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <meta name="referrer" content="no-referrer">
 
+
 <title>Watch - Sports Zone</title>
+
 
 
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 
-<!-- Shaka Player -->
+
+<!-- SHAKA PLAYER -->
 
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/shaka-player.ui.min.js"></script>
 
@@ -23,7 +27,7 @@ href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css">
 
 
 
-<!-- HLS -->
+<!-- HLS PLAYER -->
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -77,34 +81,24 @@ JOIN TELEGRAM
 
 
 
-
 <main class="player-container">
-
-
 
 
 
 <section class="match-header-info">
 
 
-
 <div class="title-row">
 
 
-
 <span class="live-indicator">
-
 LIVE
-
 </span>
 
 
 
-
 <h1 id="matchName">
-
 LOADING...
-
 </h1>
 
 
@@ -113,16 +107,14 @@ LOADING...
 
 
 
-
 <h2 id="matchTitle">
-
 PLEASE WAIT
-
 </h2>
 
 
 
 </section>
+
 
 
 
@@ -148,8 +140,8 @@ Loading Stream...
 
 
 
-<!-- SHAKA PLAYER -->
 
+<!-- SHAKA PLAYER -->
 
 <div id="shaka-container"
 class="shaka-video-container">
@@ -164,7 +156,9 @@ playsinline
 
 autoplay
 
-muted>
+muted
+
+style="width:100%;height:100%">
 
 </video>
 
@@ -180,8 +174,8 @@ muted>
 
 
 
-<!-- IOS / HLS PLAYER -->
 
+<!-- HLS PLAYER -->
 
 <div id="ios-container">
 
@@ -195,7 +189,9 @@ controls
 
 playsinline
 
-autoplay>
+autoplay
+
+style="width:100%;height:100%">
 
 </video>
 
@@ -213,7 +209,6 @@ autoplay>
 
 <!-- IFRAME PLAYER -->
 
-
 <div id="iframe-container">
 
 
@@ -230,9 +225,7 @@ frameborder="0"
 
 allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
 
-allowfullscreen
-
-sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-modals">
+allowfullscreen>
 
 </iframe>
 
@@ -244,7 +237,6 @@ sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-mo
 
 
 
-
 </div>
 
 
@@ -255,12 +247,8 @@ sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-mo
 
 
 
-<!-- CHANNEL BUTTONS -->
-
-
 <div id="serverList"
 class="server-list">
-
 
 </div>
 
@@ -294,11 +282,9 @@ class="server-list">
 
 
 
-<!-- POPUNDER AD -->
-
+<!-- POPUNDER -->
 
 <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
-
 
 
 <script>
@@ -307,15 +293,13 @@ class="server-list">
 let clickCount = 0;
 
 
-
-document.addEventListener("click", function(){
+document.addEventListener(
+"click",
+function(){
 
 
 clickCount++;
 
-
-
-// odd click par popunder
 
 
 if(clickCount % 2 !== 0){
@@ -340,7 +324,9 @@ zoneId:'11800802'
 
 
 
-}, true);
+},
+true
+);
 
 
 
