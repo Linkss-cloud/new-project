@@ -612,33 +612,77 @@ function createServer(server,index){
 
 async function loadMatch(){
 
+    console.log("LOAD MATCH START", matchId);
 
     try{
 
-
         const snap =
         await getDoc(
-            doc(
-                db,
-                "matches",
-                matchId
-            )
+            doc(db,"matches",matchId)
         );
 
+
+        console.log("FIREBASE SNAP:", snap.exists());
 
 
         if(!snap.exists()){
 
-
             matchName.innerText =
             "MATCH NOT FOUND";
 
-
             return;
-
-
         }
 
+
+        const data =
+        snap.data();
+
+
+        console.log("MATCH DATA:", data);
+
+
+
+        matchName.innerText =
+        data.matchName || "LIVE MATCH";
+
+
+        matchTitle.innerText =
+        data.matchTitle || "SPORTS LIVE";
+
+
+        const servers =
+        data.servers || [];
+
+
+        console.log(
+            "SERVERS:",
+            servers
+        );
+
+
+        servers.forEach(
+            (server,index)=>{
+
+                createServer(
+                    server,
+                    index
+                );
+
+            }
+        );
+
+
+    }
+    catch(error){
+
+        console.error(
+            "MATCH LOAD ERROR",
+            error
+        );
+
+    }
+
+}
 
 
 
