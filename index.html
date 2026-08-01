@@ -1,177 +1,47 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPORTS ZONE – Watch Live Sports</title>
 
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>SPORTS ZONE – Live Sports Streaming</title>
-
-
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-
-<link rel="stylesheet" href="css/style.css">
-
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
-
 <body>
 
-
-
-<header class="site-header">
-
-<div class="header-inner">
-
-
-<a href="index.html" class="brand-logo gradient-text">
-
-SPORTS ZONE
-
-</a>
-
-
-
-
-
-<div class="header-actions">
-
-
-<input 
-id="search"
-type="text"
-placeholder="Search live matches..."
->
-
-
-
-
-<a href="https://t.me/+rtK_sfY8t_A2NDU1"
-target="_blank"
-class="btn-telegram">
-
-
-JOIN TELEGRAM
-
-
-</a>
-
-
-</div>
-
-
-</div>
-
-</header>
-
-
-
-
-
-
-
-
-
-<main>
-
-
-
-<section class="matches-section">
-
-
-<div class="section-header">
-
-
-<h2>
-
-🔴 LIVE MATCHES
-
-</h2>
-
-
-</div>
-
-
-
-
-<div id="matches" class="match-grid">
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-
-
-
-<section id="favorites-section" class="matches-section hidden">
-
-
-<div class="section-header">
-
-
-<h2>
-
-⭐ FAVORITES
-
-</h2>
-
-
-</div>
-
-
-
-
-<div id="favorites" class="match-grid">
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-</main>
-
-
-
-
-
-
-
-
-<footer class="site-footer">
-
-
-© SPORTS ZONE • ALL RIGHTS RESERVED
-
-
-</footer>
-
-
-
-
-
-
-
-
-<script type="module" src="js/home.js"></script>
-
-
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="brand-logo gradient-text">SPORTS ZONE</a>
+            
+            <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank" class="btn-telegram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                <span>JOIN TELEGRAM</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="matches-section">
+            <div class="section-header">
+                <h2>LIVE & UPCOMING EVENTS</h2>
+            </div>
+            
+            <div id="matchContainer" class="match-grid"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>© SPORTS ZONE • ALL RIGHTS RESERVED</p>
+    </footer>
+
+    <script type="module" src="main.js"></script>
 
 </body>
-
 </html>
