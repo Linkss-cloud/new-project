@@ -123,36 +123,23 @@
         <div class="video-wrapper">
 
 
-
             <div id="loader">
-
                 Loading Stream...
-
             </div>
-
-
-
-
 
 
 
 
             <!-- SHAKA PLAYER -->
 
-            <div id="shaka-container" class="shaka-video-container">
+            <div id="shaka-container" class="shaka-video-container" style="display:none;">
 
 
-
-                <video id="videoPlayer" playsinline autoplay muted style="width:100%;height:100%">
-
+                <video id="videoPlayer" playsinline autoplay muted style="width:100%;height:100%;">
                 </video>
 
 
-
             </div>
-
-
-
 
 
 
@@ -162,13 +149,12 @@
 
             <!-- HLS PLAYER -->
 
-            <div id="ios-container">
 
+            <div id="ios-container" style="display:none;">
 
 
                 <video id="ios-video" controls playsinline autoplay muted>
                 </video>
-
 
 
             </div>
@@ -179,30 +165,23 @@
 
 
 
-
-
             <!-- IFRAME PLAYER -->
 
-            <iframe id="stream-frame" width="100%" height="100%" frameborder="0"
-                allow="autoplay; fullscreen; encrypted-media; picture-in-picture">
-            </iframe>
+
+            <div id="iframe-container" style="display:none;width:100%;height:100%;">
+
+
+                <iframe id="stream-frame" width="100%" height="100%" frameborder="0"
+                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture">
+
+                </iframe>
+
+
+            </div>
 
 
 
         </div>
-
-        <!-- JW PLAYER -->
-
-        <div id="jw-container" style="display:none;width:100%;height:100%;">
-
-            <div id="jw-player"></div>
-
-        </div>
-
-
-
-        </div>
-
 
 
 
@@ -300,9 +279,14 @@
 
 
 
+    <script src="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/shaka-player.ui.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+
+    <script src="js/cookie-shaka.js"></script>
 
     <script type="module" src="js/player.js"></script>
-    <script type="module" src="js/cookie-shaka.js"></script>
 
 
 
