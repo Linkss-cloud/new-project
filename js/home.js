@@ -6,13 +6,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
-
 const matchesBox = document.getElementById("matches");
-const upcomingBox = document.getElementById("upcoming");
 const favoritesBox = document.getElementById("favorites");
 const favoritesSection = document.getElementById("favorites-section");
 const search = document.getElementById("search");
-
 
 
 let matches = [];
@@ -26,9 +23,7 @@ JSON.parse(localStorage.getItem("favorites")) || [];
 
 async function loadMatches(){
 
-
     try{
-
 
         const snapshot =
         await getDocs(
@@ -36,23 +31,21 @@ async function loadMatches(){
         );
 
 
-
         matches = [];
-
 
 
         snapshot.forEach((doc)=>{
 
-
             const data = doc.data();
 
+
+            // Only Live matches
+            if(data.status !== "Live") return;
 
 
             matches.push({
 
-
                 id: doc.id,
-
 
                 title:
                 data.matchName || "Unknown Match",
@@ -66,34 +59,24 @@ async function loadMatches(){
                 data.posterUrl || "",
 
 
-                status:
-                data.status === "Live"
-                ?
-                "LIVE"
-                :
-                "UPCOMING",
+                status:"LIVE",
 
 
                 servers:
                 data.servers || []
 
-
             });
-
 
 
         });
 
 
-
         render();
-
 
 
     }
 
     catch(error){
-
 
         console.log(
             "Firebase Error:",
@@ -108,13 +91,9 @@ async function loadMatches(){
         </div>
         `;
 
-
     }
 
-
-
 }
-
 
 
 
@@ -160,19 +139,14 @@ alt="${match.title}"
 <div class="status-badge">
 
 
-${
-match.status==="LIVE"
-?
-"🔴 LIVE"
-:
-"⏰ UPCOMING"
-}
+🔴 LIVE
 
 
 </div>
 
 
 </div>
+
 
 
 
@@ -216,6 +190,8 @@ ${isFav ? "★" : "☆"}
 
 
 
+
+
 <div class="card-actions">
 
 
@@ -247,21 +223,19 @@ card.querySelector(".favorite-btn");
 
 
 
-favBtn.onclick=()=>{
+favBtn.onclick=(e)=>{
 
+    e.preventDefault();
 
-toggleFavorite(match.id);
+    toggleFavorite(match.id);
 
-
-render();
-
+    render();
 
 };
 
 
 
 return card;
-
 
 
 }
@@ -279,34 +253,17 @@ function render(list = matches){
 
 
 matchesBox.innerHTML="";
-upcomingBox.innerHTML="";
+
 favoritesBox.innerHTML="";
 
 
 
 
-const live =
 
-list.filter(
-item=>item.status==="LIVE"
-);
+if(list.length){
 
 
-
-const upcoming =
-
-list.filter(
-item=>item.status==="UPCOMING"
-);
-
-
-
-
-
-if(live.length){
-
-
-live.forEach(match=>{
+list.forEach(match=>{
 
 
 matchesBox.appendChild(
@@ -338,48 +295,13 @@ matchesBox.innerHTML=
 
 
 
-if(upcoming.length){
-
-
-upcoming.forEach(match=>{
-
-
-upcomingBox.appendChild(
-createCard(match)
-);
-
-
-});
-
-
-}
-
-else{
-
-
-upcomingBox.innerHTML=
-`
-<div class="no-live">
-
-⏰ No upcoming matches
-
-</div>
-`;
-
-}
-
-
-
-
-
-
-
 const favMatches =
 
 matches.filter(
-item=>
+item =>
 favorites.includes(item.id)
 );
+
 
 
 
@@ -419,6 +341,7 @@ favoritesSection.classList.add(
 
 
 }
+
 
 
 
@@ -469,6 +392,8 @@ JSON.stringify(favorites)
 
 
 
+
+
 search.addEventListener(
 "input",
 ()=>{
@@ -476,6 +401,7 @@ search.addEventListener(
 
 const value =
 search.value.toLowerCase();
+
 
 
 
@@ -505,6 +431,7 @@ render(filtered);
 
 
 });
+
 
 
 
