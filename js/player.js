@@ -1,310 +1,770 @@
 import { db } from "../firebase.js";
 
 import {
-  doc,
-  getDoc,
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-const params = new URLSearchParams(window.location.search);
 
-const matchId = params.get("id");
+console.log("PLAYER JS LOADED");
 
-const matchName = document.getElementById("matchName");
 
-const matchTitle = document.getElementById("matchTitle");
 
-const serverList = document.getElementById("serverList");
+const params =
+new URLSearchParams(
+    window.location.search
+);
 
-const loader = document.getElementById("loader");
 
-const shakaBox = document.getElementById("shaka-container");
+const matchId =
+params.get("id");
 
-const iosBox = document.getElementById("ios-container");
 
-const iframeBox = document.getElementById("iframe-container");
 
-const video = document.getElementById("videoPlayer");
+const matchName =
+document.getElementById("matchName");
 
-const iosVideo = document.getElementById("ios-video");
 
-const frame = document.getElementById("stream-frame");
+const matchTitle =
+document.getElementById("matchTitle");
+
+
+const serverList =
+document.getElementById("serverList");
+
+
+const loader =
+document.getElementById("loader");
+
+
+const shakaBox =
+document.getElementById("shaka-container");
+
+
+const iosBox =
+document.getElementById("ios-container");
+
+
+const iframeBox =
+document.getElementById("iframe-container");
+
+
+
+const video =
+document.getElementById("videoPlayer");
+
+
+const iosVideo =
+document.getElementById("ios-video");
+
+
+const frame =
+document.getElementById("stream-frame");
+
+
+
 
 let player = null;
 
 let hls = null;
 
-function showLoader() {
-  if (loader) loader.style.display = "block";
+
+
+
+function showLoader(){
+
+    if(loader)
+        loader.style.display="block";
+
 }
 
-function hideLoader() {
-  if (loader) loader.style.display = "none";
+
+
+function hideLoader(){
+
+    if(loader)
+        loader.style.display="none";
+
 }
 
-function stopAll() {
-  if (hls) {
-    hls.destroy();
 
-    hls = null;
-  }
 
-  if (player) {
-    player.unload().catch(() => {});
-  }
 
-  if (video) video.pause();
 
-  if (iosVideo) iosVideo.pause();
+function stopAll(){
 
-  if (frame) frame.src = "";
 
-  if (shakaBox) shakaBox.style.display = "none";
+    if(hls){
 
-  if (iosBox) iosBox.style.display = "none";
+        hls.destroy();
 
-  if (iframeBox) iframeBox.style.display = "none";
+        hls=null;
+
+    }
+
+
+
+    if(player){
+
+        player.unload()
+        .catch(()=>{});
+
+    }
+
+
+
+    if(video){
+
+        video.pause();
+
+    }
+
+
+
+    if(iosVideo){
+
+        iosVideo.pause();
+
+        iosVideo.src="";
+
+    }
+
+
+
+    if(frame){
+
+        frame.src="";
+
+    }
+
+
+
+
+    if(shakaBox)
+        shakaBox.style.display="none";
+
+
+
+    if(iosBox)
+        iosBox.style.display="none";
+
+
+
+    if(iframeBox)
+        iframeBox.style.display="none";
+
 }
 
-async function loadCookiePlayer(stream) {
-  if (typeof window.loadCookieShaka === "function") {
-    await window.loadCookieShaka(stream);
-  } else {
-    console.error("cookie-shaka.js missing");
-  }
+
+
+
+
+async function loadCookiePlayer(stream){
+
+
+    console.log(
+        "CALLING COOKIE PLAYER",
+        stream
+    );
+
+
+    if(
+        typeof window.loadCookieShaka === "function"
+    ){
+
+        await window.loadCookieShaka(stream);
+
+    }
+    else{
+
+        console.error(
+            "cookie-shaka.js not loaded"
+        );
+
+    }
+
+
 }
-async function playStream(stream) {
-  showLoader();
 
-  stopAll();
 
-  /*
-        IFRAME
-    */
 
-  if (stream.type === "iframe") {
-    if (iframeBox) iframeBox.style.display = "block";
 
-    if (frame) frame.src = stream.url;
 
-    hideLoader();
+async function playStream(stream){
 
-    return;
-  }
 
-  /*
+    console.log(
+        "PLAY STREAM",
+        stream
+    );
+
+
+
+    showLoader();
+
+
+    stopAll();
+
+
+
+
+
+    if(stream.type==="iframe"){
+
+
+        iframeBox.style.display="block";
+
+
+        frame.src =
+        stream.url;
+
+
+        hideLoader();
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+
+    /*
         COOKIE SHAKA
     */
 
-  if (stream.type === "cookie") {
-    if (shakaBox) shakaBox.style.display = "block";
 
-    await loadCookiePlayer(stream);
+    if(
+        stream.type==="cookie" ||
+        (
+            stream.cookie &&
+            stream.cookie.trim()!==""
+        )
+    ){
 
-    return;
-  }
 
-  /*
-        FANCODE / NATIVE VIDEO
-    */
+        console.log(
+            "COOKIE SHAKA STREAM:",
+            stream
+        );
 
-  if (
-    stream.type === "fancode" ||
-    stream.url?.toLowerCase().includes("fancode")
-  ) {
-    if (iosBox) iosBox.style.display = "block";
 
-    if (iosVideo) {
-      iosVideo.src = stream.url;
 
-      iosVideo.play().catch(() => {});
+        if(shakaBox)
+            shakaBox.style.display="block";
 
-      iosVideo.onplaying = hideLoader;
+
+
+        await loadCookiePlayer(stream);
+
+
+        return;
+
+
     }
 
-    setTimeout(hideLoader, 5000);
 
-    return;
-  }
 
-  /*
+
+
+
+    /*
+        FANCODE
+    */
+
+
+    if(
+        stream.type==="fancode"
+    ){
+
+
+        iosBox.style.display="block";
+
+
+        iosVideo.src =
+        stream.url;
+
+
+        iosVideo.play()
+        .catch(()=>{});
+
+
+
+        iosVideo.onplaying =
+        hideLoader;
+
+
+        return;
+
+    }
+
+
+
+
+
+
+    /*
         HLS
     */
 
-  if (stream.type === "hls") {
-    if (iosBox) iosBox.style.display = "block";
 
-    if (Hls.isSupported()) {
-      hls = new Hls({
-        enableWorker: true,
+    if(stream.type==="hls"){
 
-        lowLatencyMode: true,
-      });
 
-      hls.loadSource(stream.url);
+        iosBox.style.display="block";
 
-      hls.attachMedia(iosVideo);
 
-      hls.on(
-        Hls.Events.MANIFEST_PARSED,
+        if(Hls.isSupported()){
 
-        () => {
-          iosVideo.play().catch(() => {});
-        },
-      );
 
-      hls.on(
-        Hls.Events.ERROR,
+            hls =
+            new Hls({
 
-        (event, data) => {
-          console.log("HLS ERROR", data);
-        },
-      );
-    } else {
-      iosVideo.src = stream.url;
+                enableWorker:true
 
-      iosVideo.play().catch(() => {});
-    }
+            });
 
-    iosVideo.onplaying = hideLoader;
 
-    setTimeout(hideLoader, 5000);
 
-    return;
-  }
+            hls.loadSource(
+                stream.url
+            );
 
-  /*
+
+            hls.attachMedia(
+                iosVideo
+            );
+
+
+
+            hls.on(
+                Hls.Events.MANIFEST_PARSED,
+                ()=>{
+
+                    iosVideo.play()
+                    .catch(()=>{});
+
+                }
+            );
+
+
+        }
+
+
+        iosVideo.onplaying =
+        hideLoader;
+
+
+        return;
+
+          /*
         NORMAL SHAKA DRM
     */
 
-  if (stream.type === "shaka") {
-    if (shakaBox) shakaBox.style.display = "block";
 
-    try {
-      shaka.polyfill.installAll();
+    if(stream.type==="shaka"){
 
-      if (!player) {
-        player = new shaka.Player();
 
-        await player.attach(video);
-      } else {
-        await player.unload();
-      }
+        try{
 
-      player.configure({
-        drm: {
-          clearKeys: {},
-        },
-      });
 
-      player.getNetworkingEngine().clearAllRequestFilters();
+            shaka.polyfill.installAll();
 
-      if (stream.key && stream.key.includes(":")) {
-        const parts = stream.key.split(":");
 
-        player.configure({
-          drm: {
-            clearKeys: {
-              [parts[0].trim()]: parts[1].trim(),
-            },
-          },
+
+            if(!player){
+
+
+                player =
+                new shaka.Player();
+
+
+
+                await player.attach(
+                    video
+                );
+
+
+            }
+            else{
+
+
+                await player.unload();
+
+
+            }
+
+
+
+
+
+
+            player.configure({
+
+                drm:{
+
+                    clearKeys:{}
+
+                }
+
+            });
+
+
+
+
+
+
+            player.getNetworkingEngine()
+            .clearAllRequestFilters();
+
+
+
+
+
+
+
+            if(
+                stream.key &&
+                stream.key.includes(":")
+            ){
+
+
+                const keyParts =
+                stream.key.split(":");
+
+
+
+                const kid =
+                keyParts[0]
+                .trim()
+                .toLowerCase();
+
+
+
+                const key =
+                keyParts[1]
+                .trim()
+                .toLowerCase();
+
+
+
+
+                player.configure({
+
+                    drm:{
+
+                        clearKeys:{
+
+                            [kid]:key
+
+                        }
+
+                    }
+
+                });
+
+
+
+            }
+
+
+
+
+
+            await player.load(
+
+                stream.url ||
+                stream.mpd
+
+            );
+
+
+
+            video.play()
+            .catch(()=>{});
+
+
+
+            video.onplaying =
+            hideLoader;
+
+
+
+        }
+
+
+        catch(error){
+
+
+            console.error(
+                "SHAKA ERROR",
+                error
+            );
+
+
+            if(loader)
+                loader.innerHTML =
+                "STREAM ERROR";
+
+
+        }
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function createServer(server,index){
+
+
+    const btn =
+    document.createElement("button");
+
+
+
+    btn.className =
+    "server-btn-play";
+
+
+
+    btn.innerHTML =
+    server.channelName ||
+    "SERVER "+(index+1);
+
+
+
+
+    btn.onclick=()=>{
+
+
+        document
+        .querySelectorAll(".server-btn-play")
+        .forEach(b=>{
+
+            b.classList.remove(
+                "active"
+            );
+
         });
-      }
 
-      await player.load(stream.url || stream.mpd);
 
-      video.play().catch(() => {});
 
-      video.onplaying = hideLoader;
-    } catch (error) {
-      console.error("SHAKA ERROR", error);
+        btn.classList.add(
+            "active"
+        );
 
-      if (loader) loader.innerHTML = "STREAM ERROR";
-    }
-  }
-}
 
-function createServer(server, index) {
-  const btn = document.createElement("button");
 
-  btn.className = "server-btn-play";
+        playStream(server);
 
-  btn.innerHTML = server.channelName || "SERVER " + (index + 1);
 
-  btn.onclick = () => {
-    document.querySelectorAll(".server-btn-play").forEach((button) => {
-      button.classList.remove("active");
-    });
 
-    btn.classList.add("active");
+    };
 
-    playStream(server);
-  };
 
-  serverList.appendChild(btn);
 
-  if (index === 0) {
-    btn.classList.add("active");
 
-    playStream(server);
-  }
-}
+    serverList.appendChild(btn);
 
-async function loadMatch() {
-  try {
-    const snap = await getDoc(doc(db, "matches", matchId));
 
-    if (!snap.exists()) {
-      matchName.innerText = "MATCH NOT FOUND";
 
-      return;
+
+
+    if(index===0){
+
+
+        btn.classList.add(
+            "active"
+        );
+
+
+        playStream(server);
+
+
     }
 
-    const data = snap.data();
 
-    matchName.innerText = data.matchName || "LIVE MATCH";
 
-    matchTitle.innerText = data.matchTitle || "SPORTS LIVE";
+}
 
-    const servers = data.servers || [];
 
-    if (!servers.length) {
-      serverList.innerHTML = "NO STREAM AVAILABLE";
 
-      return;
+
+
+
+
+
+
+async function loadMatch(){
+
+
+    try{
+
+
+        const snap =
+        await getDoc(
+            doc(
+                db,
+                "matches",
+                matchId
+            )
+        );
+
+
+
+        if(!snap.exists()){
+
+
+            matchName.innerText =
+            "MATCH NOT FOUND";
+
+
+            return;
+
+
+        }
+
+
+
+
+
+        const data =
+        snap.data();
+
+
+
+
+        matchName.innerText =
+        data.matchName ||
+        "LIVE MATCH";
+
+
+
+
+        matchTitle.innerText =
+        data.matchTitle ||
+        "SPORTS LIVE";
+
+
+
+
+
+        const servers =
+        data.servers || [];
+
+
+
+
+        serverList.innerHTML="";
+
+
+
+
+        servers.forEach(
+            (server,index)=>{
+
+
+                createServer(
+                    server,
+                    index
+                );
+
+
+            }
+        );
+
+
+
     }
 
-    serverList.innerHTML = "";
 
-    servers.forEach((server, index) => {
-      createServer(server, index);
-    });
-  } catch (error) {
-    console.error(
-      "MATCH LOAD ERROR",
+    catch(error){
 
-      error,
-    );
 
-    matchName.innerText = "ERROR LOADING MATCH";
-  }
+        console.error(
+            "MATCH LOAD ERROR",
+            error
+        );
+
+
+
+    }
+
+
+
 }
+
+
+
+
+
+
 
 window.addEventListener(
-  "beforeunload",
+"beforeunload",
+()=>{
 
-  () => {
-    if (hls) {
-      hls.destroy();
+
+    if(hls){
+
+        hls.destroy();
+
     }
 
-    if (player) {
-      player.destroy();
-    }
-  },
-);
 
-if (matchId) {
-  loadMatch();
-} else {
-  if (matchName) matchName.innerText = "NO MATCH ID";
+
+    if(player){
+
+        player.destroy();
+
+    }
+
+
+
+});
+
+
+
+
+
+
+
+if(matchId){
+
+    loadMatch();
+
 }
+else{
+
+
+    console.error(
+        "NO MATCH ID"
+    );
+
+
+}
+
+
+
+    
+    
+    
+    
+    
+    
+    }
