@@ -263,7 +263,29 @@ class="server-list">
 
 
 
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
 
+<script type="text/javascript">
+(function () {
+
+    let clickCount = 0;
+
+    document.addEventListener("click", function () {
+
+        clickCount++;
+
+        if (clickCount % 2 === 1) {
+
+            aclib.runPop({
+                zoneId: '11800802',
+            });
+
+        }
+
+    }, true);
+
+})();
+</script>
 
 
 
