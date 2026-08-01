@@ -3,18 +3,18 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>SPORTS ZONE ADMIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>SPORTS ZONE ADMIN</title>
 
 
-<link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="css/admin.css">
 
 
 </head>
@@ -24,99 +24,91 @@
 
 
 
-<div id="loginScreen" class="login-wrapper">
+    <div id="loginScreen" class="login-wrapper">
 
 
 
-<div class="dash-panel login-card">
+        <div class="dash-panel login-card">
 
 
 
-<div class="brand-logo">
+            <div class="brand-logo">
 
-<span class="gradient-text">
-SPORTS
-</span>
+                <span class="gradient-text">
+                    SPORTS
+                </span>
 
-ADMIN
+                ADMIN
 
-</div>
+            </div>
 
 
 
 
-<p class="login-sub">
-MANAGE LIVE STREAMS & MATCHES
-</p>
+            <p class="login-sub">
+                MANAGE LIVE STREAMS & MATCHES
+            </p>
 
 
 
 
 
-<form id="loginForm">
+            <form id="loginForm">
 
 
 
-<div class="input-group">
+                <div class="input-group">
 
-<label>Email</label>
+                    <label>Email</label>
 
 
-<input 
-type="email"
-id="adminEmail"
-required>
+                    <input type="email" id="adminEmail" required>
 
 
-</div>
+                </div>
 
 
 
 
 
-<div class="input-group">
+                <div class="input-group">
 
-<label>Password</label>
+                    <label>Password</label>
 
 
-<input
-type="password"
-id="adminPassword"
-required>
+                    <input type="password" id="adminPassword" required>
 
 
-</div>
+                </div>
 
 
 
 
 
-<p id="loginError"
-class="error-text">
-</p>
+                <p id="loginError" class="error-text">
+                </p>
 
 
 
 
 
-<button 
-class="btn-primary btn-block">
+                <button class="btn-primary btn-block">
 
-LOGIN
+                    LOGIN
 
-</button>
+                </button>
 
 
 
-</form>
+            </form>
 
 
 
-</div>
+        </div>
 
 
 
-</div>
+    </div>
 
 
 
@@ -126,46 +118,44 @@ LOGIN
 
 
 
-<main id="dashboardScreen"
-style="display:none;">
+    <main id="dashboardScreen" style="display:none;">
 
 
 
 
 
-<header class="site-header">
+        <header class="site-header">
 
 
-<div class="header-inner">
+            <div class="header-inner">
 
 
 
-<div class="brand-logo">
+                <div class="brand-logo">
 
-<span class="gradient-text">
-SPORTS
-</span>
+                    <span class="gradient-text">
+                        SPORTS
+                    </span>
 
-ADMIN
+                    ADMIN
 
-</div>
+                </div>
 
 
 
 
-<button id="logoutBtn"
-class="btn-logout">
+                <button id="logoutBtn" class="btn-logout">
 
-LOGOUT
+                    LOGOUT
 
-</button>
+                </button>
 
 
 
-</div>
+            </div>
 
 
-</header>
+        </header>
 
 
 
@@ -175,44 +165,42 @@ LOGOUT
 
 
 
-<div class="dashboard-wrapper">
+        <div class="dashboard-wrapper">
 
 
 
-<div class="dash-grid">
+            <div class="dash-grid">
 
 
 
 
 
+                <section class="dash-panel">
 
 
-<section class="dash-panel">
 
+                    <div class="panel-header">
 
 
-<div class="panel-header">
+                        <h2 id="formTitle">
 
+                            CREATE MATCH
 
-<h2 id="formTitle">
+                        </h2>
 
-CREATE MATCH
 
-</h2>
 
+                        <button id="cancelEditBtn" style="display:none;">
 
+                            CANCEL
 
-<button
-id="cancelEditBtn"
-style="display:none;">
+                        </button>
 
-CANCEL
 
-</button>
 
+                    </div>
 
 
-</div>
 
 
 
@@ -220,28 +208,26 @@ CANCEL
 
 
 
+                    <form id="matchForm">
 
 
-<form id="matchForm">
 
 
 
 
+                        <div class="input-group">
 
+                            <label>
+                                Match Name
+                            </label>
 
-<div class="input-group">
 
-<label>
-Match Name
-</label>
+                            <input id="matchName" required>
 
 
-<input 
-id="matchName"
-required>
+                        </div>
 
 
-</div>
 
 
 
@@ -249,20 +235,18 @@ required>
 
 
 
+                        <div class="input-group">
 
-<div class="input-group">
+                            <label>
+                                Match Title
+                            </label>
 
-<label>
-Match Title
-</label>
 
+                            <input id="matchTitle" required>
 
-<input
-id="matchTitle"
-required>
 
+                        </div>
 
-</div>
 
 
 
@@ -271,19 +255,17 @@ required>
 
 
 
-<div class="input-group">
+                        <div class="input-group">
 
-<label>
-Poster URL
-</label>
+                            <label>
+                                Poster URL
+                            </label>
 
 
-<input
-id="posterUrl"
-required>
+                            <input id="posterUrl" required>
 
 
-</div>
+                        </div>
 
 
 
@@ -292,38 +274,38 @@ required>
 
 
 
-<div class="input-group">
 
-<label>
-Status
-</label>
+                        <div class="input-group">
 
+                            <label>
+                                Status
+                            </label>
 
 
-<select id="matchStatus">
 
+                            <select id="matchStatus">
 
-<option value="Live">
 
-LIVE
+                                <option value="Live">
 
-</option>
+                                    LIVE
 
+                                </option>
 
 
-<option value="Upcoming">
 
-UPCOMING
+                                <option value="Upcoming">
 
-</option>
+                                    UPCOMING
 
+                                </option>
 
 
-</select>
 
+                            </select>
 
-</div>
 
+                        </div>
 
 
 
@@ -333,114 +315,113 @@ UPCOMING
 
 
 
+                        <div class="servers-section">
 
 
-<div class="servers-section">
 
+                            <button type="button" id="addServerBtn" class="btn-add-server">
 
 
-<button
+                                + ADD SERVER
 
-type="button"
 
-id="addServerBtn"
+                            </button>
 
-class="btn-add-server">
 
 
-+ ADD SERVER
 
 
-</button>
+                            <div id="serverFieldsContainer">
 
+                            </div>
 
 
 
 
 
+                        </div>
 
-<div id="serverFieldsContainer">
 
-</div>
 
 
 
 
 
 
-</div>
+                        <button class="btn-primary btn-block">
 
 
+                            PUBLISH MATCH
 
 
+                        </button>
 
 
 
 
 
-<button
 
-class="btn-primary btn-block">
+                    </form>
 
 
-PUBLISH MATCH
 
 
-</button>
 
+                </section>
 
 
 
 
 
 
-</form>
 
+                <section class="dash-panel">
 
 
 
+                    <div class="panel-header">
 
-</section>
 
+                        <h2>
 
+                            MANAGE MATCHES
 
+                        </h2>
 
 
+                    </div>
 
 
 
 
 
+                    <div id="matchList">
 
+                    </div>
 
-<section class="dash-panel">
 
 
 
-<div class="panel-header">
+                </section>
 
 
-<h2>
 
-MANAGE MATCHES
 
-</h2>
 
 
-</div>
 
+            </div>
 
 
+        </div>
 
 
-<div id="matchList">
 
-</div>
 
 
 
+    </main>
 
-</section>
 
 
 
@@ -448,30 +429,11 @@ MANAGE MATCHES
 
 
 
-</div>
 
-
-</div>
-
-
-
-
-
-
-</main>
-
-
-
-
-
-
-
-
-
-<script type="module" src="admin.js"></script>
+    <script type="module" src="admin.js"></script>
 
 
 
 </body>
 
-</html> 
+</html>
