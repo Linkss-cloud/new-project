@@ -4,13 +4,11 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>SPORTS ZONE – Live Sports Streaming</title>
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -41,25 +39,34 @@ SPORTS ZONE
 
 
 
+
 <div class="header-actions">
 
 
-<input 
+
+<input
+
 id="search"
+
 type="text"
-placeholder="Search matches...">
+
+placeholder="Search live matches..."
+
+>
 
 
 
 
 
-<a href="https://t.me/+rtK_sfY8t_A2NDU1"
+<a
+
+href="https://t.me/+rtK_sfY8t_A2NDU1"
+
 target="_blank"
+
 class="btn-telegram">
 
-
 JOIN TELEGRAM
-
 
 </a>
 
@@ -80,67 +87,11 @@ JOIN TELEGRAM
 
 
 
-<!-- TELEGRAM POPUP -->
-
-
-<div id="popup" class="popup-overlay">
-
-
-<div class="popup-box">
-
-
-<button id="popup-close" class="popup-close">
-
-×
-
-</button>
-
-
-
-<h2>
-
-Welcome to Sports Zone
-
-</h2>
-
-
-
-<p>
-
-Join our Telegram channel for live match updates.
-
-</p>
-
-
-
-
-<a href="https://t.me/+rtK_sfY8t_A2NDU1"
-target="_blank">
-
-JOIN TELEGRAM
-
-</a>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
 <main>
 
 
-
 <section class="matches-section">
+
 
 
 <div class="section-header">
@@ -158,7 +109,12 @@ JOIN TELEGRAM
 
 
 
-<div id="matches" class="match-grid">
+
+<div
+
+id="matches"
+
+class="match-grid">
 
 </div>
 
@@ -173,42 +129,10 @@ JOIN TELEGRAM
 
 
 
+<section
 
-<section class="matches-section">
+id="favorites-section"
 
-
-<div class="section-header">
-
-
-<h2>
-
-⏰ UPCOMING MATCHES
-
-</h2>
-
-
-</div>
-
-
-
-
-<div id="upcoming" class="match-grid">
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<section id="favorites-section"
 class="matches-section hidden">
 
 
@@ -223,21 +147,23 @@ class="matches-section hidden">
 </h2>
 
 
-
 </div>
 
 
 
 
 
-<div id="favorites" class="match-grid">
+<div
+
+id="favorites"
+
+class="match-grid">
 
 </div>
 
 
 
 </section>
-
 
 
 
@@ -266,100 +192,7 @@ class="matches-section hidden">
 
 
 
-
-
-<!-- POPUNDER AD SCRIPT -->
-
-
-<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
-
-
-<script>
-
-
-let clickCount = 0;
-
-
-
-document.addEventListener("click", function(){
-
-
-clickCount++;
-
-
-
-// odd click par ad
-
-if(clickCount % 2 !== 0){
-
-
-
-aclib.runPop({
-
-zoneId:'11800802'
-
-});
-
-
-
-}
-
-
-
-});
-
-
-
-</script>
-
-
-
-
-
-
-
-
-
-
 <script type="module" src="js/home.js"></script>
-
-
-
-
-
-
-
-<script>
-
-
-const popup =
-document.getElementById("popup");
-
-
-const closePopup =
-document.getElementById("popup-close");
-
-
-
-if(closePopup){
-
-
-closePopup.onclick = ()=>{
-
-
-popup.style.display="none";
-
-
-};
-
-
-}
-
-
-
-</script>
-
-
 
 
 
