@@ -5,6 +5,8 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
+console.log("PLAYER JS LOADED");
+
 
 const params =
 new URLSearchParams(location.search);
