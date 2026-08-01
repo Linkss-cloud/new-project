@@ -279,12 +279,12 @@ window.loadCookieShaka = async function(stream){
 
 
         console.error(
-
-            "COOKIE SHAKA ERROR",
-
-            error
-
+            "COOKIE SHAKA ERROR:",
+            error?.message || error
         );
+        if(error?.stack){
+            console.error(error.stack);
+        }
 
 
         const loader =
