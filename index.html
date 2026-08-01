@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,39 +8,103 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <header class="site-header">
-        <div class="header-inner">
-            <a href="index.html" class="brand-logo gradient-text">SPORTS ZONE</a>
-            
-            <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank" class="btn-telegram">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-                <span>JOIN TELEGRAM</span>
-            </a>
-        </div>
-    </header>
+<header class="site-header">
 
-    <main>
-        <section class="matches-section">
-            <div class="section-header">
-                <h2>LIVE & UPCOMING EVENTS</h2>
-            </div>
-            
-            <div id="matchContainer" class="match-grid"></div>
-        </section>
-    </main>
+    <div class="header-inner">
 
-    <footer class="site-footer">
-        <p>© SPORTS ZONE • ALL RIGHTS RESERVED</p>
-    </footer>
+        <a href="index.html" class="brand-logo gradient-text">
+            SPORTS ZONE
+        </a>
 
-    <script type="module" src="js/home.js"></script>
+
+        <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank" class="btn-telegram">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+
+            <span>JOIN TELEGRAM</span>
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+<section class="matches-section">
+
+    <div class="section-header">
+        <h2>LIVE & UPCOMING EVENTS</h2>
+    </div>
+
+
+    <div id="matchContainer" class="match-grid"></div>
+
+
+</section>
+
+</main>
+
+
+
+<footer class="site-footer">
+
+<p>
+© SPORTS ZONE • ALL RIGHTS RESERVED
+</p>
+
+</footer>
+
+
+
+
+<!-- Telegram Popup -->
+
+<div id="popup" class="popup-overlay">
+
+    <div class="popup-box">
+
+
+        <button id="popup-close" class="popup-close">
+            ×
+        </button>
+
+
+        <h2>
+            Welcome to Sports Zone
+        </h2>
+
+
+        <p>
+            Join our Telegram channel for live match updates and notifications.
+        </p>
+
+
+        <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank">
+            JOIN TELEGRAM
+        </a>
+
+
+    </div>
+
+</div>
+
+
+
+
+<script type="module" src="js/home.js"></script>
+
 
 </body>
 </html>
