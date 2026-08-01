@@ -6,437 +6,93 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
-const matchesBox = document.getElementById("matches");
-const favoritesBox = document.getElementById("favorites");
-const favoritesSection = document.getElementById("favorites-section");
-const search = document.getElementById("search");
+const matchContainer = document.getElementById("matchContainer");
 
+async function loadMatches() {
+    matchContainer.innerHTML = `
+        <p style="color: var(--text-muted); font-weight: 700; text-align: center; grid-column: 1 / -1; letter-spacing: 1px;">
+            LOADING LIVE EVENTS...
+        </p>
+    `;
 
-let matches = [];
+    try {
+        const querySnapshot = await getDocs(collection(db, "matches"));
 
-let favorites =
-JSON.parse(localStorage.getItem("favorites")) || [];
+        if (querySnapshot.empty) {
+            matchContainer.innerHTML = `
+                <p style="color: var(--text-muted); font-weight: 700; text-align: center; grid-column: 1 / -1; letter-spacing: 1px;">
+                    NO EVENTS ARE CURRENTLY SCHEDULED.
+                </p>
+            `;
+            return;
+        }
 
+        let html = "";
 
-
-
-
-async function loadMatches(){
-
-    try{
-
-        const snapshot =
-        await getDocs(
-            collection(db,"matches")
-        );
-
-
-        matches = [];
-
-
-        snapshot.forEach((doc)=>{
-
-            const data = doc.data();
-
-
-            // Only Live matches
-            if(data.status !== "Live") return;
-
-
-            matches.push({
-
-                id: doc.id,
-
-                title:
-                data.matchName || "Unknown Match",
-
-
-                league:
-                data.matchTitle || "",
-
-
-                thumbnail:
-                data.posterUrl || "",
-
-
-                status:"LIVE",
-
-
-                servers:
-                data.servers || []
-
-            });
-
-
-        });
-
-
-        render();
-
-
-    }
-
-    catch(error){
-
-        console.log(
-            "Firebase Error:",
-            error
-        );
-
-
-        matchesBox.innerHTML =
-        `
-        <div class="no-live">
-        Database connection error
-        </div>
+        const liveDot = `<div style="width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%;"></div>`;
+        const upcomingDot = `<div style="width: 8px; height: 8px; background-color: #F59E0B; border-radius: 50%;"></div>`;
+        const serverIcon = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+        `;
+        const playIcon = `
+            <svg viewBox="0 0 24 24">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
         `;
 
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const matchId = doc.id;
+            const imgUrl = data.posterUrl || "https://via.placeholder.com/800x450/1E293B/94A3B8?text=NO+POSTER";
+            const srvCount = data.servers ? data.servers.length : 0;
+            const statusText = data.status || "Live";
+            const badgeIcon = statusText.toLowerCase() === "live" ? liveDot : upcomingDot;
+
+            html += `
+                <div class="match-card">
+                    <a href="player.html?id=${matchId}">
+                        <div class="card-thumb">
+                            <img src="${imgUrl}" alt="${data.matchName}">
+                            <span class="status-badge">
+                                ${badgeIcon}
+                                ${statusText}
+                            </span>
+                        </div>
+                        <div class="card-details">
+                            <div class="card-info">
+                                <h3>${data.matchName}</h3>
+                                <p>${data.matchTitle}</p>
+                            </div>
+                            <div class="server-pill">
+                                ${serverIcon}
+                                <span>${srvCount} SERVERS</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="card-actions">
+                        <button class="btn-play" onclick="window.location.href='player.html?id=${matchId}'">
+                            ${playIcon} WATCH STREAM
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+        matchContainer.innerHTML = html;
+
+    } catch (error) {
+        console.error("Error loading matches:", error);
+        matchContainer.innerHTML = `
+            <p style="color: var(--danger); font-weight: 700; text-align: center; grid-column: 1 / -1; letter-spacing: 1px;">
+                ERROR LOADING EVENTS.
+            </p>
+        `;
     }
-
 }
 
-
-
-
-
-
-
-function createCard(match){
-
-
-const card =
-document.createElement("div");
-
-
-card.className="match-card";
-
-
-
-const isFav =
-favorites.includes(match.id);
-
-
-
-
-
-card.innerHTML = `
-
-
-<div class="card-thumb">
-
-
-<img
-
-src="${match.thumbnail}"
-
-loading="lazy"
-
-alt="${match.title}"
-
->
-
-
-<div class="status-badge">
-
-
-🔴 LIVE
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card-details">
-
-
-<div class="card-info">
-
-
-<h3>
-${match.title}
-</h3>
-
-
-<p>
-${match.league}
-</p>
-
-
-</div>
-
-
-
-
-<button 
-class="favorite-btn"
-data-id="${match.id}">
-
-
-${isFav ? "★" : "☆"}
-
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-<div class="card-actions">
-
-
-<a
-
-href="watch.html?id=${match.id}"
-
-class="btn-play">
-
-
-▶ WATCH NOW
-
-
-</a>
-
-
-</div>
-
-
-
-`;
-
-
-
-
-
-const favBtn =
-card.querySelector(".favorite-btn");
-
-
-
-favBtn.onclick=(e)=>{
-
-    e.preventDefault();
-
-    toggleFavorite(match.id);
-
-    render();
-
-};
-
-
-
-return card;
-
-
-}
-
-
-
-
-
-
-
-
-
-function render(list = matches){
-
-
-
-matchesBox.innerHTML="";
-
-favoritesBox.innerHTML="";
-
-
-
-
-
-if(list.length){
-
-
-list.forEach(match=>{
-
-
-matchesBox.appendChild(
-createCard(match)
-);
-
-
-});
-
-
-}
-
-else{
-
-
-matchesBox.innerHTML=
-`
-<div class="no-live">
-
-🔴 No live matches available
-
-</div>
-`;
-
-}
-
-
-
-
-
-
-const favMatches =
-
-matches.filter(
-item =>
-favorites.includes(item.id)
-);
-
-
-
-
-
-if(favMatches.length){
-
-
-favoritesSection.classList.remove(
-"hidden"
-);
-
-
-
-favMatches.forEach(match=>{
-
-
-favoritesBox.appendChild(
-createCard(match)
-);
-
-
-});
-
-
-}
-
-else{
-
-
-favoritesSection.classList.add(
-"hidden"
-);
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-function toggleFavorite(id){
-
-
-
-if(favorites.includes(id)){
-
-
-favorites =
-favorites.filter(
-item=>item!==id
-);
-
-
-}
-
-else{
-
-
-favorites.push(id);
-
-
-}
-
-
-
-localStorage.setItem(
-
-"favorites",
-
-JSON.stringify(favorites)
-
-);
-
-
-}
-
-
-
-
-
-
-
-
-
-search.addEventListener(
-"input",
-()=>{
-
-
-const value =
-search.value.toLowerCase();
-
-
-
-
-const filtered =
-
-matches.filter(match=>
-
-
-match.title
-.toLowerCase()
-.includes(value)
-
-
-||
-
-match.league
-.toLowerCase()
-.includes(value)
-
-
-);
-
-
-
-render(filtered);
-
-
-
-});
-
-
-
-
-
-
-
-
-loadMatches();
+document.addEventListener("DOMContentLoaded", loadMatches);
