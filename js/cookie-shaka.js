@@ -6,26 +6,51 @@ let cookiePlayer = null;
 
 window.loadCookieShaka = async function(stream){
 
-    console.log("COOKIE STREAM RECEIVED:", stream);
+
+    console.log(
+        "COOKIE STREAM RECEIVED:",
+        stream
+    );
 
 
-    const video = document.getElementById("videoPlayer");
+
+    const video =
+    document.getElementById("videoPlayer");
 
 
-    const loader = document.getElementById("loader");
+
+    const loader =
+    document.getElementById("loader");
+
+
+
+    const box =
+    document.getElementById("shaka-container");
 
 
 
     try{
 
 
+        if(box){
+
+            box.style.display="block";
+
+        }
+
+
+
         shaka.polyfill.installAll();
 
 
 
-        if(!shaka.Player.isBrowserSupported()){
+        if(
+            !shaka.Player.isBrowserSupported()
+        ){
 
-            console.error("SHAKA NOT SUPPORTED");
+            console.error(
+                "SHAKA NOT SUPPORTED"
+            );
 
             return;
 
@@ -34,30 +59,29 @@ window.loadCookieShaka = async function(stream){
 
 
 
+
+
         if(!cookiePlayer){
 
 
-            cookiePlayer = new shaka.Player();
+            cookiePlayer =
+            new shaka.Player();
 
 
-            await cookiePlayer.attach(video);
+
+            await cookiePlayer.attach(
+                video
+            );
 
 
         }
         else{
 
 
-            try{
-
-                await cookiePlayer.unload();
-
-            }
-            catch(e){}
-
+            await cookiePlayer.unload();
 
 
         }
-
 
 
 
@@ -77,10 +101,8 @@ window.loadCookieShaka = async function(stream){
 
 
 
-
         cookiePlayer.getNetworkingEngine()
         .clearAllRequestFilters();
-
 
 
 
@@ -98,23 +120,20 @@ window.loadCookieShaka = async function(stream){
         ){
 
 
-            const keyParts =
+            const key =
             stream.key.split(":");
 
 
-
             const kid =
-            keyParts[0]
+            key[0]
             .trim()
             .toLowerCase();
 
 
-
-            const key =
-            keyParts[1]
+            const value =
+            key[1]
             .trim()
             .toLowerCase();
-
 
 
 
@@ -125,7 +144,6 @@ window.loadCookieShaka = async function(stream){
 
 
 
-
             cookiePlayer.configure({
 
                 drm:{
@@ -133,7 +151,7 @@ window.loadCookieShaka = async function(stream){
                     clearKeys:{
 
 
-                        [kid]:key
+                        [kid]:value
 
 
                     }
@@ -152,139 +170,114 @@ window.loadCookieShaka = async function(stream){
 
 
 
-
         /*
             COOKIE REQUEST
         */
 
 
+        const token =
+        stream.cookie.trim();
+
+
+
+
         cookiePlayer.getNetworkingEngine()
         .registerRequestFilter(
 
-            (type, request)=>{
+        (type,request)=>{
 
 
-                console.log(
-                    "REQUEST BEFORE:",
-                    request.uris[0]
-                );
+            console.log(
+                "REQUEST:",
+                request.uris[0]
+            );
 
+
+
+            if(token){
+
+
+
+                /*
+                  Header
+                */
+
+
+                request.headers["Referer"] =
+                "https://www.jiotv.com/";
+
+
+
+                request.headers["User-Agent"] =
+                "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+
+
+
+
+                /*
+                  URL TOKEN
+                */
 
 
                 if(
-                    stream.cookie &&
-                    stream.cookie.trim() !== ""
+                    request.uris[0]
+                    .startsWith("https://")
+                    &&
+                    !request.uris[0]
+                    .includes("__hdnea__")
                 ){
 
 
+                    request.uris[0] +=
 
-                    /*
-                        ADD TOKEN IN URL
-                    */
+                    (
+                        request.uris[0]
+                        .includes("?")
+                        ?
+                        "&"
+                        :
+                        "?"
+                    )
 
-
-                    if(
-
-                        !request.uris[0]
-                        .includes("__hdnea")
-
-                        &&
-
-                        !request.uris[0]
-                        .includes("hdnts")
-
-                    ){
-
-
-                        request.uris[0] +=
-
-
-                        (
-                            request.uris[0]
-                            .includes("?")
-
-                            ?
-
-                            "&"
-
-                            :
-
-                            "?"
-
-                        )
-
-
-                        +
-
-                        stream.cookie;
-
-
-
-                    }
-
+                    +
+                    token;
 
 
                 }
 
 
 
-
-                console.log(
-                    "REQUEST AFTER:",
-                    request.uris[0]
-                );
-
-
-
             }
 
-        );
+
+
+        });
 
 
 
 
 
+
+
+
+        const url =
+        stream.mpd ||
+        stream.url;
 
 
 
 
         console.log(
             "LOADING:",
-            stream.mpd || stream.url
+            url
         );
-
 
 
 
         await cookiePlayer.load(
-
-            stream.mpd ||
-            stream.url
-
+            url
         );
 
-
-
-
-
-        video.play()
-        .catch(()=>{});
-
-
-
-
-
-        video.onplaying = ()=>{
-
-
-            if(loader){
-
-                loader.style.display="none";
-
-            }
-
-
-        };
 
 
 
@@ -294,16 +287,64 @@ window.loadCookieShaka = async function(stream){
 
 
 
+        video.muted=false;
+
+
+        video.play()
+        .catch(err=>{
+
+            console.log(
+                "PLAY BLOCKED",
+                err
+            );
+
+        });
+
+
+
+
+
+        video.onplaying=()=>{
+
+
+            console.log(
+                "VIDEO STARTED"
+            );
+
+
+            if(loader)
+                loader.style.display="none";
+
+
+        };
+
+
+
+        cookiePlayer.addEventListener(
+        "error",
+        e=>{
+
+
+            console.error(
+                "SHAKA ERROR",
+                e.detail
+            );
+
+
+        });
+
+
+
     }
+
 
     catch(error){
 
 
         console.error(
-            "COOKIE SHAKA ERROR:",
+            "COOKIE SHAKA ERROR",
             error
         );
-
 
 
         if(loader){
@@ -314,8 +355,8 @@ window.loadCookieShaka = async function(stream){
         }
 
 
-
     }
+
 
 
 };
