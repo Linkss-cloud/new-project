@@ -1,3 +1,5 @@
+console.log("shaka JS LOADED");
+
 let cookiePlayer = null;
 
 
