@@ -1,74 +1,41 @@
 import { db, auth } from "./firebase.js";
 
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 import {
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    doc,
-    updateDoc
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
+const loginScreen = document.getElementById("loginScreen");
 
-import {
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+const dashboardScreen = document.getElementById("dashboardScreen");
 
+const loginForm = document.getElementById("loginForm");
 
+const loginError = document.getElementById("loginError");
 
+const logoutBtn = document.getElementById("logoutBtn");
 
+const matchForm = document.getElementById("matchForm");
 
-const loginScreen =
-document.getElementById("loginScreen");
+const serverContainer = document.getElementById("serverFieldsContainer");
 
+const addServerBtn = document.getElementById("addServerBtn");
 
-const dashboardScreen =
-document.getElementById("dashboardScreen");
+const matchList = document.getElementById("matchList");
 
+const formTitle = document.getElementById("formTitle");
 
-const loginForm =
-document.getElementById("loginForm");
-
-
-const loginError =
-document.getElementById("loginError");
-
-
-const logoutBtn =
-document.getElementById("logoutBtn");
-
-
-const matchForm =
-document.getElementById("matchForm");
-
-
-const serverContainer =
-document.getElementById("serverFieldsContainer");
-
-
-const addServerBtn =
-document.getElementById("addServerBtn");
-
-
-const matchList =
-document.getElementById("matchList");
-
-
-const formTitle =
-document.getElementById("formTitle");
-
-
-const cancelEditBtn =
-document.getElementById("cancelEditBtn");
-
-
+const cancelEditBtn = document.getElementById("cancelEditBtn");
 
 let serverCount = 0;
 
@@ -76,160 +43,63 @@ let editId = null;
 
 let matchesData = {};
 
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loginScreen.style.display = "none";
 
+    dashboardScreen.style.display = "block";
 
+    loadMatches();
+  } else {
+    loginScreen.style.display = "flex";
 
-
-
-
-
-onAuthStateChanged(auth,(user)=>{
-
-
-if(user){
-
-
-loginScreen.style.display="none";
-
-dashboardScreen.style.display="block";
-
-loadMatches();
-
-
-}
-
-else{
-
-
-loginScreen.style.display="flex";
-
-dashboardScreen.style.display="none";
-
-
-}
-
-
+    dashboardScreen.style.display = "none";
+  }
 });
 
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  try {
+    await signInWithEmailAndPassword(
+      auth,
 
+      adminEmail.value,
 
-
-
-
-
-
-loginForm.addEventListener(
-"submit",
-async(e)=>{
-
-
-e.preventDefault();
-
-
-try{
-
-
-await signInWithEmailAndPassword(
-
-auth,
-
-adminEmail.value,
-
-adminPassword.value
-
-);
-
-
-
-}
-
-catch(error){
-
-
-loginError.innerText =
-"INVALID LOGIN";
-
-
-}
-
-
+      adminPassword.value,
+    );
+  } catch (error) {
+    loginError.innerText = "INVALID LOGIN";
+  }
 });
 
-
-
-
-
-
-
-logoutBtn.onclick=()=>{
-
-signOut(auth);
-
+logoutBtn.onclick = () => {
+  signOut(auth);
 };
 
-
-
-
-
-
-
-
-
-addServerBtn.onclick=()=>{
-
-
-addServerField();
-
-
+addServerBtn.onclick = () => {
+  addServerField();
 };
 
+window.addServerField = function (
+  name = "",
 
+  type = "shaka",
 
+  url = "",
 
+  key = "",
 
+  cookie = "",
+) {
+  serverCount++;
 
+  let div = document.createElement("div");
 
+  div.className = "server-block";
 
-
-
-window.addServerField=function(
-
-name="",
-
-type="shaka",
-
-url="",
-
-key="",
-
-cookie=""
-
-){
-
-
-
-serverCount++;
-
-
-
-let div =
-document.createElement("div");
-
-
-
-div.className =
-"server-block";
-
-
-div.id =
-"server_"+serverCount;
-
-
-
-
-
-div.innerHTML = `
+  div.id = "server_" + serverCount;
+  div.innerHTML = `
 
 
 <button
@@ -278,19 +148,31 @@ STREAM TYPE
 </label>
 
 
+
 <select class="srv-type">
 
 
+
 <option value="shaka"
-${type==="shaka"?"selected":""}>
+${type === "shaka" ? "selected" : ""}>
 
 SHAKA DRM
 
 </option>
 
 
+
+<option value="cookie"
+${type === "cookie" ? "selected" : ""}>
+
+COOKIE SHAKA
+
+</option>
+
+
+
 <option value="hls"
-${type==="hls"?"selected":""}>
+${type === "hls" ? "selected" : ""}>
 
 HLS / IOS
 
@@ -298,8 +180,9 @@ HLS / IOS
 
 
 
+
 <option value="fancode"
-${type==="fancode"?"selected":""}>
+${type === "fancode" ? "selected" : ""}>
 
 FANCODE
 
@@ -307,8 +190,9 @@ FANCODE
 
 
 
+
 <option value="iframe"
-${type==="iframe"?"selected":""}>
+${type === "iframe" ? "selected" : ""}>
 
 IFRAME
 
@@ -318,6 +202,7 @@ IFRAME
 </select>
 
 </div>
+
 
 
 
@@ -396,318 +281,143 @@ value="${cookie}">
 
 `;
 
-
-
-serverContainer.appendChild(div);
-
-
+  serverContainer.appendChild(div);
 };
 
+window.detectStreamType = function (input) {
+  let block = input.closest(".server-block");
 
+  let type = block.querySelector(".srv-type");
 
+  let url = input.value.toLowerCase();
 
-
-
-
-
-
-
-window.detectStreamType=function(input){
-
-
-
-let block =
-input.closest(".server-block");
-
-
-
-let type =
-block.querySelector(".srv-type");
-
-
-
-let url =
-input.value.toLowerCase();
-
-
-
-
-if(
-
-url.includes("fancode") ||
-
-url.includes("cloudfront.net")
-
-){
-
-
-type.value="fancode";
-
-
-}
-
-else if(
-
-url.includes(".m3u8")
-
-){
-
-
-type.value="hls";
-
-
-}
-
-else if(
-
-url.includes(".mpd")
-
-){
-
-
-type.value="shaka";
-
-
-}
-
-
-
+  if (url.includes("fancode") || url.includes("cloudfront.net")) {
+    type.value = "fancode";
+  } else if (url.includes(".m3u8")) {
+    type.value = "hls";
+  } else if (url.includes(".mpd")) {
+    type.value = "cookie";
+  }
 };
 
-
-
-
-
-
-
-
-
-
-window.removeServerField=function(id){
-
-
-document.getElementById(id).remove();
-
-
+window.removeServerField = function (id) {
+  document.getElementById(id).remove();
 };
-
-
-
-
-
-
 
 addServerField();
 
+matchForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  let payload = {
+    matchName: document.getElementById("matchName").value,
 
+    matchTitle: document.getElementById("matchTitle").value,
 
+    posterUrl: document.getElementById("posterUrl").value,
 
+    status: document.getElementById("matchStatus").value,
 
+    servers: [],
 
+    updatedAt: new Date().toISOString(),
+  };
 
+  document
 
+    .querySelectorAll(".server-block")
 
-matchForm.addEventListener(
-"submit",
-async(e)=>{
+    .forEach((block) => {
+      payload.servers.push({
+        channelName: block.querySelector(".srv-name").value,
 
+        type: block.querySelector(".srv-type").value,
 
-e.preventDefault();
+        url: block.querySelector(".srv-url").value,
 
+        mpd: block.querySelector(".srv-url").value,
 
+        key: block.querySelector(".srv-key").value,
 
+        cookie: block.querySelector(".srv-cookie").value,
+      });
+    });
 
+  if (editId) {
+    await updateDoc(
+      doc(db, "matches", editId),
 
-let payload={
+      payload,
+    );
+  } else {
+    await addDoc(
+      collection(db, "matches"),
 
+      payload,
+    );
+  }
 
-matchName:
-document.getElementById("matchName").value,
+  resetForm();
 
-
-matchTitle:
-document.getElementById("matchTitle").value,
-
-
-posterUrl:
-document.getElementById("posterUrl").value,
-
-
-status:
-document.getElementById("matchStatus").value,
-
-
-servers:[],
-
-
-updatedAt:
-new Date().toISOString()
-
-
-};
-
-
-
-
-
-
-
-
-document
-.querySelectorAll(".server-block")
-.forEach(block=>{
-
-
-payload.servers.push({
-
-
-channelName:
-
-block.querySelector(".srv-name").value,
-
-
-type:
-
-block.querySelector(".srv-type").value,
-
-
-url:
-
-block.querySelector(".srv-url").value,
-
-
-key:
-
-block.querySelector(".srv-key").value,
-
-
-cookie:
-
-block.querySelector(".srv-cookie").value
-
-
+  loadMatches();
 });
 
+async function loadMatches() {
+  matchList.innerHTML = "Loading...";
 
-});
+  const snap = await getDocs(collection(db, "matches"));
 
+  matchesData = {};
 
+  let html = "";
 
+  snap.forEach((item) => {
+    let data = item.data();
 
+    matchesData[item.id] = data;
 
+    html += `
 
-
-
-
-if(editId){
-
-
-await updateDoc(
-
-doc(db,"matches",editId),
-
-payload
-
-);
-
-
-}
-
-else{
-
-
-await addDoc(
-
-collection(db,"matches"),
-
-payload
-
-);
-
-
-}
-
-
-
-resetForm();
-
-
-loadMatches();
-
-
-
-});
-
-
-
-
-
-
-
-
-
-async function loadMatches(){
-
-
-
-matchList.innerHTML="Loading...";
-
-
-
-const snap =
-await getDocs(
-collection(db,"matches")
-);
-
-
-
-matchesData={};
-
-
-let html="";
-
-
-
-
-snap.forEach(item=>{
-
-
-let data=item.data();
-
-
-
-matchesData[item.id]=data;
-
-
-
-
-html+=`
 
 
 <div class="match-item">
 
 
+
 <img src="${data.posterUrl}">
 
 
+
 <h3>
+
 ${data.matchName}
+
 </h3>
 
 
+
 <p>
+
 ${data.matchTitle}
+
 </p>
 
 
+
+
 <button onclick="editMatch('${item.id}')">
+
 EDIT
+
 </button>
 
 
+
+
 <button onclick="deleteMatch('${item.id}')">
+
 DELETE
+
 </button>
 
 
@@ -717,168 +427,67 @@ DELETE
 
 
 `;
+  });
 
-
-
-});
-
-
-
-matchList.innerHTML=html;
-
-
-
+  matchList.innerHTML = html;
 }
 
+window.editMatch = function (id) {
+  let data = matchesData[id];
 
+  editId = id;
 
+  formTitle.innerText = "EDIT MATCH";
 
+  cancelEditBtn.style.display = "block";
 
+  matchName.value = data.matchName;
 
+  matchTitle.value = data.matchTitle;
 
+  posterUrl.value = data.posterUrl;
 
+  matchStatus.value = data.status;
 
-window.editMatch=function(id){
+  serverContainer.innerHTML = "";
 
+  data.servers.forEach((server) => {
+    addServerField(
+      server.channelName,
 
+      server.type,
 
-let data =
-matchesData[id];
+      server.url || server.mpd,
 
+      server.key,
 
-
-editId=id;
-
-
-
-formTitle.innerText=
-"EDIT MATCH";
-
-
-cancelEditBtn.style.display=
-"block";
-
-
-
-matchName.value=data.matchName;
-
-matchTitle.value=data.matchTitle;
-
-posterUrl.value=data.posterUrl;
-
-matchStatus.value=data.status;
-
-
-
-serverContainer.innerHTML="";
-
-
-
-data.servers.forEach(server=>{
-
-
-addServerField(
-
-server.channelName,
-
-server.type,
-
-server.url,
-
-server.key,
-
-server.cookie
-
-);
-
-
-
-});
-
-
-
+      server.cookie,
+    );
+  });
 };
 
-
-
-
-
-
-
-
-
-cancelEditBtn.onclick=()=>{
-
-
-resetForm();
-
-
+cancelEditBtn.onclick = () => {
+  resetForm();
 };
 
+function resetForm() {
+  editId = null;
 
+  formTitle.innerText = "CREATE MATCH";
 
+  cancelEditBtn.style.display = "none";
 
+  matchForm.reset();
 
+  serverContainer.innerHTML = "";
 
-
-
-
-function resetForm(){
-
-
-editId=null;
-
-
-formTitle.innerText=
-"CREATE MATCH";
-
-
-cancelEditBtn.style.display=
-"none";
-
-
-
-matchForm.reset();
-
-
-
-serverContainer.innerHTML="";
-
-
-addServerField();
-
-
+  addServerField();
 }
 
+window.deleteMatch = async function (id) {
+  if (confirm("Delete Match?")) {
+    await deleteDoc(doc(db, "matches", id));
 
-
-
-
-
-
-
-
-window.deleteMatch=async function(id){
-
-
-
-if(confirm("Delete Match?")){
-
-
-await deleteDoc(
-
-doc(db,"matches",id)
-
-);
-
-
-
-loadMatches();
-
-
-
-}
-
-
-
+    loadMatches();
+  }
 };
