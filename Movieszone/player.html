@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="referrer" content="no-referrer">
 
-<title>Live Stream</title>
+<title>MOVIES X SPORTS ZONE</title>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
@@ -46,110 +46,189 @@ html,body{
 
 
 
-/* Telegram Popup */
 
-#telegram-popup{
+/* =========================
+   TELEGRAM POPUP
+========================= */
+
+
+.popup-overlay{
 
     position:fixed;
 
-    top:50%;
-    left:50%;
+    inset:0;
 
-    transform:translate(-50%,-50%);
+    background:rgba(0,0,0,.75);
 
-    width:320px;
+    backdrop-filter:blur(8px);
 
-    background:#111;
+    display:flex;
 
-    color:#fff;
+    justify-content:center;
 
-    padding:30px 25px;
-
-    border-radius:20px;
-
-    text-align:center;
+    align-items:center;
 
     z-index:99999;
 
-    display:none;
 
-    box-shadow:0 10px 40px rgba(0,0,0,.8);
-
-    font-family:Arial,sans-serif;
+    opacity:1;
 
 }
 
 
-#telegram-popup h2{
 
-    margin:0 0 15px;
+.popup-box{
+
+
+    width:min(90%,420px);
+
+
+    background:#071229;
+
+
+    border:1px solid #334155;
+
+
+    border-radius:22px;
+
+
+    padding:35px 25px;
+
+
+    text-align:center;
+
+
+    box-shadow:
+    0 20px 60px rgba(0,0,0,.6);
+
+
+    position:relative;
+
+
+}
+
+
+
+.popup-box h2{
+
 
     font-size:24px;
 
+    font-weight:800;
+
+    margin-bottom:12px;
+
+
+    background:
+    linear-gradient(90deg,#fff,#00E5FF);
+
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+
 }
 
 
-#telegram-popup p{
 
-    color:#ccc;
 
-    font-size:15px;
+.popup-box p{
 
-    line-height:1.5;
+
+    color:#94A3B8;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    line-height:1.6;
 
     margin-bottom:25px;
 
+
 }
 
 
 
-#telegram-popup a{
 
-    display:block;
+.popup-box a{
 
-    background:#229ED9;
 
-    color:#fff;
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    width:100%;
+
+
+    padding:15px;
+
+
+    border-radius:14px;
+
+
+    background:
+    linear-gradient(135deg,#00E5FF,#00B8D4);
+
+
+    color:#000;
+
+
+    font-size:14px;
+
+    font-weight:800;
+
 
     text-decoration:none;
 
-    padding:14px;
 
-    border-radius:10px;
+    letter-spacing:1px;
 
-    font-weight:bold;
-
-    font-size:16px;
 
 }
 
 
 
-#telegram-close{
+.popup-close{
+
 
     position:absolute;
 
-    right:12px;
 
-    top:10px;
+    top:12px;
 
-    width:32px;
+    right:15px;
 
-    height:32px;
+
+    width:36px;
+
+    height:36px;
+
 
     border-radius:50%;
 
+
     border:none;
 
-    background:#333;
+
+    background:#1E293B;
+
 
     color:white;
 
-    font-size:22px;
+
+    font-size:24px;
+
 
     cursor:pointer;
 
+
 }
+
 
 
 
@@ -173,19 +252,27 @@ html,body{
 
 
 
-<!-- Telegram Popup -->
-
-<div id="telegram-popup">
 
 
-<button id="telegram-close">
+<!-- TELEGRAM POPUP -->
+
+
+<div id="popup" class="popup-overlay">
+
+
+<div class="popup-box">
+
+
+<button id="popup-close" class="popup-close">
 ×
 </button>
 
 
+
 <h2>
-Welcome
+Welcome to Sports Zone
 </h2>
+
 
 
 <p>
@@ -195,11 +282,19 @@ Join our Telegram channel for live match updates and notifications.
 
 
 <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank">
+
 JOIN TELEGRAM
+
 </a>
 
 
+
 </div>
+
+
+</div>
+
+
 
 
 
@@ -228,6 +323,7 @@ return url && url.toLowerCase().includes(".m3u8");
 const video=document.getElementById("plyr-player");
 
 let player;
+
 
 
 
@@ -279,13 +375,11 @@ settings:["quality","speed"]
 if(Hls.isSupported() && isM3U8(videoSrc)){
 
 
-
 const hls=new Hls({
 
 maxBufferLength:30
 
 });
-
 
 
 hls.loadSource(videoSrc);
@@ -314,9 +408,7 @@ config.quality={
 
 default:qualities[qualities.length-1],
 
-
 options:qualities,
-
 
 forced:true,
 
@@ -344,7 +436,6 @@ hls.currentLevel=index;
 
 
 
-
 player=new Plyr(video,config);
 
 
@@ -356,7 +447,6 @@ player.play().catch(()=>{});
 
 
 }else{
-
 
 
 video.src=videoSrc;
@@ -371,6 +461,7 @@ player.play().catch(()=>{});
 }
 
 
+
 }
 
 
@@ -382,20 +473,27 @@ initPlayer();
 
 
 
-// Telegram Popup
-
-setTimeout(()=>{
-
-document.getElementById("telegram-popup").style.display="block";
-
-},5000);
+// POPUP CLOSE
 
 
+document.getElementById("popup-close").onclick=()=>{
+
+document.getElementById("popup").style.display="none";
+
+};
 
 
-document.getElementById("telegram-close").onclick=()=>{
 
-document.getElementById("telegram-popup").style.display="none";
+
+document.getElementById("popup").onclick=(e)=>{
+
+
+if(e.target.id==="popup"){
+
+document.getElementById("popup").style.display="none";
+
+}
+
 
 };
 
