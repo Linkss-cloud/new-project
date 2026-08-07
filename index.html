@@ -3,189 +3,131 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SPORTS ZONE - MEDIA PLAYER</title>
+    <title>SPORTS ZONE – Watch Live Sports</title>
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
+    <link rel="stylesheet" href="css/style.css">
 
 
-<style>
-
-html,body{
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-    background:#000;
-    overflow:hidden;
-}
-
-
-#player-wrapper{
-    width:100%;
-    height:100%;
-    background:#000;
-}
-
-
-#plyr-player{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    background:#000;
-}
-
-
-
-/* Telegram Popup */
-
-#telegram-popup{
-
-    position:fixed;
-
-    top:50%;
-    left:50%;
-
-    transform:translate(-50%,-50%);
-
-    width:320px;
-
-    background:#111;
-
-    color:#fff;
-
-    padding:30px 25px;
-
-    border-radius:20px;
-
-    text-align:center;
-
-    z-index:99999;
-
-    display:none;
-
-    box-shadow:0 10px 40px rgba(0,0,0,.8);
-
-    font-family:Arial,sans-serif;
-
-}
-
-
-#telegram-popup h2{
-
-    margin:0 0 15px;
-
-    font-size:24px;
-
-}
-
-
-#telegram-popup p{
-
-    color:#ccc;
-
-    font-size:15px;
-
-    line-height:1.5;
-
-    margin-bottom:25px;
-
-}
-
-
-
-#telegram-popup a{
-
-    display:block;
-
-    background:#229ED9;
-
-    color:#fff;
-
-    text-decoration:none;
-
-    padding:14px;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-    font-size:16px;
-
-}
-
-
-
-#telegram-close{
-
-    position:absolute;
-
-    right:12px;
-
-    top:10px;
-
-    width:32px;
-
-    height:32px;
-
-    border-radius:50%;
-
-    border:none;
-
-    background:#333;
-
-    color:white;
-
-    font-size:22px;
-
-    cursor:pointer;
-
-}
-
-
-
-</style>
+    <!-- Popunder Ad Script -->
+    <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
 
 
 </head>
 
 
-
 <body>
 
 
+<header class="site-header">
 
-<div id="player-wrapper">
+<div class="header-inner">
 
-<video id="plyr-player" controls playsinline></video>
+
+<a href="index.html" class="brand-logo gradient-text">
+SPORTS ZONE
+</a>
+
+
+
+<a href="https://t.me/+rtK_sfY8t_A2NDU1"
+target="_blank"
+class="btn-telegram">
+
+
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+<line x1="22" y1="2" x2="11" y2="13"></line>
+
+<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+
+</svg>
+
+
+<span>
+JOIN TELEGRAM
+</span>
+
+
+</a>
+
 
 </div>
+
+</header>
+
+
+
+
+
+<main>
+
+
+<section class="matches-section">
+
+
+<div class="section-header">
+
+<h2>
+LIVE & UPCOMING EVENTS
+</h2>
+
+</div>
+
+
+
+<div id="matchContainer" class="match-grid"></div>
+
+
+
+</section>
+
+
+</main>
+
+
+
+
+
+<footer class="site-footer">
+
+<p>
+© SPORTS ZONE • ALL RIGHTS RESERVED
+</p>
+
+</footer>
+
 
 
 
 
 <!-- Telegram Popup -->
 
-<div id="telegram-popup">
+<div id="popup" class="popup-overlay">
 
 
-<button id="telegram-close">
+<div class="popup-box">
+
+
+<button id="popup-close" class="popup-close">
 ×
 </button>
 
 
+
 <h2>
-Welcome
+Welcome to Sports Zone
 </h2>
+
 
 
 <p>
@@ -194,9 +136,16 @@ Join our Telegram channel for live match updates and notifications.
 
 
 
-<a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank">
+<a href="https://t.me/+rtK_sfY8t_A2NDU1"
+target="_blank">
+
 JOIN TELEGRAM
+
 </a>
+
+
+
+</div>
 
 
 </div>
@@ -205,204 +154,7 @@ JOIN TELEGRAM
 
 
 
-
-<script>
-
-
-function qp(key){
-
-return new URLSearchParams(location.search).get(key);
-
-}
-
-
-
-function isM3U8(url){
-
-return url && url.toLowerCase().includes(".m3u8");
-
-}
-
-
-
-const video=document.getElementById("plyr-player");
-
-let player;
-
-
-
-async function initPlayer(){
-
-
-const videoSrc=decodeURIComponent(qp("url")||"");
-
-
-if(!videoSrc){
-
-alert("Use ?url=");
-
-return;
-
-}
-
-
-
-const config={
-
-
-clickToPlay:true,
-
-
-controls:[
-
-"play-large",
-"play",
-"progress",
-"current-time",
-"mute",
-"volume",
-"pip",
-"settings",
-"fullscreen"
-
-],
-
-
-settings:["quality","speed"]
-
-
-};
-
-
-
-
-if(Hls.isSupported() && isM3U8(videoSrc)){
-
-
-
-const hls=new Hls({
-
-maxBufferLength:30
-
-});
-
-
-
-hls.loadSource(videoSrc);
-
-hls.attachMedia(video);
-
-
-
-
-hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-
-
-const qualities=[...new Set(
-
-hls.levels
-.map(level=>level.height)
-.filter(Boolean)
-
-)].sort((a,b)=>a-b);
-
-
-
-
-config.quality={
-
-
-default:qualities[qualities.length-1],
-
-
-options:qualities,
-
-
-forced:true,
-
-
-onChange:(quality)=>{
-
-
-hls.levels.forEach((level,index)=>{
-
-
-if(level.height===quality){
-
-hls.currentLevel=index;
-
-}
-
-
-});
-
-
-}
-
-
-};
-
-
-
-
-player=new Plyr(video,config);
-
-
-player.play().catch(()=>{});
-
-
-});
-
-
-
-}else{
-
-
-
-video.src=videoSrc;
-
-
-player=new Plyr(video,config);
-
-
-player.play().catch(()=>{});
-
-
-}
-
-
-}
-
-
-
-initPlayer();
-
-
-
-
-
-
-// Telegram Popup
-
-setTimeout(()=>{
-
-document.getElementById("telegram-popup").style.display="block";
-
-},5000);
-
-
-
-
-document.getElementById("telegram-close").onclick=()=>{
-
-document.getElementById("telegram-popup").style.display="none";
-
-};
-
-
-
-</script>
-
+<script type="module" src="js/home.js"></script>
 
 
 </body>
