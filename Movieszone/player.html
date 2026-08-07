@@ -4,207 +4,287 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <meta name="referrer" content="no-referrer">
 
-<title>MOVIES X SPORTS ZONE</title>
+
+<title>Live Stream</title>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
 
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
+
+
+<!-- Popunder Script -->
+
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
 
 
 
 <style>
 
+
 html,body{
+
     margin:0;
     padding:0;
+
     width:100%;
     height:100%;
+
     background:#000;
+
     overflow:hidden;
+
 }
+
+
 
 
 #player-wrapper{
+
     width:100%;
     height:100%;
+
     background:#000;
+
 }
+
+
 
 
 #plyr-player{
+
     width:100%;
     height:100%;
+
     object-fit:contain;
+
     background:#000;
+
 }
 
 
 
 
-/* =========================
-   TELEGRAM POPUP
-========================= */
+
 
 /* =========================
-   TELEGRAM POPUP
+ TELEGRAM POPUP
 ========================= */
+
 
 .popup-overlay{
 
+
     position:fixed;
+
     inset:0;
+
 
     background:rgba(0,0,0,.75);
 
+
     backdrop-filter:blur(8px);
+
 
     display:flex;
 
     justify-content:center;
+
     align-items:center;
+
 
     z-index:99999;
 
+
+
 }
+
 
 
 
 .popup-box{
 
+
     width:90%;
+
     max-width:420px;
+
 
     background:#071229;
 
+
     border:1px solid #334155;
+
 
     border-radius:22px;
 
+
     padding:35px 25px;
+
 
     text-align:center;
 
-    box-shadow:0 20px 60px rgba(0,0,0,.6);
+
+    box-shadow:
+
+    0 20px 60px rgba(0,0,0,.6);
+
+
 
     position:relative;
 
+
     box-sizing:border-box;
 
+
 }
+
+
 
 
 
 .popup-box h2{
 
+
     font-size:24px;
+
     font-weight:800;
+
 
     margin-bottom:12px;
 
+
     background:linear-gradient(90deg,#fff,#00E5FF);
 
+
     -webkit-background-clip:text;
+
     -webkit-text-fill-color:transparent;
 
+
 }
+
+
 
 
 
 .popup-box p{
 
+
     color:#94A3B8;
+
 
     font-size:14px;
 
+
     font-weight:600;
+
 
     line-height:1.6;
 
+
     margin-bottom:25px;
 
+
 }
+
+
 
 
 
 .popup-box a{
 
+
     display:flex;
+
 
     justify-content:center;
 
     align-items:center;
 
+
     width:100%;
 
-    max-width:100%;
 
     box-sizing:border-box;
 
+
     padding:15px;
+
 
     border-radius:14px;
 
+
     background:linear-gradient(135deg,#00E5FF,#00B8D4);
+
 
     color:#000;
 
+
     font-size:14px;
+
 
     font-weight:800;
 
+
     text-decoration:none;
+
 
     letter-spacing:1px;
 
+
 }
+
+
 
 
 
 .popup-close{
 
+
     position:absolute;
+
 
     top:12px;
 
+
     right:15px;
+
+
 
     width:36px;
 
     height:36px;
 
+
     border-radius:50%;
+
 
     border:none;
 
+
     background:#1E293B;
 
-    color:#fff;
+
+    color:white;
+
 
     font-size:24px;
 
+
     cursor:pointer;
 
-}
-
-
-
-@media(max-width:480px){
-
-    .popup-box{
-
-        width:90%;
-
-        padding:30px 20px;
-
-    }
 
 }
+
 
 
 
@@ -214,17 +294,17 @@ html,body{
 </head>
 
 
-
 <body>
 
 
 
 <div id="player-wrapper">
 
+
 <video id="plyr-player" controls playsinline></video>
 
-</div>
 
+</div>
 
 
 
@@ -239,21 +319,30 @@ html,body{
 <div class="popup-box">
 
 
+
 <button id="popup-close" class="popup-close">
+
 ×
+
 </button>
 
 
 
+
 <h2>
+
 Welcome to Sports Zone
+
 </h2>
 
 
 
 <p>
+
 Join our Telegram channel for live match updates and notifications.
+
 </p>
+
 
 
 
@@ -265,24 +354,21 @@ JOIN TELEGRAM
 
 
 
-</div>
-
 
 </div>
 
 
+</div>
 
 
 
 
-
-
-<script>
+    <script>
 
 
 function qp(key){
 
-return new URLSearchParams(location.search).get(key);
+    return new URLSearchParams(location.search).get(key);
 
 }
 
@@ -290,13 +376,14 @@ return new URLSearchParams(location.search).get(key);
 
 function isM3U8(url){
 
-return url && url.toLowerCase().includes(".m3u8");
+    return url && url.toLowerCase().includes(".m3u8");
 
 }
 
 
 
-const video=document.getElementById("plyr-player");
+
+const video = document.getElementById("plyr-player");
 
 let player;
 
@@ -306,139 +393,181 @@ let player;
 async function initPlayer(){
 
 
-const videoSrc=decodeURIComponent(qp("url")||"");
+    const videoSrc = decodeURIComponent(qp("url") || "");
 
 
-if(!videoSrc){
 
-alert("Use ?url=");
+    if(!videoSrc){
 
-return;
+        alert("Use ?url=");
+
+        return;
+
+    }
+
+
+
+
+    const config = {
+
+
+        clickToPlay:true,
+
+
+        controls:[
+
+            "play-large",
+            "play",
+            "progress",
+            "current-time",
+            "mute",
+            "volume",
+            "pip",
+            "settings",
+            "fullscreen"
+
+        ],
+
+
+
+        settings:[
+
+            "quality",
+            "speed"
+
+        ]
+
+
+
+    };
+
+
+
+
+
+
+    if(Hls.isSupported() && isM3U8(videoSrc)){
+
+
+
+        const hls = new Hls({
+
+            maxBufferLength:30
+
+        });
+
+
+
+
+        hls.loadSource(videoSrc);
+
+        hls.attachMedia(video);
+
+
+
+
+
+        hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+
+
+
+            const qualities=[...new Set(
+
+                hls.levels
+
+                .map(level=>level.height)
+
+                .filter(Boolean)
+
+
+            )].sort((a,b)=>a-b);
+
+
+
+
+
+
+            config.quality={
+
+
+
+                default:qualities[qualities.length-1],
+
+
+
+                options:qualities,
+
+
+
+                forced:true,
+
+
+
+
+                onChange:(quality)=>{
+
+
+                    hls.levels.forEach((level,index)=>{
+
+
+                        if(level.height===quality){
+
+
+                            hls.currentLevel=index;
+
+
+                        }
+
+
+                    });
+
+
+
+                }
+
+
+
+            };
+
+
+
+
+
+            player = new Plyr(video,config);
+
+
+
+            player.play().catch(()=>{});
+
+
+
+        });
+
+
+
+
+    }else{
+
+
+
+        video.src = videoSrc;
+
+
+
+        player = new Plyr(video,config);
+
+
+
+        player.play().catch(()=>{});
+
+
+
+    }
+
+
 
 }
 
-
-
-const config={
-
-
-clickToPlay:true,
-
-
-controls:[
-
-"play-large",
-"play",
-"progress",
-"current-time",
-"mute",
-"volume",
-"pip",
-"settings",
-"fullscreen"
-
-],
-
-
-settings:["quality","speed"]
-
-
-};
-
-
-
-
-if(Hls.isSupported() && isM3U8(videoSrc)){
-
-
-const hls=new Hls({
-
-maxBufferLength:30
-
-});
-
-
-hls.loadSource(videoSrc);
-
-hls.attachMedia(video);
-
-
-
-
-hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-
-
-const qualities=[...new Set(
-
-hls.levels
-.map(level=>level.height)
-.filter(Boolean)
-
-)].sort((a,b)=>a-b);
-
-
-
-
-config.quality={
-
-
-default:qualities[qualities.length-1],
-
-options:qualities,
-
-forced:true,
-
-
-onChange:(quality)=>{
-
-
-hls.levels.forEach((level,index)=>{
-
-
-if(level.height===quality){
-
-hls.currentLevel=index;
-
-}
-
-
-});
-
-
-}
-
-
-};
-
-
-
-player=new Plyr(video,config);
-
-
-player.play().catch(()=>{});
-
-
-});
-
-
-
-}else{
-
-
-video.src=videoSrc;
-
-
-player=new Plyr(video,config);
-
-
-player.play().catch(()=>{});
-
-
-}
-
-
-
-}
 
 
 
@@ -449,34 +578,131 @@ initPlayer();
 
 
 
-// POPUP CLOSE
 
-
-document.getElementById("popup-close").onclick=()=>{
-
-document.getElementById("popup").style.display="none";
-
-};
+// =========================
+// TELEGRAM POPUP
+// =========================
 
 
 
+const popup = document.getElementById("popup");
 
-document.getElementById("popup").onclick=(e)=>{
+const closeBtn = document.getElementById("popup-close");
 
 
-if(e.target.id==="popup"){
 
-document.getElementById("popup").style.display="none";
+// Show popup instantly
+
+popup.style.display="flex";
+
+
+
+
+
+// =========================
+// POPUNDER
+// =========================
+
+
+
+function runPopunder(){
+
+
+    if(typeof aclib !== "undefined"){
+
+
+        aclib.runPop({
+
+            zoneId:'11800802'
+
+        });
+
+
+    }
+
 
 }
 
 
+
+
+
+// Popup close button
+
+
+closeBtn.onclick=()=>{
+
+
+    popup.style.display="none";
+
+
+    setTimeout(()=>{
+
+
+        runPopunder();
+
+
+    },500);
+
+
+
 };
 
 
 
-</script>
 
+
+
+// Outside click close
+
+
+popup.onclick=(e)=>{
+
+
+    if(e.target===popup){
+
+
+
+        popup.style.display="none";
+
+
+
+        setTimeout(()=>{
+
+
+            runPopunder();
+
+
+
+        },500);
+
+
+
+    }
+
+
+};
+
+
+
+
+
+
+// Repeat every 15-20 minutes
+
+
+setInterval(()=>{
+
+
+    runPopunder();
+
+
+
+}, Math.floor(Math.random()*(1200000-900000+1))+900000);
+
+
+
+</script>
 
 
 </body>
