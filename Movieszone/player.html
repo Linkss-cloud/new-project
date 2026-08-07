@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="referrer" content="no-referrer">
 
-<title>SPORTS ZONE - MEDIA PLAYER</title>
+<title>Live Stream</title>
+
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
 
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
+
+
 
 <style>
 
@@ -23,11 +29,13 @@ html,body{
     overflow:hidden;
 }
 
+
 #player-wrapper{
     width:100%;
     height:100%;
     background:#000;
 }
+
 
 #plyr-player{
     width:100%;
@@ -37,192 +45,331 @@ html,body{
 }
 
 
+
 /* Telegram Popup */
 
 #telegram-popup{
+
     position:fixed;
+
     top:50%;
     left:50%;
+
     transform:translate(-50%,-50%);
+
     width:320px;
+
     background:#111;
+
     color:#fff;
-    padding:25px;
-    border-radius:18px;
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    gap:18px;
-    z-index:99999;
-    font-family:Arial,sans-serif;
+
+    padding:30px 25px;
+
+    border-radius:20px;
+
     text-align:center;
+
+    z-index:99999;
+
+    display:none;
+
     box-shadow:0 10px 40px rgba(0,0,0,.8);
+
+    font-family:Arial,sans-serif;
+
 }
 
-#telegram-popup span{
-    font-size:20px;
-    font-weight:bold;
+
+#telegram-popup h2{
+
+    margin:0 0 15px;
+
+    font-size:24px;
+
 }
 
-#telegram-popup button{
-    width:100%;
+
+#telegram-popup p{
+
+    color:#ccc;
+
+    font-size:15px;
+
+    line-height:1.5;
+
+    margin-bottom:25px;
+
+}
+
+
+
+#telegram-popup a{
+
+    display:block;
+
     background:#229ED9;
-    color:white;
-    border:none;
+
+    color:#fff;
+
+    text-decoration:none;
+
     padding:14px;
+
     border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
+
     font-weight:bold;
+
+    font-size:16px;
+
 }
 
-#telegram-popup .close{
+
+
+#telegram-close{
+
+    position:absolute;
+
+    right:12px;
+
+    top:10px;
+
+    width:32px;
+
+    height:32px;
+
+    border-radius:50%;
+
+    border:none;
+
     background:#333;
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
 }
+
+
 
 </style>
 
+
 </head>
+
+
 
 <body>
 
 
+
 <div id="player-wrapper">
-    <video id="plyr-player" controls playsinline></video>
+
+<video id="plyr-player" controls playsinline></video>
+
 </div>
+
+
 
 
 <!-- Telegram Popup -->
 
 <div id="telegram-popup">
-    <span>Join our Telegram channel for updates</span>
-    <button onclick="openTelegram()">Join</button>
-    <button class="close" onclick="closeTelegram()">×</button>
+
+
+<button id="telegram-close">
+×
+</button>
+
+
+<h2>
+Welcome
+</h2>
+
+
+<p>
+Join our Telegram channel for live match updates and notifications.
+</p>
+
+
+
+<a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank">
+JOIN TELEGRAM
+</a>
+
+
 </div>
+
+
+
 
 
 
 <script>
 
+
 function qp(key){
-    return new URLSearchParams(location.search).get(key);
+
+return new URLSearchParams(location.search).get(key);
+
 }
+
 
 
 function isM3U8(url){
-    return url && url.toLowerCase().includes(".m3u8");
+
+return url && url.toLowerCase().includes(".m3u8");
+
 }
 
 
+
 const video=document.getElementById("plyr-player");
+
 let player;
+
 
 
 async function initPlayer(){
 
-    const videoSrc=decodeURIComponent(qp("url")||"");
 
-    if(!videoSrc){
-        alert("Use ?url=");
-        return;
-    }
+const videoSrc=decodeURIComponent(qp("url")||"");
 
 
-    const config={
+if(!videoSrc){
 
-        clickToPlay:true,
+alert("Use ?url=");
 
-        controls:[
-            "play-large",
-            "play",
-            "progress",
-            "current-time",
-            "mute",
-            "volume",
-            "pip",
-            "settings",
-            "fullscreen"
-        ],
+return;
 
-        settings:[
-            "quality",
-            "speed"
-        ]
-
-    };
+}
 
 
 
-    if(Hls.isSupported() && isM3U8(videoSrc)){
+const config={
 
 
-        const hls=new Hls({
-            maxBufferLength:30
-        });
+clickToPlay:true,
 
 
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
+controls:[
+
+"play-large",
+"play",
+"progress",
+"current-time",
+"mute",
+"volume",
+"pip",
+"settings",
+"fullscreen"
+
+],
 
 
-
-        hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-
-
-            const qualities=[...new Set(
-                hls.levels
-                .map(level=>level.height)
-                .filter(Boolean)
-
-            )].sort((a,b)=>a-b);
+settings:["quality","speed"]
 
 
-
-            config.quality={
-
-                default:qualities[qualities.length-1],
-
-                options:qualities,
-
-                forced:true,
-
-
-                onChange:(quality)=>{
-
-                    hls.levels.forEach((level,index)=>{
-
-                        if(level.height===quality){
-
-                            hls.currentLevel=index;
-
-                        }
-
-                    });
-
-                }
-
-            };
+};
 
 
 
-            player=new Plyr(video,config);
 
-            player.play().catch(()=>{});
-
-        });
+if(Hls.isSupported() && isM3U8(videoSrc)){
 
 
 
-    }else{
+const hls=new Hls({
+
+maxBufferLength:30
+
+});
 
 
-        video.src=videoSrc;
 
-        player=new Plyr(video,config);
+hls.loadSource(videoSrc);
 
-        player.play().catch(()=>{});
+hls.attachMedia(video);
 
-    }
+
+
+
+hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+
+
+const qualities=[...new Set(
+
+hls.levels
+.map(level=>level.height)
+.filter(Boolean)
+
+)].sort((a,b)=>a-b);
+
+
+
+
+config.quality={
+
+
+default:qualities[qualities.length-1],
+
+
+options:qualities,
+
+
+forced:true,
+
+
+onChange:(quality)=>{
+
+
+hls.levels.forEach((level,index)=>{
+
+
+if(level.height===quality){
+
+hls.currentLevel=index;
+
+}
+
+
+});
+
+
+}
+
+
+};
+
+
+
+
+player=new Plyr(video,config);
+
+
+player.play().catch(()=>{});
+
+
+});
+
+
+
+}else{
+
+
+
+video.src=videoSrc;
+
+
+player=new Plyr(video,config);
+
+
+player.play().catch(()=>{});
+
+
+}
+
 
 }
 
@@ -233,39 +380,31 @@ initPlayer();
 
 
 
+
+
 // Telegram Popup
 
-const telegramLink="https://t.me/+rtK_sfY8t_A2NDU1";
+setTimeout(()=>{
+
+document.getElementById("telegram-popup").style.display="block";
+
+},5000);
 
 
-function showTelegram(){
-
-    document.getElementById("telegram-popup").style.display="flex";
-
-}
 
 
-function closeTelegram(){
+document.getElementById("telegram-close").onclick=()=>{
 
-    document.getElementById("telegram-popup").style.display="none";
+document.getElementById("telegram-popup").style.display="none";
 
-}
+};
 
-
-function openTelegram(){
-
-    window.open(telegramLink,"_blank");
-
-}
-
-
-// popup delay
-
-setTimeout(showTelegram,5000);
 
 
 </script>
 
 
+
 </body>
+
 </html>
