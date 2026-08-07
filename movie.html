@@ -187,7 +187,11 @@ video{
 
     <div class="telegram-box">
 
-        <span class="close-btn" onclick="closeTelegram()">×</span>
+        <span
+            class="close-btn"
+            onclick="closeTelegram()">
+            ×
+        </span>
 
         <h2>Join Our Telegram</h2>
 
@@ -267,23 +271,22 @@ const player = new Plyr('#video-player', {
 
 
 // ===============================
-// AD VARIABLES
+// AD CONTROL
 // ===============================
 
-// 15 minutes = 900000 milliseconds
+// 1 HOUR = 60 MINUTES
+const AD_COOLDOWN = 60 * 60 * 1000;
 
-const AD_COOLDOWN = 15 * 60 * 1000;
 
-
-// First ad already shown or not
+// First ad status
 let firstAdShown = false;
 
 
-// Can next click trigger ad?
+// Is the next ad allowed?
 let adReady = false;
 
 
-// Prevent duplicate event
+// Prevent duplicate click/touch
 let interactionLocked = false;
 
 
@@ -314,12 +317,14 @@ function showAd(){
         });
 
 
-        // Ad successfully triggered
+        // Start 1-hour cooldown
         adReady = false;
 
 
-        // Start 15-minute cooldown
         setTimeout(function(){
+
+            // After 1 hour,
+            // next user interaction can trigger ad
 
             adReady = true;
 
@@ -327,7 +332,6 @@ function showAd(){
 
 
     }
-
     catch(e){
 
         console.log("Ad error:", e);
@@ -335,7 +339,7 @@ function showAd(){
     }
 
 
-    // Unlock interaction
+    // Prevent duplicate click/touch
     setTimeout(function(){
 
         interactionLocked = false;
@@ -347,7 +351,7 @@ function showAd(){
 
 
 // ===============================
-// TELEGRAM CLOSE
+// TELEGRAM POPUP CLOSE
 // ===============================
 
 function closeTelegram(){
@@ -364,14 +368,15 @@ function closeTelegram(){
 
         firstAdShown = true;
 
-        // Show first ad immediately
+
+        // Show ad immediately
         showAd();
 
     }
 
 
     // ===========================
-    // LOAD PLAYER
+    // LOAD VIDEO PLAYER
     // ===========================
 
     setTimeout(function(){
@@ -393,13 +398,12 @@ function closeTelegram(){
 
 
 // ===============================
-// USER CLICK / TOUCH
+// USER INTERACTION
 // ===============================
 
 function handleUserInteraction(){
 
-    // Don't do anything before
-    // Telegram popup is closed
+    // Telegram popup hasn't been closed
     if(!firstAdShown){
 
         return;
@@ -407,7 +411,7 @@ function handleUserInteraction(){
     }
 
 
-    // Don't trigger during cooldown
+    // 1-hour cooldown is still active
     if(!adReady){
 
         return;
@@ -415,7 +419,8 @@ function handleUserInteraction(){
     }
 
 
-    // Run ad
+    // Cooldown finished
+    // Show ad on next user interaction
     showAd();
 
 }
@@ -443,7 +448,6 @@ document.addEventListener("touchend", function(){
     handleUserInteraction();
 
 });
-
 
 
 </script>
