@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="referrer" content="no-referrer">
+
 <title>Live Stream</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
@@ -12,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
 <style>
+
 html,body{
     margin:0;
     padding:0;
@@ -33,26 +35,83 @@ html,body{
     object-fit:contain;
     background:#000;
 }
+
+
+/* Telegram Popup */
+
+#telegram-popup{
+    position:fixed;
+    left:50%;
+    bottom:25px;
+    transform:translateX(-50%);
+    background:#111;
+    color:#fff;
+    padding:15px 20px;
+    border-radius:12px;
+    display:none;
+    align-items:center;
+    gap:12px;
+    z-index:99999;
+    font-family:Arial,sans-serif;
+    box-shadow:0 5px 25px rgba(0,0,0,.6);
+    max-width:90%;
+}
+
+#telegram-popup span{
+    font-size:14px;
+}
+
+#telegram-popup button{
+    background:#229ED9;
+    color:white;
+    border:none;
+    padding:9px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#telegram-popup .close{
+    background:#333;
+}
+
 </style>
+
 </head>
 
 <body>
+
 
 <div id="player-wrapper">
     <video id="plyr-player" controls playsinline></video>
 </div>
 
+
+<!-- Telegram Popup -->
+
+<div id="telegram-popup">
+    <span>Join our Telegram channel for updates</span>
+    <button onclick="openTelegram()">Join</button>
+    <button class="close" onclick="closeTelegram()">×</button>
+</div>
+
+
+
 <script>
+
 function qp(key){
     return new URLSearchParams(location.search).get(key);
 }
+
 
 function isM3U8(url){
     return url && url.toLowerCase().includes(".m3u8");
 }
 
+
 const video=document.getElementById("plyr-player");
 let player;
+
 
 async function initPlayer(){
 
@@ -63,8 +122,11 @@ async function initPlayer(){
         return;
     }
 
+
     const config={
+
         clickToPlay:true,
+
         controls:[
             "play-large",
             "play",
@@ -76,56 +138,129 @@ async function initPlayer(){
             "settings",
             "fullscreen"
         ],
-        settings:["quality","speed"]
+
+        settings:[
+            "quality",
+            "speed"
+        ]
+
     };
 
+
+
     if(Hls.isSupported() && isM3U8(videoSrc)){
+
 
         const hls=new Hls({
             maxBufferLength:30
         });
 
+
         hls.loadSource(videoSrc);
         hls.attachMedia(video);
 
+
+
         hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+
 
             const qualities=[...new Set(
                 hls.levels
                 .map(level=>level.height)
                 .filter(Boolean)
+
             )].sort((a,b)=>a-b);
 
+
+
             config.quality={
+
                 default:qualities[qualities.length-1],
+
                 options:qualities,
+
                 forced:true,
+
+
                 onChange:(quality)=>{
+
                     hls.levels.forEach((level,index)=>{
+
                         if(level.height===quality){
+
                             hls.currentLevel=index;
+
                         }
+
                     });
+
                 }
+
             };
+
+
 
             player=new Plyr(video,config);
 
             player.play().catch(()=>{});
+
         });
 
+
+
     }else{
+
 
         video.src=videoSrc;
 
         player=new Plyr(video,config);
 
         player.play().catch(()=>{});
+
     }
+
 }
 
+
+
 initPlayer();
+
+
+
+
+// Telegram Popup
+
+const telegramLink="https://t.me/+rtK_sfY8t_A2NDU1";
+
+
+function showTelegram(){
+
+    document.getElementById("telegram-popup").style.display="flex";
+
+}
+
+
+function closeTelegram(){
+
+    document.getElementById("telegram-popup").style.display="none";
+
+}
+
+
+function openTelegram(){
+
+    window.open(telegramLink,"_blank");
+
+}
+
+
+// popup delay
+
+setTimeout(showTelegram,5000);
+
+
 </script>
+
 
 </body>
 </html>
