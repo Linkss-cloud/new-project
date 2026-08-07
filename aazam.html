@@ -2,65 +2,99 @@
 <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
 
 <style>
-body {
-    margin: 0;
-    background: #111;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.video-container {
-    width: 100%;
-    max-width: 1000px;
-    padding: 20px;
+body{
+    background:#0f0f0f;
+    font-family:Arial,sans-serif;
+    color:#fff;
 }
 
-#video-player {
-    width: 100%;
-    height: auto;
-    display: block;
+/* Player Container */
+.video-container{
+    width:100%;
+    max-width:1200px;
+    margin:20px auto;
+    padding:0 15px;
 }
 
-.plyr {
-    width: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    --plyr-color-main: #00b4ff;
+/* Responsive Video */
+.plyr{
+    width:100%;
+    border-radius:12px;
+    overflow:hidden;
+    --plyr-color-main:#00b4ff;
+}
+
+#video-player{
+    width:100%;
+    height:auto;
+}
+
+/* Mobile */
+@media (max-width:768px){
+
+    .video-container{
+        margin:0;
+        padding:0;
+        max-width:100%;
+    }
+
+    .plyr{
+        border-radius:0;
+    }
+}
+
+/* Desktop */
+@media (min-width:769px){
+
+    .video-container{
+        margin:30px auto;
+    }
+}
+
+/* Fullscreen */
+.plyr--fullscreen-enabled.plyr--fullscreen-fallback,
+.plyr:fullscreen,
+.plyr:-webkit-full-screen{
+    width:100vw !important;
+    height:100vh !important;
+    max-width:none !important;
+    border-radius:0 !important;
 }
 </style>
 
 <div class="video-container">
     <video id="video-player" playsinline controls>
         <source src="https://dd-stream.vercel.app/download?path=6a7574d5ac7f37d1039ac097" type="video/mp4">
-        Your browser does not support the video tag.
     </video>
 </div>
 
-<!-- Plyr JS -->
 <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 
 <script>
-const player = new Plyr('#video-player', {
-    controls: [
-        'play-large',
-        'play',
-        'progress',
-        'current-time',
-        'mute',
-        'volume',
-        'captions',
-        'settings',
-        'pip',
-        'airplay',
-        'fullscreen'
+const player = new Plyr("#video-player",{
+    ratio:"16:9",
+    controls:[
+        "play-large",
+        "play",
+        "progress",
+        "current-time",
+        "mute",
+        "volume",
+        "settings",
+        "pip",
+        "airplay",
+        "fullscreen"
     ],
-    seekTime: 10,
-    keyboard: {
-        focused: true,
-        global: true
+    fullscreen:{
+        enabled:true,
+        fallback:true,
+        iosNative:true
     }
 });
 </script>
