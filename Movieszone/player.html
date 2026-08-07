@@ -51,11 +51,13 @@ html,body{
    TELEGRAM POPUP
 ========================= */
 
+/* =========================
+   TELEGRAM POPUP
+========================= */
 
 .popup-overlay{
 
     position:fixed;
-
     inset:0;
 
     background:rgba(0,0,0,.75);
@@ -65,13 +67,9 @@ html,body{
     display:flex;
 
     justify-content:center;
-
     align-items:center;
 
     z-index:99999;
-
-
-    opacity:1;
 
 }
 
@@ -79,31 +77,24 @@ html,body{
 
 .popup-box{
 
-
-    width:min(90%,420px);
-
+    width:90%;
+    max-width:420px;
 
     background:#071229;
 
-
     border:1px solid #334155;
-
 
     border-radius:22px;
 
-
     padding:35px 25px;
-
 
     text-align:center;
 
-
-    box-shadow:
-    0 20px 60px rgba(0,0,0,.6);
-
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
 
     position:relative;
 
+    box-sizing:border-box;
 
 }
 
@@ -111,30 +102,21 @@ html,body{
 
 .popup-box h2{
 
-
     font-size:24px;
-
     font-weight:800;
 
     margin-bottom:12px;
 
-
-    background:
-    linear-gradient(90deg,#fff,#00E5FF);
-
+    background:linear-gradient(90deg,#fff,#00E5FF);
 
     -webkit-background-clip:text;
-
     -webkit-text-fill-color:transparent;
-
 
 }
 
 
 
-
 .popup-box p{
-
 
     color:#94A3B8;
 
@@ -146,14 +128,11 @@ html,body{
 
     margin-bottom:25px;
 
-
 }
 
 
 
-
 .popup-box a{
-
 
     display:flex;
 
@@ -161,33 +140,27 @@ html,body{
 
     align-items:center;
 
-
     width:100%;
 
+    max-width:100%;
+
+    box-sizing:border-box;
 
     padding:15px;
 
-
     border-radius:14px;
 
-
-    background:
-    linear-gradient(135deg,#00E5FF,#00B8D4);
-
+    background:linear-gradient(135deg,#00E5FF,#00B8D4);
 
     color:#000;
-
 
     font-size:14px;
 
     font-weight:800;
 
-
     text-decoration:none;
 
-
     letter-spacing:1px;
-
 
 }
 
@@ -195,40 +168,43 @@ html,body{
 
 .popup-close{
 
-
     position:absolute;
-
 
     top:12px;
 
     right:15px;
 
-
     width:36px;
 
     height:36px;
 
-
     border-radius:50%;
-
 
     border:none;
 
-
     background:#1E293B;
 
-
-    color:white;
-
+    color:#fff;
 
     font-size:24px;
 
-
     cursor:pointer;
-
 
 }
 
+
+
+@media(max-width:480px){
+
+    .popup-box{
+
+        width:90%;
+
+        padding:30px 20px;
+
+    }
+
+}
 
 
 
