@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎾 Live Matches</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem 1rem;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #1f1c2c, #928dab);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.2rem;
+            background: -webkit-linear-gradient(#f5f5f5, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .telegram-join-top {
+            display: none;
+            margin-bottom: 2rem;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0088cc, #005f99);
+            color: white;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .telegram-join-top:hover {
+            opacity: 0.9;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin: 3rem 0 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 5px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .match-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .match-card {
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .match-card:hover {
+            transform: scale(1.02);
+        }
+
+        .match-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .match-content {
+            padding: 1rem;
+        }
+
+        .match-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 5px;
+        }
+
+        .match-details {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .watch-btn {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .watch-btn:hover {
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+        }
+
+        .no-live {
+            margin-top: 4rem;
+            font-size: 1rem;
+            color: #eee;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🔥 Live Sports Stream</h1>
+    <div>
+        <button id="telegramTop" class="telegram-join-top" onclick="openTelegram()">📣 Join Telegram For All
+            Streams</button>
+    </div>
+
+    <div class="section-title">🔴 Live Matches</div>
+    <div class="match-grid" id="liveMatches"></div>
+
+    <div class="section-title">📅 Upcoming Matches</div>
+    <div class="match-grid" id="upcomingMatches"></div>
+
+    <script>
+        const liveContainer = document.getElementById('liveMatches');
+        const upcomingContainer = document.getElementById('upcomingMatches');
+        const telegramTop = document.getElementById('telegramTop');
+
+        function openTelegram() {
+            window.location.href = 'https://t.me/+rtK_sfY8t_A2NDU1';
+        }
+
+        function openStream(url) {
+            const secure = url.replace(/^https?:\/\//, '');
+            window.location.href = `intent://${secure}#Intent;package=com.genuine.leone;type=video;scheme=https;end`;
+        }
+
+        fetch('https://raw.githubusercontent.com/drmlive/sliv-live-events/main/sonyliv.json')
+            .then(res => res.json())
+            .then(data => {
+                liveContainer.innerHTML = '';
+                upcomingContainer.innerHTML = '';
+                let liveCount = 0;
+
+                data.matches.forEach(match => {
+                    const card = document.createElement('div');
+                    card.className = 'match-card';
+
+                    let buttons = '';
+                    if (match.isLive && match.video_url) {
+                        buttons += `<button class="watch-btn" onclick="openStream('${match.video_url}')">▶️ Main Stream</button>`;
+                    }
+                    if (match.isLive && match.dai_url) {
+                        buttons += `<button class="watch-btn" onclick="openStream('${match.dai_url}')">💡 DAI Stream</button>`;
+                    }
+                    if (match.isLive && match.pub_url) {
+                        buttons += `<button class="watch-btn" onclick="openStream('${match.pub_url}')">📺 PUB Stream</button>`;
+                    }
+
+                    card.innerHTML = `
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <img src="${match.src}" alt="poster">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div class="match-content">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="match-title">${match.match_name}</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="match-details">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  🏆 ${match.event_name}<br>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  📺 ${match.broadcast_channel} | 🔊 ${match.audioLanguageName}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="btn-group">${buttons}</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    `;
+
+                    if (match.isLive) {
+                        liveContainer.appendChild(card);
+                        liveCount++;
+                    } else {
+                        upcomingContainer.appendChild(card);
+                    }
+                });
+
+                if (liveCount >= 2) {
+                    telegramTop.style.display = 'block';
+                }
+                if (liveCount === 0) {
+                    liveContainer.innerHTML = '<div class="no-live">No live matches currently.</div>';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                liveContainer.innerHTML = '<div class="no-live">⚠️ Failed to load matches.</div>';
+            });
+    </script>
+</body>
+
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>NS Player Required</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #121212;
+            color: #fff;
+        }
+
+        #popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .popup-box {
+            background: #1e1e1e;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .popup-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ff4b2b;
+        }
+
+        .popup-box p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .playstore-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #34A853, #0F9D58);
+            color: #fff;
+            padding: 12px 24px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .playstore-btn:hover {
+            background: linear-gradient(135deg, #0F9D58, #34A853);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 22px;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="popup">
+        <div class="popup-box">
+            <div class="close-btn" onclick="closePopup()">✖</div>
+            <h2>📱 Android Only</h2>
+            <p>
+                This streaming system only works on <b>Android phones</b>. <br>
+                Before watching any stream, please install <b>NS Player</b> from Play Store.
+            </p>
+            <a class="playstore-btn" href="https://play.google.com/store/apps/details?id=com.genuine.leone"
+                target="_blank">
+                📥 Install NS Player
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+
+</body>
+
+</html>
