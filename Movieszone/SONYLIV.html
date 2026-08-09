@@ -15,37 +15,38 @@
         body {
             margin: 0;
             padding: 2rem 1rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(to right, #1f1c2c, #928dab);
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             min-height: 100vh;
         }
 
         h1 {
             font-size: 2rem;
-            margin-bottom: 1.2rem;
+            margin: 0 0 1.2rem;
+            text-align: center;
             background: linear-gradient(#f5f5f5, #e91e63);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-align: center;
         }
 
         /* Telegram Button */
+
+        .telegram-wrapper {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
         .telegram-join-top {
             display: none;
-            margin-bottom: 2rem;
-            text-decoration: none;
-            font-weight: bold;
             padding: 12px 20px;
+            border: none;
             border-radius: 12px;
             background: linear-gradient(135deg, #0088cc, #005f99);
             color: white;
-            transition: 0.3s;
+            font-weight: bold;
             cursor: pointer;
-            border: none;
+            font-size: 15px;
         }
 
         .telegram-join-top:hover {
@@ -54,9 +55,10 @@
         }
 
         /* Section Title */
+
         .section-title {
             font-size: 1.5rem;
-            margin: 3rem 0 1rem;
+            margin: 3rem auto 1rem;
             border-bottom: 2px solid rgba(255, 255, 255, 0.2);
             padding-bottom: 5px;
             width: 100%;
@@ -64,15 +66,18 @@
         }
 
         /* Match Grid */
+
         .match-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             width: 100%;
             max-width: 1200px;
+            margin: auto;
         }
 
         /* Match Card */
+
         .match-card {
             backdrop-filter: blur(16px);
             background: rgba(255, 255, 255, 0.1);
@@ -91,6 +96,7 @@
             height: 160px;
             object-fit: cover;
             display: block;
+            background: #222;
         }
 
         .match-content {
@@ -100,17 +106,18 @@
         .match-title {
             font-size: 1.1rem;
             font-weight: 600;
-            margin: 0 0 5px;
+            margin-bottom: 5px;
         }
 
         .match-details {
             font-size: 0.85rem;
             color: #ccc;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             line-height: 1.6;
         }
 
         /* Buttons */
+
         .btn-group {
             display: flex;
             flex-direction: column;
@@ -120,28 +127,25 @@
         .watch-btn,
         .copy-btn {
             width: 100%;
-            text-align: center;
-            padding: 10px;
+            padding: 11px;
             border-radius: 10px;
             font-weight: bold;
             color: white;
             border: none;
             cursor: pointer;
-            transition: 0.3s;
             font-size: 0.9rem;
+            transition: 0.25s;
         }
 
-        /* Watch Button */
         .watch-btn {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
         }
 
         .watch-btn:hover {
-            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            opacity: 0.9;
             transform: translateY(-1px);
         }
 
-        /* Copy Button */
         .copy-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
@@ -155,26 +159,29 @@
             background: linear-gradient(135deg, #00b09b, #96c93d);
         }
 
-        /* No Live */
-        .no-live {
-            margin-top: 4rem;
-            font-size: 1rem;
-            color: #eee;
-            width: 100%;
-            text-align: center;
+        /* Disabled */
+
+        .disabled-btn {
+            background: #555 !important;
+            color: #bbb !important;
+            cursor: not-allowed !important;
+            transform: none !important;
         }
 
-        /* =========================
-           POPUP
-        ========================= */
+        /* No Live */
+
+        .no-live {
+            padding: 2rem;
+            text-align: center;
+            color: #eee;
+        }
+
+        /* Popup */
 
         #popup {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -214,11 +221,10 @@
             font-weight: bold;
             text-decoration: none;
             border-radius: 10px;
-            transition: 0.3s;
         }
 
         .playstore-btn:hover {
-            background: linear-gradient(135deg, #0F9D58, #34A853);
+            opacity: 0.9;
         }
 
         .close-btn {
@@ -228,7 +234,6 @@
             font-size: 22px;
             color: #fff;
             cursor: pointer;
-            line-height: 1;
         }
 
         .close-btn:hover {
@@ -236,7 +241,9 @@
         }
 
         /* Mobile */
+
         @media (max-width: 600px) {
+
             body {
                 padding: 1.5rem 0.8rem;
             }
@@ -270,36 +277,55 @@
 
     <h1>🔥 Live Sports Stream</h1>
 
-    <!-- Telegram Button -->
-    <div>
-        <button id="telegramTop" class="telegram-join-top" onclick="openTelegram()">
+    <!-- Telegram -->
+
+    <div class="telegram-wrapper">
+
+        <button
+            id="telegramTop"
+            class="telegram-join-top"
+            type="button">
+
             📣 Join Telegram For All Streams
+
         </button>
+
     </div>
 
+
     <!-- Live Matches -->
+
     <div class="section-title">
         🔴 Live Matches
     </div>
 
-    <div class="match-grid" id="liveMatches"></div>
+    <div
+        class="match-grid"
+        id="liveMatches">
+    </div>
+
 
     <!-- Upcoming Matches -->
+
     <div class="section-title">
         📅 Upcoming Matches
     </div>
 
-    <div class="match-grid" id="upcomingMatches"></div>
+    <div
+        class="match-grid"
+        id="upcomingMatches">
+    </div>
 
 
-    <!-- =========================
-         NS PLAYER POPUP
-    ========================= -->
+    <!-- NS PLAYER POPUP -->
 
     <div id="popup">
+
         <div class="popup-box">
 
-            <div class="close-btn" onclick="closePopup()">
+            <div
+                class="close-btn"
+                id="closePopup">
                 ✖
             </div>
 
@@ -313,355 +339,772 @@
                 <b>NS Player</b> from Play Store.
             </p>
 
-            <a class="playstore-btn" href="https://play.google.com/store/apps/details?id=com.genuine.leone"
-                target="_blank" rel="noopener noreferrer">
+            <a
+                class="playstore-btn"
+                href="https://play.google.com/store/apps/details?id=com.genuine.leone"
+                target="_blank"
+                rel="noopener noreferrer">
+
                 📥 Install NS Player
+
             </a>
 
         </div>
+
     </div>
 
 
     <script>
 
+        /* =====================================
+           ELEMENTS
+        ===================================== */
+
         const liveContainer =
-            document.getElementById('liveMatches');
+            document.getElementById("liveMatches");
 
         const upcomingContainer =
-            document.getElementById('upcomingMatches');
+            document.getElementById("upcomingMatches");
 
         const telegramTop =
-            document.getElementById('telegramTop');
+            document.getElementById("telegramTop");
+
+        const popup =
+            document.getElementById("popup");
+
+        const closePopup =
+            document.getElementById("closePopup");
 
 
-        /* =========================
+        /* =====================================
            TELEGRAM
-        ========================= */
+        ===================================== */
 
-        function openTelegram() {
+        telegramTop.addEventListener("click", function () {
+
             window.location.href =
-                'https://t.me/+rtK_sfY8t_A2NDU1';
-        }
+                "https://t.me/+rtK_sfY8t_A2NDU1";
+
+        });
 
 
-        /* =========================
+        /* =====================================
+           CLOSE POPUP
+        ===================================== */
+
+        closePopup.addEventListener("click", function () {
+
+            popup.style.display = "none";
+
+        });
+
+
+        /* =====================================
            OPEN STREAM
-        ========================= */
+        ===================================== */
 
         function openStream(url) {
 
             if (!url) {
-                alert('Stream URL is not available.');
+
+                alert(
+                    "Stream URL is not available."
+                );
+
                 return;
             }
 
-            const secure =
-                url.replace(/^https?:\/\//, '');
+            console.log(
+                "Opening stream:",
+                url
+            );
+
+
+            /*
+             * Remove http:// or https://
+             */
+
+            const cleanUrl =
+                url.replace(
+                    /^https?:\/\//i,
+                    ""
+                );
+
+
+            /*
+             * Android NS Player intent
+             */
+
+            const intentUrl =
+                "intent://" +
+                cleanUrl +
+                "#Intent;" +
+                "scheme=https;" +
+                "package=com.genuine.leone;" +
+                "type=video/*;" +
+                "S.browser_fallback_url=" +
+                encodeURIComponent(url) +
+                ";" +
+                "end";
+
 
             window.location.href =
-                `intent://${secure}#Intent;package=com.genuine.leone;type=video;scheme=https;end`;
+                intentUrl;
         }
 
 
-        /* =========================
+        /* =====================================
            COPY URL
-        ========================= */
+        ===================================== */
 
-        async function copyUrl(url, button) {
+        async function copyUrl(
+            url,
+            button
+        ) {
 
             if (!url) {
-                alert('URL is not available.');
+
+                alert(
+                    "URL is not available."
+                );
+
                 return;
             }
+
 
             const originalText =
                 button.innerHTML;
 
+
             try {
 
-                await navigator.clipboard.writeText(url);
+                /*
+                 * Modern clipboard
+                 */
+
+                if (
+                    navigator.clipboard &&
+                    window.isSecureContext
+                ) {
+
+                    await navigator.clipboard
+                        .writeText(url);
+
+                } else {
+
+                    /*
+                     * Fallback
+                     */
+
+                    const textarea =
+                        document.createElement(
+                            "textarea"
+                        );
+
+                    textarea.value = url;
+
+                    textarea.style.position =
+                        "fixed";
+
+                    textarea.style.left =
+                        "-9999px";
+
+                    textarea.style.top =
+                        "-9999px";
+
+                    document.body.appendChild(
+                        textarea
+                    );
+
+                    textarea.focus();
+
+                    textarea.select();
+
+                    document.execCommand(
+                        "copy"
+                    );
+
+                    textarea.remove();
+                }
+
 
                 button.innerHTML =
-                    '✅ URL Copied!';
+                    "✅ URL Copied!";
 
-                button.classList.add('copied');
+                button.classList.add(
+                    "copied"
+                );
 
-                setTimeout(() => {
+
+                setTimeout(function () {
 
                     button.innerHTML =
                         originalText;
 
-                    button.classList.remove('copied');
+                    button.classList.remove(
+                        "copied"
+                    );
 
                 }, 2000);
 
+
             } catch (error) {
 
-                /* Fallback */
+                console.error(
+                    "Copy failed:",
+                    error
+                );
 
-                const textarea =
-                    document.createElement('textarea');
+                alert(
+                    "Unable to copy URL. Please copy it manually."
+                );
 
-                textarea.value = url;
-
-                textarea.style.position = 'fixed';
-                textarea.style.left = '-9999px';
-                textarea.style.top = '-9999px';
-
-                document.body.appendChild(textarea);
-
-                textarea.focus();
-                textarea.select();
-
-                try {
-
-                    document.execCommand('copy');
-
-                    button.innerHTML =
-                        '✅ URL Copied!';
-
-                    button.classList.add('copied');
-
-                    setTimeout(() => {
-
-                        button.innerHTML =
-                            originalText;
-
-                        button.classList.remove('copied');
-
-                    }, 2000);
-
-                } catch (err) {
-
-                    alert(
-                        'Unable to copy URL. Please copy it manually.'
-                    );
-
-                }
-
-                document.body.removeChild(textarea);
             }
+
         }
 
 
-        /* =========================
-           POPUP
-        ========================= */
+        /* =====================================
+           CREATE BUTTON
+        ===================================== */
 
-        function closePopup() {
+        function createButton(
+            text,
+            className,
+            callback
+        ) {
 
-            document.getElementById('popup')
-                .style.display = 'none';
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.type = "button";
+
+            button.className =
+                className;
+
+            button.textContent =
+                text;
+
+            button.addEventListener(
+                "click",
+                callback
+            );
+
+            return button;
         }
 
 
-        /* =========================
-           LOAD MATCHES
-        ========================= */
+        /* =====================================
+           CREATE COPY BUTTON
+        ===================================== */
 
-        fetch(
-            'https://raw.githubusercontent.com/drmlive/sliv-live-events/main/sonyliv.json'
-        )
+        function createCopyButton(
+            text,
+            url
+        ) {
 
-            .then(res => {
+            const button =
+                createButton(
+                    text,
+                    "copy-btn",
+                    function () {
 
-                if (!res.ok) {
-                    throw new Error(
-                        'Failed to fetch match data'
+                        copyUrl(
+                            url,
+                            button
+                        );
+
+                    }
+                );
+
+            return button;
+        }
+
+
+        /* =====================================
+           CREATE MATCH CARD
+        ===================================== */
+
+        function createMatchCard(
+            match
+        ) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+            card.className =
+                "match-card";
+
+
+            /* IMAGE */
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+            image.src =
+                match.src || "";
+
+            image.alt =
+                "Match poster";
+
+            image.loading =
+                "lazy";
+
+            image.onerror =
+                function () {
+
+                    this.style.display =
+                        "none";
+
+                };
+
+            card.appendChild(
+                image
+            );
+
+
+            /* CONTENT */
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+            content.className =
+                "match-content";
+
+
+            /* TITLE */
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+            title.className =
+                "match-title";
+
+            title.textContent =
+                match.match_name ||
+                "Unknown Match";
+
+            content.appendChild(
+                title
+            );
+
+
+            /* DETAILS */
+
+            const details =
+                document.createElement(
+                    "div"
+                );
+
+            details.className =
+                "match-details";
+
+            details.innerHTML =
+                "🏆 " +
+                escapeHtml(
+                    match.event_name ||
+                    "Unknown Event"
+                ) +
+                "<br>" +
+                "📺 " +
+                escapeHtml(
+                    match.broadcast_channel ||
+                    "N/A"
+                ) +
+                " | 🔊 " +
+                escapeHtml(
+                    match.audioLanguageName ||
+                    "N/A"
+                );
+
+            content.appendChild(
+                details
+            );
+
+
+            /* BUTTON GROUP */
+
+            const buttonGroup =
+                document.createElement(
+                    "div"
+                );
+
+            buttonGroup.className =
+                "btn-group";
+
+
+            /* =================================
+               MAIN STREAM
+            ================================= */
+
+            if (
+                match.isLive &&
+                match.video_url
+            ) {
+
+                const watchButton =
+                    createButton(
+                        "▶️ Main Stream",
+                        "watch-btn",
+                        function () {
+
+                            openStream(
+                                match.video_url
+                            );
+
+                        }
                     );
+
+
+                const copyButton =
+                    createCopyButton(
+                        "📋 Copy Main URL",
+                        match.video_url
+                    );
+
+
+                buttonGroup.appendChild(
+                    watchButton
+                );
+
+                buttonGroup.appendChild(
+                    copyButton
+                );
+
+            }
+
+
+            /* =================================
+               DAI STREAM
+            ================================= */
+
+            if (
+                match.isLive &&
+                match.dai_url
+            ) {
+
+                const watchButton =
+                    createButton(
+                        "💡 DAI Stream",
+                        "watch-btn",
+                        function () {
+
+                            openStream(
+                                match.dai_url
+                            );
+
+                        }
+                    );
+
+
+                const copyButton =
+                    createCopyButton(
+                        "📋 Copy DAI URL",
+                        match.dai_url
+                    );
+
+
+                buttonGroup.appendChild(
+                    watchButton
+                );
+
+                buttonGroup.appendChild(
+                    copyButton
+                );
+
+            }
+
+
+            /* =================================
+               PUB STREAM
+            ================================= */
+
+            if (
+                match.isLive &&
+                match.pub_url
+            ) {
+
+                const watchButton =
+                    createButton(
+                        "📺 PUB Stream",
+                        "watch-btn",
+                        function () {
+
+                            openStream(
+                                match.pub_url
+                            );
+
+                        }
+                    );
+
+
+                const copyButton =
+                    createCopyButton(
+                        "📋 Copy PUB URL",
+                        match.pub_url
+                    );
+
+
+                buttonGroup.appendChild(
+                    watchButton
+                );
+
+                buttonGroup.appendChild(
+                    copyButton
+                );
+
+            }
+
+
+            /*
+             * If no stream URLs exist
+             */
+
+            if (
+                match.isLive &&
+                !match.video_url &&
+                !match.dai_url &&
+                !match.pub_url
+            ) {
+
+                const unavailable =
+                    createButton(
+                        "⚠️ Stream Not Available",
+                        "watch-btn disabled-btn",
+                        function () {
+
+                            alert(
+                                "No stream URL is available for this match."
+                            );
+
+                        }
+                    );
+
+                buttonGroup.appendChild(
+                    unavailable
+                );
+
+            }
+
+
+            content.appendChild(
+                buttonGroup
+            );
+
+            card.appendChild(
+                content
+            );
+
+
+            return card;
+        }
+
+
+        /* =====================================
+           ESCAPE HTML
+        ===================================== */
+
+        function escapeHtml(
+            value
+        ) {
+
+            return String(value)
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        /* =====================================
+           LOAD MATCH DATA
+        ===================================== */
+
+        async function loadMatches() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "https://raw.githubusercontent.com/drmlive/sliv-live-events/main/sonyliv.json",
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "HTTP Error: " +
+                        response.status
+                    );
+
                 }
 
-                return res.json();
-            })
 
-            .then(data => {
+                const data =
+                    await response.json();
 
-                liveContainer.innerHTML = '';
-                upcomingContainer.innerHTML = '';
+
+                if (
+                    !data.matches ||
+                    !Array.isArray(
+                        data.matches
+                    )
+                ) {
+
+                    throw new Error(
+                        "Invalid match data."
+                    );
+
+                }
+
+
+                liveContainer.innerHTML =
+                    "";
+
+                upcomingContainer.innerHTML =
+                    "";
+
 
                 let liveCount = 0;
 
 
-                if (!data.matches ||
-                    !Array.isArray(data.matches)) {
+                /* =================================
+                   PROCESS MATCHES
+                ================================= */
 
-                    throw new Error(
-                        'Invalid match data'
-                    );
-                }
+                data.matches.forEach(
+                    function (match) {
 
-
-                data.matches.forEach(match => {
-
-                    const card =
-                        document.createElement('div');
-
-                    card.className =
-                        'match-card';
+                        const card =
+                            createMatchCard(
+                                match
+                            );
 
 
-                    let buttons = '';
+                        if (
+                            match.isLive
+                        ) {
 
+                            liveContainer
+                                .appendChild(
+                                    card
+                                );
 
-                    /* MAIN STREAM */
+                            liveCount++;
 
-                    if (match.isLive &&
-                        match.video_url) {
+                        } else {
 
-                        buttons += `
+                            upcomingContainer
+                                .appendChild(
+                                    card
+                                );
 
-                            <button
-                                class="watch-btn"
-                                onclick="openStream(${JSON.stringify(match.video_url)})">
+                        }
 
-                                ▶️ Main Stream
-
-                            </button>
-
-                            <button
-                                class="copy-btn"
-                                onclick="copyUrl(${JSON.stringify(match.video_url)}, this)">
-
-                                📋 Copy Main URL
-
-                            </button>
-
-                        `;
                     }
+                );
 
 
-                    /* DAI STREAM */
+                /* =================================
+                   TELEGRAM BUTTON
+                ================================= */
 
-                    if (match.isLive &&
-                        match.dai_url) {
-
-                        buttons += `
-
-                            <button
-                                class="watch-btn"
-                                onclick="openStream(${JSON.stringify(match.dai_url)})">
-
-                                💡 DAI Stream
-
-                            </button>
-
-                            <button
-                                class="copy-btn"
-                                onclick="copyUrl(${JSON.stringify(match.dai_url)}, this)">
-
-                                📋 Copy DAI URL
-
-                            </button>
-
-                        `;
-                    }
+                telegramTop.style.display =
+                    "inline-block";
 
 
-                    /* PUB STREAM */
+                /* =================================
+                   NO LIVE MATCHES
+                ================================= */
 
-                    if (match.isLive &&
-                        match.pub_url) {
-
-                        buttons += `
-
-                            <button
-                                class="watch-btn"
-                                onclick="openStream(${JSON.stringify(match.pub_url)})">
-
-                                📺 PUB Stream
-
-                            </button>
-
-                            <button
-                                class="copy-btn"
-                                onclick="copyUrl(${JSON.stringify(match.pub_url)}, this)">
-
-                                📋 Copy PUB URL
-
-                            </button>
-
-                        `;
-                    }
-
-
-                    card.innerHTML = `
-
-                        <img
-                            src="${match.src || ''}"
-                            alt="Match poster"
-                            loading="lazy"
-                        >
-
-                        <div class="match-content">
-
-                            <div class="match-title">
-                                ${match.match_name || 'Unknown Match'}
-                            </div>
-
-                            <div class="match-details">
-
-                                🏆
-                                ${match.event_name || 'Unknown Event'}
-                                <br>
-
-                                📺
-                                ${match.broadcast_channel || 'N/A'}
-
-                                |
-
-                                🔊
-                                ${match.audioLanguageName || 'N/A'}
-
-                            </div>
-
-                            <div class="btn-group">
-
-                                ${buttons}
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-
-                    if (match.isLive) {
-
-                        liveContainer.appendChild(card);
-
-                        liveCount++;
-
-                    } else {
-
-                        upcomingContainer.appendChild(card);
-                    }
-
-                });
-
-
-                /* TELEGRAM BUTTON */
-
-                telegramTop.style.display = 'block';
-
-
-                /* NO LIVE MATCHES */
-
-                if (liveCount === 0) {
+                if (
+                    liveCount === 0
+                ) {
 
                     liveContainer.innerHTML =
-                        '<div class="no-live">No live matches currently.</div>';
+                        '<div class="no-live">' +
+                        '🔴 No live matches currently.' +
+                        '</div>';
+
                 }
 
-            })
 
-            .catch(err => {
+                /* =================================
+                   NO UPCOMING MATCHES
+                ================================= */
 
-                console.error(err);
+                if (
+                    upcomingContainer
+                        .children.length === 0
+                ) {
+
+                    upcomingContainer.innerHTML =
+                        '<div class="no-live">' +
+                        '📅 No upcoming matches.' +
+                        '</div>';
+
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Match loading error:",
+                    error
+                );
+
 
                 liveContainer.innerHTML =
-                    '<div class="no-live">⚠️ Failed to load matches.</div>';
+                    '<div class="no-live">' +
+                    '⚠️ Failed to load matches.' +
+                    '<br><br>' +
+                    '<small>' +
+                    escapeHtml(
+                        error.message
+                    ) +
+                    '</small>' +
+                    '</div>';
 
-            });
+            }
+
+        }
+
+
+        /* =====================================
+           START
+        ===================================== */
+
+        loadMatches();
 
     </script>
 
