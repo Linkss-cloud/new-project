@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="referrer" content="no-referrer">
+<title>Live Stream</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
+
+<style>
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    overflow:hidden;
+}
+
+#player-wrapper{
+    width:100%;
+    height:100%;
+    background:#000;
+}
+
+#plyr-player{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:#000;
+}
+</style>
+</head>
+
+<body>
+
+<div id="player-wrapper">
+    <video id="plyr-player" controls playsinline></video>
+</div>
+
+<script>
+function qp(key){
+    return new URLSearchParams(location.search).get(key);
+}
+
+function isM3U8(url){
+    return url && url.toLowerCase().includes(".m3u8");
+}
+
+const video=document.getElementById("plyr-player");
+let player;
+
+async function initPlayer(){
+
+    const videoSrc=decodeURIComponent(qp("url")||"");
+
+    if(!videoSrc){
+        alert("Use ?url=");
+        return;
+    }
+
+    const config={
+        clickToPlay:true,
+        controls:[
+            "play-large",
+            "play",
+            "progress",
+            "current-time",
+            "mute",
+            "volume",
+            "pip",
+            "settings",
+            "fullscreen"
+        ],
+        settings:["quality","speed"]
+    };
+
+    if(Hls.isSupported() && isM3U8(videoSrc)){
+
+        const hls=new Hls({
+            maxBufferLength:30
+        });
+
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+
+            const qualities=[...new Set(
+                hls.levels
+                .map(level=>level.height)
+                .filter(Boolean)
+            )].sort((a,b)=>a-b);
+
+            config.quality={
+                default:qualities[qualities.length-1],
+                options:qualities,
+                forced:true,
+                onChange:(quality)=>{
+                    hls.levels.forEach((level,index)=>{
+                        if(level.height===quality){
+                            hls.currentLevel=index;
+                        }
+                    });
+                }
+            };
+
+            player=new Plyr(video,config);
+
+            player.play().catch(()=>{});
+        });
+
+    }else{
+
+        video.src=videoSrc;
+
+        player=new Plyr(video,config);
+
+        player.play().catch(()=>{});
+    }
+}
+
+initPlayer();
+</script>
+
+</body>
+</html>
