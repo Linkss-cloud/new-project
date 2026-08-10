@@ -1,0 +1,281 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-main: #020817;
+    --bg-panel: #071229;
+    --bg-input: #1E293B;
+    --border: #334155;
+    --accent: #00E5FF;
+    --danger: #EF4444;
+    --text-main: #FFFFFF;
+    --text-muted: #94A3B8;
+    --font: 'Sora', sans-serif;
+    --radius-btn: 12px;
+    --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+body {
+    font-family: var(--font);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.player-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 24px 20px;
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.player-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.player-brand {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #ffffff, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-telegram {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.btn-telegram svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--accent);
+    transition: transform 0.2s ease;
+}
+
+.btn-telegram:hover {
+    border-color: var(--accent);
+    background-color: rgba(0, 229, 255, 0.05);
+    color: var(--accent);
+}
+
+.btn-telegram:hover svg {
+    transform: scale(1.1) translate(1px, -1px);
+}
+
+.player-footer {
+    margin-top: auto;
+    padding: 24px 20px;
+    background-color: var(--bg-panel);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.player-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.match-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+}
+
+.match-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.live-indicator {
+    padding: 4px 8px;
+    background-color: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 6px;
+    color: var(--danger);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    animation: pulseBg 2s infinite;
+}
+
+@keyframes pulseBg {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+#matchName {
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#matchTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.match-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.badge-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-item svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--accent);
+}
+
+.viewers-badge {
+    color: var(--text-main);
+    border-color: rgba(0, 229, 255, 0.3);
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: #000000;
+    border-radius: 0;
+}
+
+.server-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.server-btn-play {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 16px;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    color: var(--text-main);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.server-btn-play svg {
+    display: none !important;
+}
+
+.server-btn-play:hover {
+    background-color: var(--bg-input);
+    border-color: #475569;
+}
+
+.server-btn-play.active {
+    background-color: var(--bg-input);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+    .player-header, .player-footer { padding: 16px; }
+    .player-brand { font-size: 24px; }
+    .btn-telegram { padding: 8px 12px; font-size: 10px; }
+    .player-container { margin: 24px auto 40px; gap: 20px; }
+    .match-header-info { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .match-badges { justify-content: flex-start; }
+    #matchName { font-size: 18px; }
+    .server-list { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .server-btn-play { padding: 16px 10px; font-size: 12px; }
+}
