@@ -14,7 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
     <style>
-
         html,
         body {
             margin: 0;
@@ -39,79 +38,58 @@
             background: #000;
         }
 
-        /* =================================
-           CUSTOM SEEK BUTTONS
-           ================================= */
-
-        #seek-controls {
-            position: absolute;
-
-            left: 50%;
-            bottom: 65px;
-
-            transform: translateX(-50%);
-
-            display: flex;
+        /* Custom 10 sec buttons */
+        .custom-seek-button {
+            display: inline-flex !important;
             align-items: center;
             justify-content: center;
 
-            gap: 22px;
+            width: 42px !important;
+            min-width: 42px !important;
+            height: 40px !important;
 
-            z-index: 50;
+            padding: 0 !important;
+            margin: 0 !important;
 
-            pointer-events: none;
-        }
-
-        .seek-btn {
-            width: 48px;
-            height: 48px;
-
-            border: 0;
-            border-radius: 50%;
-
-            background: rgba(0, 0, 0, 0.65);
-            color: #fff;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #fff !important;
+            background: transparent !important;
+            border: 0 !important;
 
             cursor: pointer;
+            font-size: 13px !important;
+            font-weight: 600;
 
-            font-size: 14px;
-            font-weight: 700;
-
-            backdrop-filter: blur(4px);
-
-            pointer-events: auto;
-
-            transition: background 0.15s, transform 0.15s;
+            opacity: 0.9;
         }
 
-        .seek-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.08);
+        .custom-seek-button:hover {
+            opacity: 1;
+            color: #fff !important;
         }
 
-        .seek-btn:active {
-            transform: scale(0.92);
-            background: rgba(255, 255, 255, 0.35);
+        .custom-seek-button:active {
+            transform: scale(0.9);
         }
 
-        .seek-icon {
-            font-size: 22px;
+        .seek-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             line-height: 1;
         }
 
-        .seek-text {
-            font-size: 11px;
-            margin-top: 1px;
+        .seek-icon {
+            font-size: 20px;
+            line-height: 17px;
         }
 
-        /* =================================
-           2X INDICATOR
-           ================================= */
+        .seek-seconds {
+            font-size: 9px;
+            line-height: 10px;
+        }
 
+        /* 2x indicator */
         #speed-indicator {
             position: absolute;
 
@@ -133,7 +111,7 @@
             font-size: 22px;
             font-weight: 700;
 
-            z-index: 60;
+            z-index: 100;
 
             pointer-events: none;
         }
@@ -142,31 +120,31 @@
             display: block;
         }
 
-        /* =================================
-           MOBILE
-           ================================= */
+        /* Fullscreen */
+        .plyr--fullscreen-active {
+            width: 100%;
+            height: 100%;
+        }
+
+        .plyr--fullscreen-active .plyr__controls {
+            display: flex !important;
+        }
 
         @media (max-width: 600px) {
 
-            #seek-controls {
-                bottom: 58px;
-                gap: 18px;
-            }
-
-            .seek-btn {
-                width: 44px;
-                height: 44px;
+            .custom-seek-button {
+                width: 38px !important;
+                min-width: 38px !important;
             }
 
             .seek-icon {
-                font-size: 20px;
+                font-size: 18px;
             }
 
-            .seek-text {
-                font-size: 10px;
+            .seek-seconds {
+                font-size: 8px;
             }
         }
-
     </style>
 </head>
 
@@ -180,49 +158,6 @@
         playsinline
         preload="auto">
     </video>
-
-
-    <!-- CUSTOM SEEK BUTTONS -->
-
-    <div id="seek-controls">
-
-        <!-- 10 SEC BACK -->
-
-        <button
-            id="back10"
-            class="seek-btn"
-            type="button"
-            aria-label="Back 10 seconds">
-
-            <span>
-                <span class="seek-icon">↶</span>
-                <br>
-                <span class="seek-text">10</span>
-            </span>
-
-        </button>
-
-
-        <!-- 10 SEC FORWARD -->
-
-        <button
-            id="forward10"
-            class="seek-btn"
-            type="button"
-            aria-label="Forward 10 seconds">
-
-            <span>
-                <span class="seek-icon">↷</span>
-                <br>
-                <span class="seek-text">10</span>
-            </span>
-
-        </button>
-
-    </div>
-
-
-    <!-- 2X INDICATOR -->
 
     <div id="speed-indicator">
         2×
@@ -242,12 +177,7 @@ function isM3U8(url) {
 }
 
 const video = document.getElementById("plyr-player");
-
-const back10 = document.getElementById("back10");
-const forward10 = document.getElementById("forward10");
-
-const speedIndicator =
-    document.getElementById("speed-indicator");
+const speedIndicator = document.getElementById("speed-indicator");
 
 let player;
 
@@ -261,14 +191,10 @@ async function initPlayer() {
     const videoSrc =
         decodeURIComponent(qp("url") || "");
 
-
     if (!videoSrc) {
-
         alert("Use ?url=");
-
         return;
     }
-
 
     const config = {
 
@@ -306,9 +232,7 @@ async function initPlayer() {
             maxBufferLength: 30
         });
 
-
         hls.loadSource(videoSrc);
-
         hls.attachMedia(video);
 
 
@@ -337,25 +261,23 @@ async function initPlayer() {
 
                         forced: true,
 
-                        onChange:
-                            (quality) => {
+                        onChange: (quality) => {
 
-                                hls.levels.forEach(
-                                    (level, index) => {
+                            hls.levels.forEach(
+                                (level, index) => {
 
-                                        if (
-                                            level.height ===
-                                            quality
-                                        ) {
-
-                                            hls.currentLevel =
-                                                index;
-                                        }
-
+                                    if (
+                                        level.height === quality
+                                    ) {
+                                        hls.currentLevel = index;
                                     }
-                                );
-                            }
+
+                                }
+                            );
+
+                        }
                     };
+
                 }
 
 
@@ -365,9 +287,17 @@ async function initPlayer() {
                 );
 
 
-                player.play().catch(
-                    () => {}
+                player.on(
+                    "ready",
+                    () => {
+
+                        addCustomSeekButtons();
+
+                    }
                 );
+
+
+                player.play().catch(() => {});
 
             }
         );
@@ -381,69 +311,212 @@ async function initPlayer() {
 
         video.src = videoSrc;
 
-
         player = new Plyr(
             video,
             config
         );
 
 
-        player.play().catch(
-            () => {}
+        player.on(
+            "ready",
+            () => {
+
+                addCustomSeekButtons();
+
+            }
         );
+
+
+        player.play().catch(() => {});
     }
 }
 
 
 /* ==========================================
-   BACK 10 SECONDS
+   ADD BUTTONS TO PLYR CONTROL BAR
    ========================================== */
 
-back10.addEventListener(
-    "click",
-    function (e) {
+function addCustomSeekButtons() {
 
-        e.preventDefault();
+    const controls =
+        document.querySelector(".plyr__controls");
 
-        e.stopPropagation();
+    if (!controls) {
+        return;
+    }
 
 
-        video.currentTime = Math.max(
-            0,
-            video.currentTime - 10
+    /* Already added */
+    if (
+        document.getElementById("plyr-back-10")
+    ) {
+        return;
+    }
+
+
+    /*
+     * Find actual Play button
+     */
+    const playButton =
+        controls.querySelector(
+            '[data-plyr="play"]'
         );
 
-    }
-);
+
+    /* ======================================
+       BACK 10 BUTTON
+       ====================================== */
+
+    const backButton =
+        document.createElement("button");
+
+    backButton.type = "button";
+
+    backButton.id = "plyr-back-10";
+
+    backButton.className =
+        "plyr__control custom-seek-button";
+
+    backButton.setAttribute(
+        "aria-label",
+        "Back 10 seconds"
+    );
+
+    backButton.setAttribute(
+        "data-tooltip",
+        "Back 10 seconds"
+    );
+
+    backButton.innerHTML = `
+        <span class="seek-content">
+            <span class="seek-icon">↶</span>
+            <span class="seek-seconds">10</span>
+        </span>
+    `;
 
 
-/* ==========================================
-   FORWARD 10 SECONDS
-   ========================================== */
+    /* ======================================
+       FORWARD 10 BUTTON
+       ====================================== */
 
-forward10.addEventListener(
-    "click",
-    function (e) {
+    const forwardButton =
+        document.createElement("button");
 
-        e.preventDefault();
+    forwardButton.type = "button";
 
-        e.stopPropagation();
+    forwardButton.id =
+        "plyr-forward-10";
+
+    forwardButton.className =
+        "plyr__control custom-seek-button";
+
+    forwardButton.setAttribute(
+        "aria-label",
+        "Forward 10 seconds"
+    );
+
+    forwardButton.setAttribute(
+        "data-tooltip",
+        "Forward 10 seconds"
+    );
+
+    forwardButton.innerHTML = `
+        <span class="seek-content">
+            <span class="seek-icon">↷</span>
+            <span class="seek-seconds">10</span>
+        </span>
+    `;
 
 
-        if (isFinite(video.duration)) {
+    /* ======================================
+       PUT BUTTONS AROUND PLAY
+       ====================================== */
 
-            video.currentTime = Math.min(
-                video.duration,
-                video.currentTime + 10
+    if (playButton) {
+
+        /*
+         * Back button before Play
+         */
+        playButton.parentNode.insertBefore(
+            backButton,
+            playButton
+        );
+
+
+        /*
+         * Forward button after Play
+         */
+        if (playButton.nextSibling) {
+
+            playButton.parentNode.insertBefore(
+                forwardButton,
+                playButton.nextSibling
             );
 
         } else {
 
-            video.currentTime += 10;
+            playButton.parentNode.appendChild(
+                forwardButton
+            );
         }
 
+    } else {
+
+        controls.prepend(backButton);
+        controls.prepend(forwardButton);
+
     }
-);
+
+
+    /* ======================================
+       BACK 10 ACTION
+       ====================================== */
+
+    backButton.addEventListener(
+        "click",
+        function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            video.currentTime = Math.max(
+                0,
+                video.currentTime - 10
+            );
+
+        }
+    );
+
+
+    /* ======================================
+       FORWARD 10 ACTION
+       ====================================== */
+
+    forwardButton.addEventListener(
+        "click",
+        function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+
+            if (isFinite(video.duration)) {
+
+                video.currentTime = Math.min(
+                    video.duration,
+                    video.currentTime + 10
+                );
+
+            } else {
+
+                video.currentTime += 10;
+
+            }
+
+        }
+    );
+
+}
 
 
 /* ==========================================
@@ -454,14 +527,13 @@ let holdTimer = null;
 let isHolding = false;
 
 
-/*
- * Press start
- */
-
 video.addEventListener(
     "pointerdown",
     function (e) {
 
+        /*
+         * Only left mouse button
+         */
         if (
             e.pointerType === "mouse" &&
             e.button !== 0
@@ -471,36 +543,28 @@ video.addEventListener(
 
 
         holdTimer = setTimeout(
-            function () {
+            () => {
 
                 isHolding = true;
 
 
-                /*
-                 * 2X speed
-                 */
-
+                /* 2x */
                 video.playbackRate = 2;
 
 
-                /*
-                 * Show indicator
-                 */
-
+                /* Show indicator */
                 speedIndicator.classList.add(
                     "show"
                 );
 
 
-                /*
-                 * Play if paused
-                 */
-
+                /* Play if paused */
                 if (video.paused) {
 
                     video.play().catch(
                         () => {}
                     );
+
                 }
 
             },
@@ -511,9 +575,9 @@ video.addEventListener(
 );
 
 
-/*
- * Stop hold
- */
+/* ==========================================
+   RELEASE = NORMAL SPEED
+   ========================================== */
 
 function stopHold() {
 
@@ -527,21 +591,11 @@ function stopHold() {
 
     if (isHolding) {
 
-        /*
-         * Back to normal speed
-         */
-
         video.playbackRate = 1;
-
-
-        /*
-         * Hide 2x indicator
-         */
 
         speedIndicator.classList.remove(
             "show"
         );
-
 
         isHolding = false;
     }
@@ -560,10 +614,6 @@ video.addEventListener(
 );
 
 
-/*
- * Mouse video se bahar chala jaye
- */
-
 video.addEventListener(
     "pointerleave",
     function (e) {
@@ -576,16 +626,14 @@ video.addEventListener(
 );
 
 
-/*
- * Context menu disable
- */
+/* ==========================================
+   DISABLE CONTEXT MENU
+   ========================================== */
 
 video.addEventListener(
     "contextmenu",
     function (e) {
-
         e.preventDefault();
-
     }
 );
 
