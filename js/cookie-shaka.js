@@ -1,410 +1,644 @@
-console.log("COOKIE SHAKA FILE LOADED");
+console.log(
+    "COOKIE SHAKA FILE LOADED"
+);
 
 
 let cookiePlayer = null;
+let cookieRequestFilterRegistered = false;
 
 
-window.loadCookieShaka = async function (stream) {
+/*
+====================================================
+HELPERS
+====================================================
+*/
 
-    console.log(
-        "COOKIE STREAM RECEIVED:",
-        stream
-    );
+function getCookieElement(id) {
+
+    return document.getElementById(id);
+
+}
 
 
-    const video =
-        document.getElementById("videoPlayer");
-
+function hideCookieLoader() {
 
     const loader =
-        document.getElementById("loader");
+        getCookieElement("loader");
 
 
-    const box =
-        document.getElementById("shaka-container");
+    if (loader) {
 
-
-    if (!video) {
-
-        console.error(
-            "VIDEO ELEMENT NOT FOUND"
-        );
-
-        return;
+        loader.style.display =
+            "none";
 
     }
 
-
-    try {
-
-        /*
-         * SHOW PLAYER
-         */
-
-        if (box) {
-            box.style.display = "block";
-        }
+}
 
 
-        /*
-         * SHAKA SUPPORT
-         */
+function showCookieError(
+    message = "STREAM ERROR"
+) {
 
-        shaka.polyfill.installAll();
-
-
-        if (!shaka.Player.isBrowserSupported()) {
-
-            console.error(
-                "SHAKA NOT SUPPORTED"
-            );
-
-            if (loader) {
-                loader.innerHTML =
-                    "BROWSER NOT SUPPORTED";
-            }
-
-            return;
-
-        }
+    const loader =
+        getCookieElement("loader");
 
 
-        /*
-         * VIDEO AUTOPLAY SETTINGS
-         *
-         * Muted autoplay direct URL par
-         * browser ke liye reliable hota hai.
-         */
+    if (loader) {
 
-        video.muted = true;
+        loader.innerText =
+            message;
 
-        video.autoplay = true;
+        loader.style.display =
+            "block";
 
-        video.playsInline = true;
+    }
 
+}
 
 
-        /*
-         * CREATE PLAYER
-         */
+/*
+====================================================
+STOP COOKIE PLAYER
+====================================================
+*/
+
+window.stopCookieShaka =
+    async function () {
+
+        console.log(
+            "STOP COOKIE SHAKA"
+        );
+
 
         if (!cookiePlayer) {
+            return;
+        }
 
-            cookiePlayer =
-                new shaka.Player();
 
-            await cookiePlayer.attach(
-                video
-            );
-
-        } else {
+        try {
 
             await cookiePlayer.unload();
 
+        } catch (error) {
+
+            console.error(
+                "COOKIE SHAKA UNLOAD ERROR:",
+                error
+            );
+
+        }
+
+    };
+
+
+/*
+====================================================
+LOAD COOKIE SHAKA
+====================================================
+*/
+
+window.loadCookieShaka =
+    async function (stream) {
+
+        console.log(
+            "COOKIE STREAM RECEIVED:",
+            stream
+        );
+
+
+        const video =
+            getCookieElement(
+                "videoPlayer"
+            );
+
+
+        const loader =
+            getCookieElement(
+                "loader"
+            );
+
+
+        const box =
+            getCookieElement(
+                "shaka-container"
+            );
+
+
+        if (!video) {
+
+            console.error(
+                "VIDEO ELEMENT NOT FOUND"
+            );
+
+            showCookieError(
+                "VIDEO ELEMENT NOT FOUND"
+            );
+
+            return false;
+
         }
 
 
+        try {
 
-        /*
-         * DRM
-         */
+            /*
+            ==========================================
+            SHOW PLAYER
+            ==========================================
+            */
 
-        cookiePlayer.configure({
+            if (box) {
 
-            drm: {
-
-                clearKeys: {}
+                box.style.display =
+                    "block";
 
             }
 
-        });
+
+            /*
+            ==========================================
+            LOADER
+            ==========================================
+            */
+
+            if (loader) {
+
+                loader.innerText =
+                    "LOADING STREAM...";
+
+                loader.style.display =
+                    "block";
+
+            }
 
 
+            /*
+            ==========================================
+            VIDEO SETTINGS
+            ==========================================
+            */
 
-        /*
-         * CLEAR OLD REQUEST FILTERS
-         */
+            video.muted = true;
 
-        cookiePlayer
-            .getNetworkingEngine()
-            .clearAllRequestFilters();
+            video.autoplay = true;
 
-
-
-        /*
-         * CLEAR KEY
-         */
-
-        if (
-            stream.key &&
-            stream.key.includes(":")
-        ) {
-
-            const parts =
-                stream.key.split(":");
+            video.playsInline = true;
 
 
-            const kid =
-                parts[0]
-                    .trim()
-                    .toLowerCase();
+            /*
+            ==========================================
+            IMPORTANT:
+            EVENT PEHLE REGISTER KARO
+            ==========================================
+            */
+
+            video.onplaying =
+                function () {
+
+                    console.log(
+                        "COOKIE VIDEO PLAYING"
+                    );
+
+                    hideCookieLoader();
+
+                };
 
 
-            const key =
-                parts[1]
-                    .trim()
-                    .toLowerCase();
+            video.oncanplay =
+                function () {
+
+                    console.log(
+                        "COOKIE VIDEO CAN PLAY"
+                    );
+
+                };
 
 
-            console.log(
-                "CLEAR KEY:",
-                kid
-            );
+            video.onerror =
+                function (event) {
 
+                    console.error(
+                        "COOKIE VIDEO ERROR:",
+                        event
+                    );
+
+                };
+
+
+            /*
+            ==========================================
+            SHAKA
+            ==========================================
+            */
+
+            shaka.polyfill.installAll();
+
+
+            if (
+                !shaka.Player.isBrowserSupported()
+            ) {
+
+                console.error(
+                    "SHAKA NOT SUPPORTED"
+                );
+
+                showCookieError(
+                    "BROWSER NOT SUPPORTED"
+                );
+
+                return false;
+
+            }
+
+
+            /*
+            ==========================================
+            CREATE / REUSE PLAYER
+            ==========================================
+            */
+
+            if (!cookiePlayer) {
+
+                cookiePlayer =
+                    new shaka.Player();
+
+                await cookiePlayer.attach(
+                    video
+                );
+
+            } else {
+
+                await cookiePlayer.unload();
+
+            }
+
+
+            /*
+            ==========================================
+            SHAKA ERROR
+            ==========================================
+            */
+
+            cookiePlayer.onerror =
+                function (event) {
+
+                    console.error(
+                        "COOKIE SHAKA ERROR:",
+                        event.detail
+                    );
+
+                };
+
+
+            /*
+            ==========================================
+            DRM
+            ==========================================
+            */
 
             cookiePlayer.configure({
 
                 drm: {
 
-                    clearKeys: {
-
-                        [kid]: key
-
-                    }
+                    clearKeys: {}
 
                 }
 
             });
 
-        }
+
+            /*
+            ==========================================
+            CLEAR KEY
+            ==========================================
+            */
+
+            if (
+                stream.key &&
+                String(stream.key).includes(":")
+            ) {
+
+                const parts =
+                    String(stream.key).split(":");
 
 
-
-        /*
-         * COOKIE / TOKEN
-         */
-
-        const token =
-            stream.cookie
-                ? stream.cookie.trim()
-                : "";
+                const kid =
+                    parts[0]
+                        .trim()
+                        .toLowerCase();
 
 
+                const key =
+                    parts[1]
+                        .trim()
+                        .toLowerCase();
 
-        /*
-         * NETWORK REQUEST FILTER
-         */
 
-        cookiePlayer
-            .getNetworkingEngine()
-            .registerRequestFilter(
-                (type, request) => {
+                console.log(
+                    "COOKIE CLEAR KEY:",
+                    kid
+                );
 
-                    console.log(
-                        "REQUEST:",
-                        request.uris[0]
+
+                cookiePlayer.configure({
+
+                    drm: {
+
+                        clearKeys: {
+
+                            [kid]: key
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+
+            /*
+            ==========================================
+            TOKEN / COOKIE
+            ==========================================
+            */
+
+            const token =
+                stream.cookie
+                    ? String(
+                        stream.cookie
+                    ).trim()
+                    : "";
+
+
+            /*
+            ==========================================
+            NETWORKING ENGINE
+            ==========================================
+            */
+
+            const networkingEngine =
+                cookiePlayer
+                    .getNetworkingEngine();
+
+
+            if (!networkingEngine) {
+
+                console.error(
+                    "NETWORKING ENGINE NOT FOUND"
+                );
+
+                showCookieError(
+                    "NETWORK ERROR"
+                );
+
+                return false;
+
+            }
+
+
+            /*
+            ==========================================
+            CLEAR OLD FILTERS
+            ==========================================
+            */
+
+            networkingEngine
+                .clearAllRequestFilters();
+
+
+            /*
+            ==========================================
+            REQUEST FILTER
+            ==========================================
+            */
+
+            cookieRequestFilterRegistered =
+                false;
+
+
+            if (token) {
+
+                networkingEngine
+                    .registerRequestFilter(
+                        function (
+                            type,
+                            request
+                        ) {
+
+                            if (
+                                !request ||
+                                !request.uris ||
+                                !request.uris.length
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            const originalUrl =
+                                request.uris[0];
+
+
+                            console.log(
+                                "COOKIE REQUEST:",
+                                originalUrl
+                            );
+
+
+                            /*
+                            IMPORTANT:
+                            Browser JavaScript cannot reliably
+                            override User-Agent.
+                            
+                            Authentication/token handling
+                            should preferably be done by your
+                            authorized backend/CDN configuration.
+                            */
+
+
+                            if (
+                                originalUrl.startsWith(
+                                    "https://"
+                                ) &&
+                                !originalUrl.includes(
+                                    "__hdnea__"
+                                )
+                            ) {
+
+                                const separator =
+                                    originalUrl.includes("?")
+                                        ? "&"
+                                        : "?";
+
+
+                                request.uris[0] =
+                                    originalUrl +
+                                    separator +
+                                    token;
+
+                            }
+
+                        }
                     );
 
 
-                    if (!token) {
-                        return;
-                    }
-
-
-
-                    /*
-                     * REFERER
-                     */
-
-                    request.headers["Referer"] =
-                        "https://www.jiotv.com/";
-
-
-
-                    /*
-                     * USER AGENT
-                     */
-
-                    request.headers["User-Agent"] =
-                        "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-
-
-
-                    /*
-                     * TOKEN
-                     */
-
-                    if (
-                        request.uris[0]
-                            .startsWith("https://")
-                        &&
-                        !request.uris[0]
-                            .includes("__hdnea__")
-                    ) {
-
-                        request.uris[0] +=
-
-                            (
-                                request.uris[0]
-                                    .includes("?")
-                                    ? "&"
-                                    : "?"
-                            )
-
-                            +
-
-                            token;
-
-                    }
-
-                }
-            );
-
-
-
-        /*
-         * STREAM URL
-         */
-
-        const url =
-            stream.mpd ||
-            stream.url;
-
-
-        if (!url) {
-
-            console.error(
-                "NO STREAM URL"
-            );
-
-            if (loader) {
-                loader.innerHTML =
-                    "STREAM URL NOT FOUND";
-            }
-
-            return;
-
-        }
-
-
-        console.log(
-            "LOADING:",
-            url
-        );
-
-
-
-        /*
-         * LOAD STREAM
-         */
-
-        await cookiePlayer.load(
-            url
-        );
-
-
-        console.log(
-            "COOKIE SHAKA LOADED"
-        );
-
-
-
-        /*
-         * AUTOPLAY
-         */
-
-        try {
-
-            await video.play();
-
-
-            console.log(
-                "COOKIE SHAKA AUTOPLAY SUCCESS"
-            );
-
-
-        } catch (error) {
-
-            console.warn(
-                "COOKIE SHAKA AUTOPLAY BLOCKED:",
-                error
-            );
-
-        }
-
-
-
-        /*
-         * VIDEO STARTED
-         */
-
-        video.onplaying = function () {
-
-            console.log(
-                "VIDEO STARTED"
-            );
-
-
-            if (loader) {
-
-                loader.style.display =
-                    "none";
+                cookieRequestFilterRegistered =
+                    true;
 
             }
 
-        };
+
+            /*
+            ==========================================
+            STREAM URL
+            ==========================================
+            */
+
+            const url =
+                stream.mpd ||
+                stream.url;
 
 
-
-        /*
-         * VIDEO ERROR
-         */
-
-        video.onerror = function (error) {
-
-            console.error(
-                "VIDEO ERROR:",
-                error
-            );
-
-        };
-
-
-
-        /*
-         * SHAKA ERROR
-         */
-
-        cookiePlayer.addEventListener(
-            "error",
-            function (event) {
+            if (!url) {
 
                 console.error(
-                    "SHAKA ERROR:",
-                    event.detail
+                    "NO STREAM URL"
+                );
+
+                showCookieError(
+                    "STREAM URL NOT FOUND"
+                );
+
+                return false;
+
+            }
+
+
+            console.log(
+                "COOKIE SHAKA LOADING:",
+                url
+            );
+
+
+            /*
+            ==========================================
+            LOAD
+            ==========================================
+            */
+
+            await cookiePlayer.load(
+                url
+            );
+
+
+            console.log(
+                "COOKIE SHAKA LOAD SUCCESS"
+            );
+
+
+            /*
+            ==========================================
+            AUTOPLAY
+            ==========================================
+            */
+
+            try {
+
+                await video.play();
+
+                console.log(
+                    "COOKIE SHAKA AUTOPLAY SUCCESS"
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "COOKIE SHAKA AUTOPLAY BLOCKED:",
+                    error
                 );
 
             }
-        );
-
-    }
 
 
-    catch (error) {
+            /*
+            ==========================================
+            LOADER FALLBACK
+            ==========================================
+            */
 
-        console.error(
-            "COOKIE SHAKA ERROR:",
-            error
-        );
+            setTimeout(
+                function () {
+
+                    /*
+                    readyState:
+                    0 = nothing
+                    1 = metadata
+                    2 = current data
+                    3 = future data
+                    4 = enough data
+                    */
+
+                    if (
+                        video.readyState >= 3 &&
+                        !video.paused
+                    ) {
+
+                        console.log(
+                            "COOKIE VIDEO IS PLAYING - FALLBACK HIDE"
+                        );
+
+                        hideCookieLoader();
+
+                    }
+
+                },
+                1000
+            );
 
 
-        if (loader) {
+            /*
+            ==========================================
+            SECOND FALLBACK
+            ==========================================
+            */
 
-            loader.innerHTML =
-                "STREAM ERROR";
+            setTimeout(
+                function () {
+
+                    if (
+                        video.readyState >= 3 &&
+                        !video.paused
+                    ) {
+
+                        hideCookieLoader();
+
+                    }
+
+                },
+                3000
+            );
+
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                "COOKIE SHAKA ERROR:",
+                error
+            );
+
+
+            showCookieError(
+                "STREAM ERROR"
+            );
+
+
+            return false;
 
         }
 
-    }
-
-};
+    };
