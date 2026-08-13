@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StreamFlex Advanced Player</title>
+
+    <!-- Shaka Player with UI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0f0f0f;
+            --card-bg: #1f1f1f;
+            --accent: #ff4500;
+            --text-light: #ffffff;
+            --text-muted: #aaaaaa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            background: #000;
+            border-bottom: 2px solid var(--card-bg);
+        }
+
+        /* Grid Layout */
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #loading-text {
+            text-align: center;
+            color: var(--accent);
+            margin-top: 50px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .channel-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .channel-card:hover {
+            transform: scale(1.05);
+            background: #2a2a2a;
+        }
+
+        .channel-card img {
+            width: 100%;
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .channel-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Fullscreen Player Modal */
+        #player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        #player-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .modal-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+            transition: opacity 0.3s;
+        }
+
+        .modal-header.idle-hide {
+            opacity: 0;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px #000;
+        }
+
+        #close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #close-btn:hover {
+            background: var(--accent);
+        }
+
+        .shaka-video-container {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Utility */
+        #player-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent);
+            font-weight: bold;
+            z-index: 1;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>StreamFlex TV</h1>
+    </header>
+
+    <div class="container">
+        <h2 id="loading-text">Loading channels...</h2>
+        <div class="grid" id="grid-container"></div>
+    </div>
+
+    <!-- Fullscreen Player Modal -->
+    <div id="player-modal" class="hidden">
+        <div class="modal-header" id="modal-header">
+            <div class="modal-title" id="playing-title">Channel Name</div>
+            <button id="close-btn">Close X</button>
+        </div>
+        <div id="player-loading">Loading Stream...</div>
+        <div class="shaka-video-container" id="video-container">
+            <video id="video" autoplay></video>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        // Change this if your worker is hosted elsewhere (e.g., 'https://test.xyzplay.workers.dev')
+        const WORKER_BASE_URL = 'https://test.xyzplay.workers.dev';
+
+        const endpoints = {
+            allChannels: `${WORKER_BASE_URL}/api/ziomobile.m3u?start=0&end=200`, // Adjust 'end' to fetch more
+            singleChannel: `${WORKER_BASE_URL}/api/drm/?id=`
+        };
+
+        let channelsData = [];
+        window.activePlayer = null;
+        window.activeUI = null;
+
+        // --- APP INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        async function initializeApp() {
+            try {
+                const response = await fetch(endpoints.allChannels);
+                if (!response.ok) throw new Error('Network response failed');
+
+                const json = await response.json();
+                // Handle both paginated object { data: [] } and raw array []
+                channelsData = json.data ? json.data : (Array.isArray(json) ? json : []);
+
+                document.getElementById('loading-text').style.display = 'none';
+                renderGrid(channelsData);
+
+                // Install Shaka Polyfills
+                shaka.polyfill.installAll();
+                if (!shaka.Player.isBrowserSupported()) {
+                    alert('Browser not supported for DRM playback.');
+                }
+            } catch (error) {
+                console.error('Failed to load channels:', error);
+                document.getElementById('loading-text').innerText = 'Failed to load channels.';
+            }
+        }
+
+        // --- UI RENDERING ---
+        function renderGrid(channels) {
+            const grid = document.getElementById('grid-container');
+            grid.innerHTML = '';
+
+            if (channels.length === 0) {
+                grid.innerHTML = '<h3 id="loading-text">No channels found.</h3>';
+                return;
+            }
+
+            channels.forEach(channel => {
+                const card = document.createElement('div');
+                card.className = 'channel-card';
+                // Fallback image if logo is missing
+                const logoSrc = channel.logo || 'https://via.placeholder.com/100x100?text=TV';
+
+                card.innerHTML = `
+                    <img src="${logoSrc}" alt="${channel.name}"> 
+                    <h3>${channel.name}</h3>
+                `;
+
+                card.onclick = () => loadAndPlayChannel(channel.id, channel.name);
+                grid.appendChild(card);
+            });
+        }
+
+        // --- MODAL & IDLE TIMER LOGIC ---
+        const modal = document.getElementById('player-modal');
+        const header = document.getElementById('modal-header');
+        const closeBtn = document.getElementById('close-btn');
+        let hideTimeout;
+
+        function resetHideTimer() {
+            header.classList.remove('idle-hide');
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+                header.classList.add('idle-hide');
+            }, 3000);
+        }
+
+        modal.addEventListener('mousemove', resetHideTimer);
+        modal.addEventListener('touchstart', resetHideTimer);
+
+        closeBtn.onclick = async () => {
+            modal.classList.add('hidden');
+            document.getElementById('video').pause();
+            if (window.activePlayer) {
+                await window.activePlayer.destroy();
+                window.activePlayer = null;
+            }
+            if (window.activeUI) {
+                await window.activeUI.destroy();
+                window.activeUI = null;
+            }
+        };
+
+        // --- DEDICATED FETCH & PLAYBACK LOGIC ---
+        async function loadAndPlayChannel(id, name) {
+            modal.classList.remove('hidden');
+            document.getElementById('playing-title').innerText = name;
+            const loader = document.getElementById('player-loading');
+            loader.style.display = 'block';
+            resetHideTimer();
+
+            try {
+                // 1. Fetch fresh data dynamically using ID
+                const response = await fetch(`${endpoints.singleChannel}${id}`);
+                const data = await response.json();
+
+                if (!data || data.length === 0) throw new Error("Channel data empty");
+
+                const channel = data[0]; // Worker returns array for /api/drm/
+                await initializeShakaPlayer(channel);
+
+                loader.style.display = 'none';
+            } catch (err) {
+                console.error("Playback error:", err);
+                loader.innerText = "Error loading stream.";
+                setTimeout(() => { if (loader.innerText === "Error loading stream.") closeBtn.click(); }, 3000);
+            }
+        }
+
+        async function initializeShakaPlayer(channel) {
+            const video = document.getElementById('video');
+            const container = document.getElementById('video-container');
+
+            // Destroy previous instance if exists
+            if (window.activePlayer) await window.activePlayer.destroy();
+            if (window.activeUI) await window.activeUI.destroy();
+
+            const player = new shaka.Player();
+            window.activePlayer = player;
+            await player.attach(video);
+
+            const ui = new shaka.ui.Overlay(player, container, video);
+            window.activeUI = ui;
+
+            // UI Configuration
+            ui.configure({
+                controlPanelElements: [
+                    'play_pause', 'time_and_duration', 'mute', 'volume',
+                    'spacer', 'picture_in_picture', 'fullscreen', 'overflow_menu'
+                ],
+                overflowMenuButtons: ['quality', 'language', 'captions'],
+                volumeBarColors: { base: 'rgba(63, 187, 1, 1)', level: 'rgb(255, 69, 0)' },
+                seekBarColors: { base: 'rgb(41, 41, 163)', buffered: 'rgb(35, 99, 3)', played: 'rgba(63, 187, 1, 1)' }
+            });
+
+            // Set up ClearKey DRM if keys exist
+            let drmConfig = {};
+            if (channel.keyId && channel.key && !channel.keyId.includes("Error")) {
+                drmConfig = {
+                    clearKeys: {
+                        [channel.keyId]: channel.key
+                    }
+                };
+            }
+
+            player.configure({
+                drm: drmConfig,
+                abr: { enabled: true }
+            });
+
+            // Network Filter: Inject tokens seamlessly into segment requests
+            const token = channel.token || "";
+            player.getNetworkingEngine().registerRequestFilter((type, request) => {
+                // Mimic original player headers
+                request.headers['Referer'] = 'https://live-pv-ta.amazon.fastly-edge.com/';
+                request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+                request.headers['Connection'] = 'keep-alive';
+
+                // Append __hdnea__ token if it's missing from the chunk/manifest URL
+                if (token && (type === shaka.net.NetworkingEngine.RequestType.MANIFEST || type === shaka.net.NetworkingEngine.RequestType.SEGMENT)) {
+                    if (request.uris[0] && !request.uris[0].includes('__hdnea__=')) {
+                        const separator = request.uris[0].includes('?') ? '&' : '?';
+                        request.uris[0] += separator + token;
+                    }
+                }
+            });
+
+            // Error Recovery
+            player.addEventListener('error', (event) => {
+                console.error('Player error:', event.detail);
+                if (event.detail && event.detail.type === shaka.util.Error.Severity.RECOVERABLE) {
+                    player.load(channel.streamurl).catch(console.error);
+                }
+            });
+
+            // Start Playback
+            await player.load(channel.streamurl);
+        }
+    </script>
+</body>
+
+</html>
