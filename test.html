@@ -3,90 +3,112 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StreamFlex Advanced Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Live TV Player</title>
 
-    <!-- Shaka Player with UI -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css">
+    <!-- Shaka Player & UI CSS/JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/controls.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mux.js@6.2.0/dist/mux.min.js"></script>
 
     <style>
         :root {
-            --bg-dark: #0f0f0f;
-            --card-bg: #1f1f1f;
-            --accent: #ff4500;
-            --text-light: #ffffff;
-            --text-muted: #aaaaaa;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --bg-color: #0f0f13;
+            --card-bg: #1c1c24;
+            --primary: #ff4500;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
         }
 
         header {
             padding: 20px;
             text-align: center;
-            background: #000;
-            border-bottom: 2px solid var(--card-bg);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+        }
+
+        /* Filter Buttons */
+        #filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .filter-btn {
+            background-color: var(--card-bg);
+            color: var(--text);
+            border: 1px solid #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background-color: var(--primary);
+            border-color: var(--primary);
         }
 
         /* Grid Layout */
-        .container {
+        #grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        #loading-text {
-            text-align: center;
-            color: var(--accent);
-            margin-top: 50px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
+        /* Channel Cards */
         .channel-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            border: 1px solid #2a2a35;
         }
 
         .channel-card:hover {
-            transform: scale(1.05);
-            background: #2a2a2a;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 69, 0, 0.2);
+            border-color: var(--primary);
         }
 
         .channel-card img {
             width: 100%;
-            max-width: 100px;
             height: auto;
-            margin-bottom: 10px;
-            border-radius: 4px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-bottom: 1px solid #2a2a35;
         }
 
         .channel-card h3 {
             font-size: 14px;
-            font-weight: 600;
+            padding: 10px;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #loading-text {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
         }
 
         /* Fullscreen Player Modal */
@@ -94,63 +116,22 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            right: 0;
+            bottom: 0;
             background: #000;
             z-index: 9999;
             display: flex;
-            flex-direction: column;
-            opacity: 1;
-            transition: opacity 0.3s;
+            align-items: center;
+            justify-content: center;
         }
 
         #player-modal.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .modal-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 15px 20px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 2;
-            transition: opacity 0.3s;
-        }
-
-        .modal-header.idle-hide {
-            opacity: 0;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 1px 1px 3px #000;
-        }
-
-        #close-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #close-btn:hover {
-            background: var(--accent);
+            display: none;
         }
 
         .shaka-video-container {
             width: 100%;
             height: 100%;
-            background: #000;
         }
 
         video {
@@ -158,16 +139,35 @@
             height: 100%;
         }
 
-        /* Utility */
-        #player-loading {
+        /* Close Button Overlay */
+        #close-btn {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--accent);
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
             font-weight: bold;
-            z-index: 1;
-            display: none;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s;
+        }
+
+        #close-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .idle-hide {
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -175,175 +175,145 @@
 <body>
 
     <header>
-        <h1>StreamFlex TV</h1>
+        <h2>Live TV Player</h2>
+        <div id="filter-container">
+            <button class="filter-btn active" data-category="All">All</button>
+        </div>
     </header>
 
-    <div class="container">
-        <h2 id="loading-text">Loading channels...</h2>
-        <div class="grid" id="grid-container"></div>
-    </div>
+    <h3 id="loading-text">Fetching channels securely...</h3>
 
-    <!-- Fullscreen Player Modal -->
+    <div id="grid-container"></div>
+
+    <!-- Player Modal popup -->
     <div id="player-modal" class="hidden">
-        <div class="modal-header" id="modal-header">
-            <div class="modal-title" id="playing-title">Channel Name</div>
-            <button id="close-btn">Close X</button>
-        </div>
-        <div id="player-loading">Loading Stream...</div>
-        <div class="shaka-video-container" id="video-container">
-            <video id="video" autoplay></video>
+        <button id="close-btn">&times;</button>
+        <div class="shaka-video-container">
+            <video autoplay playsinline></video>
         </div>
     </div>
 
+    <!-- Player Logic Script -->
     <script>
-        // --- CONFIGURATION ---
-        // Change this if your worker is hosted elsewhere (e.g., 'https://test.xyzplay.workers.dev')
-        const WORKER_BASE_URL = 'https://test.xyzplay.workers.dev';
-
-        const endpoints = {
-            allChannels: `${WORKER_BASE_URL}/api/ziomobile.m3u?start=0&end=200`, // Adjust 'end' to fetch more
-            singleChannel: `${WORKER_BASE_URL}/api/drm/?id=`
-        };
-
         let channelsData = [];
+
+        // 🚀 PUT YOUR WORKER URL HERE
+        const jsonUrl = "https://as-test.xyzplay.workers.dev/api/drm/?name=star%20sports";
+
         window.activePlayer = null;
         window.activeUI = null;
 
-        // --- APP INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', initializeApp);
-
         async function initializeApp() {
             try {
-                const response = await fetch(endpoints.allChannels);
+                const response = await fetch(jsonUrl);
                 if (!response.ok) throw new Error('Network response failed');
+                channelsData = await response.json();
 
-                const json = await response.json();
-                // Handle both paginated object { data: [] } and raw array []
-                channelsData = json.data ? json.data : (Array.isArray(json) ? json : []);
+                const loadingText = document.getElementById('loading-text');
+                if (loadingText) loadingText.style.display = 'none';
 
-                document.getElementById('loading-text').style.display = 'none';
-                renderGrid(channelsData);
-
-                // Install Shaka Polyfills
-                shaka.polyfill.installAll();
-                if (!shaka.Player.isBrowserSupported()) {
-                    alert('Browser not supported for DRM playback.');
-                }
+                setupFilters();
+                loadAllChannels('All');
             } catch (error) {
-                console.error('Failed to load channels:', error);
-                document.getElementById('loading-text').innerText = 'Failed to load channels.';
+                console.error('Failed to fetch JSON:', error);
+                const loadingText = document.getElementById('loading-text');
+                if (loadingText) loadingText.innerText = 'Error: Could not load channels. Check Worker API.';
             }
         }
 
-        // --- UI RENDERING ---
-        function renderGrid(channels) {
+        function loadAllChannels(filterCategory = 'All') {
             const grid = document.getElementById('grid-container');
+            if (!grid) return;
             grid.innerHTML = '';
 
-            if (channels.length === 0) {
-                grid.innerHTML = '<h3 id="loading-text">No channels found.</h3>';
+            const filteredChannels = filterCategory === 'All'
+                ? channelsData
+                : channelsData.filter(c => c.category === filterCategory);
+
+            if (filteredChannels.length === 0) {
+                grid.innerHTML = '<h3 id="loading-text" style="display:block">No channels found.</h3>';
                 return;
             }
 
-            channels.forEach(channel => {
+            filteredChannels.forEach(channel => {
                 const card = document.createElement('div');
                 card.className = 'channel-card';
-                // Fallback image if logo is missing
-                const logoSrc = channel.logo || 'https://via.placeholder.com/100x100?text=TV';
+                card.innerHTML = `<img src="${channel.logo}" alt="${channel.name}" onerror="this.src='https://via.placeholder.com/300x169?text=No+Image'"> <h3>${channel.name}</h3>`;
 
-                card.innerHTML = `
-                    <img src="${logoSrc}" alt="${channel.name}"> 
-                    <h3>${channel.name}</h3>
-                `;
-
-                card.onclick = () => loadAndPlayChannel(channel.id, channel.name);
+                card.onclick = () => playChannel(channel);
                 grid.appendChild(card);
             });
         }
 
-        // --- MODAL & IDLE TIMER LOGIC ---
+        function setupFilters() {
+            const filterContainer = document.getElementById('filter-container');
+            if (!filterContainer) return;
+
+            const categories = new Set(channelsData.map(c => c.category).filter(Boolean));
+
+            categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.dataset.category = category;
+                btn.innerText = category;
+                btn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadAllChannels(category);
+                };
+                filterContainer.appendChild(btn);
+            });
+
+            const allBtn = filterContainer.querySelector('[data-category="All"]');
+            if (allBtn) {
+                allBtn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    allBtn.classList.add('active');
+                    loadAllChannels('All');
+                };
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
         const modal = document.getElementById('player-modal');
-        const header = document.getElementById('modal-header');
         const closeBtn = document.getElementById('close-btn');
         let hideTimeout;
 
         function resetHideTimer() {
-            header.classList.remove('idle-hide');
+            if (!closeBtn) return;
+            closeBtn.classList.remove('idle-hide');
             clearTimeout(hideTimeout);
             hideTimeout = setTimeout(() => {
-                header.classList.add('idle-hide');
-            }, 3000);
+                closeBtn.classList.add('idle-hide');
+            }, 2500);
         }
 
-        modal.addEventListener('mousemove', resetHideTimer);
-        modal.addEventListener('touchstart', resetHideTimer);
+        if (modal) {
+            modal.addEventListener('mousemove', resetHideTimer);
+            modal.addEventListener('touchstart', resetHideTimer);
+        }
 
-        closeBtn.onclick = async () => {
-            modal.classList.add('hidden');
-            document.getElementById('video').pause();
-            if (window.activePlayer) {
-                await window.activePlayer.destroy();
+        if (closeBtn) {
+            closeBtn.onclick = async () => {
+                modal.classList.add('hidden');
+                if (window.activePlayer) await window.activePlayer.destroy();
+                if (window.activeUI) await window.activeUI.destroy();
                 window.activePlayer = null;
-            }
-            if (window.activeUI) {
-                await window.activeUI.destroy();
                 window.activeUI = null;
-            }
-        };
-
-        // --- DEDICATED FETCH & PLAYBACK LOGIC ---
-        async function loadAndPlayChannel(id, name) {
-            modal.classList.remove('hidden');
-            document.getElementById('playing-title').innerText = name;
-            const loader = document.getElementById('player-loading');
-            loader.style.display = 'block';
-            resetHideTimer();
-
-            try {
-                // 1. Fetch fresh data dynamically using ID
-                const response = await fetch(`${endpoints.singleChannel}${id}`);
-                const data = await response.json();
-
-                if (!data || data.length === 0) throw new Error("Channel data empty");
-
-                const channel = data[0]; // Worker returns array for /api/drm/
-                await initializeShakaPlayer(channel);
-
-                loader.style.display = 'none';
-            } catch (err) {
-                console.error("Playback error:", err);
-                loader.innerText = "Error loading stream.";
-                setTimeout(() => { if (loader.innerText === "Error loading stream.") closeBtn.click(); }, 3000);
-            }
+            };
         }
 
-        async function initializeShakaPlayer(channel) {
-            const video = document.getElementById('video');
-            const container = document.getElementById('video-container');
+        async function playChannel(channel) {
+            const streamUrl = channel.streamurl || channel.url;
+            if (!streamUrl) return alert("Stream URL not available.");
 
-            // Destroy previous instance if exists
-            if (window.activePlayer) await window.activePlayer.destroy();
-            if (window.activeUI) await window.activeUI.destroy();
+            if (modal) {
+                modal.classList.remove('hidden');
+                resetHideTimer();
+            }
 
-            const player = new shaka.Player();
-            window.activePlayer = player;
-            await player.attach(video);
-
-            const ui = new shaka.ui.Overlay(player, container, video);
-            window.activeUI = ui;
-
-            // UI Configuration
-            ui.configure({
-                controlPanelElements: [
-                    'play_pause', 'time_and_duration', 'mute', 'volume',
-                    'spacer', 'picture_in_picture', 'fullscreen', 'overflow_menu'
-                ],
-                overflowMenuButtons: ['quality', 'language', 'captions'],
-                volumeBarColors: { base: 'rgba(63, 187, 1, 1)', level: 'rgb(255, 69, 0)' },
-                seekBarColors: { base: 'rgb(41, 41, 163)', buffered: 'rgb(35, 99, 3)', played: 'rgba(63, 187, 1, 1)' }
-            });
-
-            // Set up ClearKey DRM if keys exist
+            // DRM Setup
             let drmConfig = {};
             if (channel.keyId && channel.key && !channel.keyId.includes("Error")) {
                 drmConfig = {
@@ -353,38 +323,98 @@
                 };
             }
 
-            player.configure({
-                drm: drmConfig,
-                abr: { enabled: true }
+            const rawToken = channel.token || "";
+
+            shaka.polyfill.installAll();
+            if (!shaka.Player.isBrowserSupported()) {
+                alert('Browser not supported for Shaka Player');
+                return;
+            }
+
+            const video = document.querySelector('video');
+            const player = new shaka.Player();
+            window.activePlayer = player;
+            await player.attach(video);
+
+            const container = document.querySelector('.shaka-video-container');
+            const ui = new shaka.ui.Overlay(player, container, video);
+            window.activeUI = ui;
+
+            const originalSelectAudioLanguage = player.selectAudioLanguage.bind(player);
+            player.selectAudioLanguage = (language, role) => {
+                originalSelectAudioLanguage(language, role);
+                const tracks = player.getVariantTracks().filter(t => t.language === language);
+                if (tracks.length > 0) {
+                    player.selectVariantTrack(tracks[0], true);
+                    player.configure({ abr: { enabled: true } });
+                }
+            };
+
+            ui.configure({
+                controlPanelElements: [
+                    'play_pause', 'time_and_duration', 'mute', 'volume',
+                    'spacer', 'picture_in_picture', 'fullscreen', 'overflow_menu'
+                ],
+                overflowMenuButtons: ['quality', 'language', 'cast'],
+                volumeBarColors: { base: 'rgba(63, 187, 1, 1)', level: '#ff4500' },
+                seekBarColors: { base: 'rgb(41, 41, 163)', buffered: 'rgb(35, 99, 3)', played: '#ff4500' }
             });
 
-            // Network Filter: Inject tokens seamlessly into segment requests
-            const token = channel.token || "";
-            player.getNetworkingEngine().registerRequestFilter((type, request) => {
-                // Mimic original player headers
-                request.headers['Referer'] = 'https://live-pv-ta.amazon.fastly-edge.com/';
-                request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-                request.headers['Connection'] = 'keep-alive';
-
-                // Append __hdnea__ token if it's missing from the chunk/manifest URL
-                if (token && (type === shaka.net.NetworkingEngine.RequestType.MANIFEST || type === shaka.net.NetworkingEngine.RequestType.SEGMENT)) {
-                    if (request.uris[0] && !request.uris[0].includes('__hdnea__=')) {
-                        const separator = request.uris[0].includes('?') ? '&' : '?';
-                        request.uris[0] += separator + token;
-                    }
+            player.configure({
+                drm: drmConfig,
+                abr: {
+                    enabled: true,
+                    defaultBandwidthEstimate: 8000000,
+                    switchInterval: 2,
+                    bandwidthUpgradeTarget: 0.7,
+                    bandwidthDowngradeTarget: 0.5
                 }
             });
 
-            // Error Recovery
+            // Network Token Injection
+            player.getNetworkingEngine().registerRequestFilter((type, request) => {
+                request.headers['Referer'] = 'https://live-pv-ta.amazon.fastly-edge.com/';
+                request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+
+                if (rawToken) request.headers['Cookie'] = rawToken;
+                request.headers['Connection'] = 'keep-alive';
+                request.headers['Keep-Alive'] = 'timeout=60';
+
+                if ((type === shaka.net.NetworkingEngine.RequestType.MANIFEST || type === shaka.net.NetworkingEngine.RequestType.SEGMENT) && request.uris[0] && !request.uris[0].includes('__hdnea__=')) {
+                    const separator = request.uris[0].includes('?') ? '&' : '?';
+                    request.uris[0] += separator + rawToken;
+                }
+            });
+
             player.addEventListener('error', (event) => {
                 console.error('Player error:', event.detail);
                 if (event.detail && event.detail.type === shaka.util.Error.Severity.RECOVERABLE) {
-                    player.load(channel.streamurl).catch(console.error);
+                    player.load(streamUrl).catch(e => {
+                        setTimeout(() => player.load(streamUrl).catch(console.error), 3000);
+                    });
                 }
             });
 
-            // Start Playback
-            await player.load(channel.streamurl);
+            video.addEventListener('waiting', () => { if (player) player.getConfiguration().streaming.rebufferingGoal = 30; });
+
+            let stallTimeout;
+            video.addEventListener('stalled', () => {
+                if (stallTimeout) clearTimeout(stallTimeout);
+                stallTimeout = setTimeout(() => {
+                    if (video.readyState < 3) {
+                        video.load();
+                        player.load(streamUrl).catch(console.error);
+                    }
+                }, 5000);
+            });
+
+            try {
+                await player.load(streamUrl);
+                video.play();
+            } catch (error) {
+                console.error('Load error:', error);
+                setTimeout(() => player.load(streamUrl).catch(console.error), 5000);
+            }
         }
     </script>
 </body>
