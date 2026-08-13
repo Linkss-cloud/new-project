@@ -3,284 +3,260 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta name="referrer" content="no-referrer">
+    <meta
+        name="referrer"
+        content="no-referrer"
+    >
 
-
-<title>Watch - Sports Zone</title>
-
-
-
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-
-
-<!-- SHAKA PLAYER -->
-
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/shaka-player.ui.min.js"></script>
-
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css">
+    <title>Watch - Sports Zone</title>
 
 
+    <!-- FONT -->
 
-<!-- HLS PLAYER -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <!-- SHAKA PLAYER -->
+
+    <script src="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/shaka-player.ui.min.js"></script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css"
+    >
 
 
+    <!-- HLS PLAYER -->
 
-<link rel="stylesheet" href="css/watch.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
+
+    <!-- CSS -->
+
+    <link
+        rel="stylesheet"
+        href="css/watch.css"
+    >
 
 </head>
-
 
 
 <body>
 
 
-
 <header class="player-header">
 
-<div class="player-header-inner">
+    <div class="player-header-inner">
+
+        <a
+            href="index.html"
+            class="player-brand gradient-text"
+        >
+            SPORTS ZONE
+        </a>
 
 
-<a href="index.html" class="player-brand gradient-text">
+        <a
+            href="https://t.me/+rtK_sfY8t_A2NDU1"
+            class="btn-telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            JOIN TELEGRAM
+        </a>
 
-SPORTS ZONE
-
-</a>
-
-
-
-<a href="https://t.me/+rtK_sfY8t_A2NDU1"
-class="btn-telegram"
-target="_blank">
-
-JOIN TELEGRAM
-
-</a>
-
-
-</div>
+    </div>
 
 </header>
-
-
-
-
 
 
 
 <main class="player-container">
 
 
+    <!-- MATCH INFO -->
 
-<section class="match-header-info">
+    <section class="match-header-info">
 
+        <div class="title-row">
 
-<div class="title-row">
+            <span class="live-indicator">
+                LIVE
+            </span>
 
+            <h1 id="matchName">
+                LOADING...
+            </h1>
 
-<span class="live-indicator">
+        </div>
 
-LIVE
 
-</span>
+        <h2 id="matchTitle">
+            PLEASE WAIT
+        </h2>
 
+    </section>
 
 
-<h1 id="matchName">
 
-LOADING...
+    <!-- VIDEO -->
 
-</h1>
+    <div class="video-wrapper">
 
 
-</div>
+        <div id="loader">
+            Loading Stream...
+        </div>
 
 
 
-<h2 id="matchTitle">
+        <!-- SHAKA PLAYER -->
 
-PLEASE WAIT
+        <div
+            id="shaka-container"
+            class="shaka-video-container"
+            style="display:none;"
+        >
 
-</h2>
+            <video
+                id="videoPlayer"
+                playsinline
+                controls
+                autoplay
+                muted
+            ></video>
 
+        </div>
 
 
-</section>
 
+        <!-- HLS / NORMAL VIDEO -->
 
+        <div
+            id="ios-container"
+            style="display:none;"
+        >
 
+            <video
+                id="ios-video"
+                controls
+                playsinline
+                autoplay
+                muted
+            ></video>
 
+        </div>
 
 
 
+        <!-- IFRAME -->
 
+        <div
+            id="iframe-container"
+            style="
+                display:none;
+                width:100%;
+                height:100%;
+            "
+        >
 
+            <iframe
+                id="stream-frame"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                allowfullscreen
+            ></iframe>
 
-<div class="video-wrapper">
+        </div>
 
 
+    </div>
 
-<div id="loader">
 
-Loading Stream...
 
-</div>
+    <!-- SERVERS -->
 
-
-
-
-
-
-<!-- SHAKA PLAYER -->
-
-
-<div id="shaka-container"
-class="shaka-video-container"
-style="display:none;">
-
-
-<video 
-id="videoPlayer"
-playsinline
-controls
-autoplay>
-</video>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- HLS PLAYER -->
-
-
-<div id="ios-container"
-style="display:none;">
-
-
-<video
-
-id="ios-video"
-
-controls
-
-playsinline
-
-autoplay
-
-muted>
-
-</video>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- IFRAME PLAYER -->
-
-
-<div id="iframe-container" style="display:none;width:100%;height:100%;">
-
-
-                <iframe id="stream-frame" width="100%" height="100%" frameborder="0"
-                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture">
-
-                </iframe>
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-<div id="serverList"
-class="server-list">
-
-</div>
-
-
-
-
+    <div
+        id="serverList"
+        class="server-list"
+    ></div>
 
 
 </main>
 
 
 
-
-
-
-
-
-
 <footer class="player-footer">
 
-
-© SPORTS ZONE • ALL RIGHTS RESERVED
-
+    © SPORTS ZONE • ALL RIGHTS RESERVED
 
 </footer>
 
 
 
-<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+<!-- POPUNDER -->
+
+<script
+    id="aclib"
+    type="text/javascript"
+    src="//acscdn.com/script/aclib.js"
+></script>
+
 
 <script type="text/javascript">
+
 (function () {
 
     let clickCount = 0;
 
-    document.addEventListener("click", function () {
+    document.addEventListener(
+        "click",
+        function () {
 
-        clickCount++;
+            clickCount++;
 
-        if (clickCount % 2 === 1) {
+            if (clickCount % 2 === 1) {
 
-            aclib.runPop({
-                zoneId: '11800802',
-            });
+                aclib.runPop({
+                    zoneId: "11800802"
+                });
 
-        }
+            }
 
-    }, true);
+        },
+        true
+    );
 
 })();
+
 </script>
 
 
 
+<!-- PLAYER SCRIPTS -->
+
+<script
+    type="module"
+    src="js/cookie-shaka.js"
+></script>
 
 
-<script type="module" src="js/cookie-shaka.js"></script>
-<script type="module" src="js/player.js"></script>
+<script
+    type="module"
+    src="js/player.js"
+></script>
 
 
 </body>
