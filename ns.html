@@ -154,12 +154,19 @@
 
         <!-- Header -->
         <div class="header">
-            <h1 id="matchName">Loading...</h1>
-            <p>Live Match Streaming Links</p>
+
+            <h1 id="matchName">
+                Loading...
+            </h1>
+
+            <p>
+                Live Match Streaming Links
+            </p>
+
         </div>
 
 
-        <!-- Links -->
+        <!-- Links Container -->
         <div id="linksContainer"></div>
 
 
@@ -186,34 +193,68 @@
 
 
         // ==========================================
-        // LOAD DATA FROM JSON
+        // REMOTE JSON URL
+        // ==========================================
+
+        const JSON_URL =
+            "https://cricketttttt.pages.dev/Secure/ns.json";
+
+
+        // ==========================================
+        // LOAD JSON
         // ==========================================
 
         async function loadData() {
 
             try {
 
-                const response = await fetch("data.json");
+                const response =
+                    await fetch(JSON_URL, {
+                        cache: "no-store"
+                    });
+
 
                 if (!response.ok) {
-                    throw new Error("data.json not found");
+
+                    throw new Error(
+                        "JSON load failed: " +
+                        response.status
+                    );
+
                 }
 
-                matchData = await response.json();
+
+                matchData =
+                    await response.json();
+
 
                 renderPage();
 
+
             } catch (error) {
 
-                document.getElementById("linksContainer").innerHTML = `
+                console.error(
+                    "JSON Error:",
+                    error
+                );
+
+
+                document
+                    .getElementById("linksContainer")
+                    .innerHTML = `
+
                     <div class="error">
-                        JSON load nahi ho paya.
+
+                        Links load nahi ho pa rahe.
+
                         <br><br>
-                        Check karo ki <b>data.json</b> same folder mein hai.
+
+                        Please try again later.
+
                     </div>
+
                 `;
 
-                console.error(error);
             }
 
         }
@@ -225,12 +266,21 @@
 
         function renderPage() {
 
-            document.getElementById("matchName").textContent =
-                matchData.matchName || "Match";
+            const matchName =
+                document.getElementById(
+                    "matchName"
+                );
+
+
+            matchName.textContent =
+                matchData.matchName ||
+                "Match";
 
 
             const container =
-                document.getElementById("linksContainer");
+                document.getElementById(
+                    "linksContainer"
+                );
 
 
             container.innerHTML = "";
@@ -238,61 +288,93 @@
 
             if (
                 !matchData.qualities ||
-                !Array.isArray(matchData.qualities)
+                !Array.isArray(
+                    matchData.qualities
+                )
             ) {
 
                 container.innerHTML = `
+
                     <div class="error">
+
                         No quality links found.
+
                     </div>
+
                 `;
 
                 return;
             }
 
 
-            matchData.qualities.forEach((item, index) => {
+            matchData.qualities.forEach(
+                (item, index) => {
 
-                const card =
-                    document.createElement("div");
-
-
-                card.className = "link-card";
-
-
-                card.innerHTML = `
-
-                    <div class="quality">
-                        ${item.quality}
-                    </div>
-
-                    <div class="buttons">
-
-                        <button
-                            class="play-btn"
-                            onclick="playNS(${index})">
-
-                            ▶ Direct Play in NS
-
-                        </button>
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
 
 
-                        <button
-                            class="copy-btn"
-                            onclick="copyLink(${index})">
-
-                            📋 Copy AUTOIPTV URL
-
-                        </button>
-
-                    </div>
-
-                `;
+                    card.className =
+                        "link-card";
 
 
-                container.appendChild(card);
+                    card.innerHTML = `
 
-            });
+                        <div class="quality">
+                            ${escapeHTML(
+                                item.quality
+                            )}
+                        </div>
+
+                        <div class="buttons">
+
+                            <button
+                                class="play-btn"
+                                onclick="playNS(${index})">
+
+                                ▶ Direct Play in NS
+
+                            </button>
+
+
+                            <button
+                                class="copy-btn"
+                                onclick="copyLink(${index})">
+
+                                📋 Copy AUTOIPTV URL
+
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // ESCAPE HTML
+        // ==========================================
+
+        function escapeHTML(value) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                value ?? "";
+
+            return div.innerHTML;
 
         }
 
@@ -303,46 +385,68 @@
 
         async function copyLink(index) {
 
+            const item =
+                matchData.qualities[index];
+
+
             const link =
-                matchData.qualities[index].link;
+                item.link;
 
 
             if (!link) {
 
-                alert("Link not available!");
+                alert(
+                    "Link not available!"
+                );
 
                 return;
+
             }
 
 
             try {
 
-                await navigator.clipboard.writeText(link);
+                await navigator
+                    .clipboard
+                    .writeText(link);
 
-                alert("Link copied for AUTOIPTV!");
+
+                alert(
+                    "Link copied for AUTOIPTV!"
+                );
+
 
             } catch (error) {
 
                 const textarea =
-                    document.createElement("textarea");
+                    document.createElement(
+                        "textarea"
+                    );
 
 
-                textarea.value = link;
+                textarea.value =
+                    link;
 
 
-                document.body.appendChild(textarea);
+                document.body.appendChild(
+                    textarea
+                );
 
 
                 textarea.select();
 
 
-                document.execCommand("copy");
+                document.execCommand(
+                    "copy"
+                );
 
 
                 textarea.remove();
 
 
-                alert("Link copied for AUTOIPTV!");
+                alert(
+                    "Link copied for AUTOIPTV!"
+                );
 
             }
 
@@ -355,44 +459,66 @@
 
         function playNS(index) {
 
+            const item =
+                matchData.qualities[index];
+
+
             const link =
-                matchData.qualities[index].link;
+                item.link;
 
 
             if (!link) {
 
-                alert("Link not available!");
+                alert(
+                    "Link not available!"
+                );
 
                 return;
+
             }
 
 
-            // Android device check
+            // Android check
             const isAndroid =
-                /Android/i.test(navigator.userAgent);
+                /Android/i.test(
+                    navigator.userAgent
+                );
 
 
             if (!isAndroid) {
 
                 alert(
-                    "NS Player Only Works For Android devices."
+                    "NS Player Android device par available hai."
                 );
 
                 return;
+
             }
 
 
-            // NS Player package
+            /*
+             * NS Player package
+             */
+
             const cleanLink =
-                link.replace(/^https?:\/\//i, "");
+                link.replace(
+                    /^https?:\/\//i,
+                    ""
+                );
 
 
-            // Play Store fallback
+            /*
+             * Google Play fallback
+             */
+
             const playStoreURL =
                 "https://play.google.com/store/apps/details?id=com.ittech.videoplayer";
 
 
-            // Android Intent
+            /*
+             * Android Intent
+             */
+
             const intentURL =
                 "intent://" +
                 cleanLink +
@@ -400,11 +526,14 @@
                 "scheme=https;" +
                 "package=com.ittech.videoplayer;" +
                 "S.browser_fallback_url=" +
-                encodeURIComponent(playStoreURL) +
+                encodeURIComponent(
+                    playStoreURL
+                ) +
                 ";end";
 
 
-            window.location.href = intentURL;
+            window.location.href =
+                intentURL;
 
         }
 
