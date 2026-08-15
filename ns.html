@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Match Links</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            padding: 25px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        /* Link Card */
+        .link-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .quality {
+            display: block;
+            background: #2563eb;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+            transition: .2s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            opacity: .9;
+        }
+
+        .play-btn {
+            background: #22c55e;
+            color: white;
+        }
+
+        .copy-btn {
+            background: #f59e0b;
+            color: white;
+        }
+
+        /* Error */
+        .error {
+            background: #7f1d1d;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            padding: 15px 10px;
+        }
+
+        .footer a {
+            display: inline-block;
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .footer a:hover {
+            color: #7dd3fc;
+            text-decoration: underline;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <h1 id="matchName">Loading...</h1>
+            <p>Live Match Streaming Links</p>
+        </div>
+
+
+        <!-- Links -->
+        <div id="linksContainer"></div>
+
+
+        <!-- Footer -->
+        <div class="footer">
+
+            <a
+                href="https://t.me/+rtK_sfY8t_A2NDU1"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                JOIN SPORTS ZONE FOR MORE LINKS
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let matchData = null;
+
+
+        // ==========================================
+        // LOAD DATA FROM JSON
+        // ==========================================
+
+        async function loadData() {
+
+            try {
+
+                const response = await fetch("data.json");
+
+                if (!response.ok) {
+                    throw new Error("data.json not found");
+                }
+
+                matchData = await response.json();
+
+                renderPage();
+
+            } catch (error) {
+
+                document.getElementById("linksContainer").innerHTML = `
+                    <div class="error">
+                        JSON load nahi ho paya.
+                        <br><br>
+                        Check karo ki <b>data.json</b> same folder mein hai.
+                    </div>
+                `;
+
+                console.error(error);
+            }
+
+        }
+
+
+        // ==========================================
+        // RENDER PAGE
+        // ==========================================
+
+        function renderPage() {
+
+            document.getElementById("matchName").textContent =
+                matchData.matchName || "Match";
+
+
+            const container =
+                document.getElementById("linksContainer");
+
+
+            container.innerHTML = "";
+
+
+            if (
+                !matchData.qualities ||
+                !Array.isArray(matchData.qualities)
+            ) {
+
+                container.innerHTML = `
+                    <div class="error">
+                        No quality links found.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            matchData.qualities.forEach((item, index) => {
+
+                const card =
+                    document.createElement("div");
+
+
+                card.className = "link-card";
+
+
+                card.innerHTML = `
+
+                    <div class="quality">
+                        ${item.quality}
+                    </div>
+
+                    <div class="buttons">
+
+                        <button
+                            class="play-btn"
+                            onclick="playNS(${index})">
+
+                            ▶ Direct Play in NS
+
+                        </button>
+
+
+                        <button
+                            class="copy-btn"
+                            onclick="copyLink(${index})">
+
+                            📋 Copy AUTOIPTV URL
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(card);
+
+            });
+
+        }
+
+
+        // ==========================================
+        // COPY LINK
+        // ==========================================
+
+        async function copyLink(index) {
+
+            const link =
+                matchData.qualities[index].link;
+
+
+            if (!link) {
+
+                alert("Link not available!");
+
+                return;
+            }
+
+
+            try {
+
+                await navigator.clipboard.writeText(link);
+
+                alert("Link copied for AUTOIPTV!");
+
+            } catch (error) {
+
+                const textarea =
+                    document.createElement("textarea");
+
+
+                textarea.value = link;
+
+
+                document.body.appendChild(textarea);
+
+
+                textarea.select();
+
+
+                document.execCommand("copy");
+
+
+                textarea.remove();
+
+
+                alert("Link copied for AUTOIPTV!");
+
+            }
+
+        }
+
+
+        // ==========================================
+        // DIRECT PLAY IN NS PLAYER
+        // ==========================================
+
+        function playNS(index) {
+
+            const link =
+                matchData.qualities[index].link;
+
+
+            if (!link) {
+
+                alert("Link not available!");
+
+                return;
+            }
+
+
+            // Android device check
+            const isAndroid =
+                /Android/i.test(navigator.userAgent);
+
+
+            if (!isAndroid) {
+
+                alert(
+                    "NS Player Only Works For Android devices."
+                );
+
+                return;
+            }
+
+
+            // NS Player package
+            const cleanLink =
+                link.replace(/^https?:\/\//i, "");
+
+
+            // Play Store fallback
+            const playStoreURL =
+                "https://play.google.com/store/apps/details?id=com.ittech.videoplayer";
+
+
+            // Android Intent
+            const intentURL =
+                "intent://" +
+                cleanLink +
+                "#Intent;" +
+                "scheme=https;" +
+                "package=com.ittech.videoplayer;" +
+                "S.browser_fallback_url=" +
+                encodeURIComponent(playStoreURL) +
+                ";end";
+
+
+            window.location.href = intentURL;
+
+        }
+
+
+        // ==========================================
+        // START
+        // ==========================================
+
+        loadData();
+
+    </script>
+
+</body>
+
+</html>
