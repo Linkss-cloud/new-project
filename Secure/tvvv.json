@@ -20,9 +20,19 @@
     "stream": "https://fanxzone.pages.dev/play?id=jpph"
   },
   {
-    "name": "CN HD",
+    "name": "CN SD",
     "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/CNHindi.png",
     "stream": "https://fanxzone.pages.dev/play?id=jpcnh"
-  }
+  },
+  {
+    "name": "CN HD",
+    "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/CNHDHindi.png",
+    "stream": "https://fanxzone.pages.dev/play?id=jpcnhh"
+  },
+  {
+    "name": "HUNGAMA",
+    "logo": "hhttps://jiotv.catchup.cdn.jio.com/dare_images/images/Hungama.png",
+    "stream": "https://fanxzone.pages.dev/play?id=jph"
+  },
     
 ]
