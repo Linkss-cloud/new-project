@@ -1,0 +1,25 @@
+{
+  "matchName": "INDIA vs SRI LANKA 1ST TEST MATCH",
+  "qualities": [
+    {
+      "quality": "HINDI",
+      "link": "https://sonydaimenew.akamaized.net/hls/live/20000300/cricodi1508/HIN/std_lrh-800300010.m3u8?hdnea=exp=1786807765~acl=/*~id=58751610233779207942712244614493~hmac=40ab0540bbf3d5821ecc5e86919e5da89fe012f9631f73818787680500042765"
+    },
+    {
+      "quality": "ENGLISH",
+      "link": "https://sonydaimenew.akamaized.net/hls/live/20000379/cricodi1508/ENG/std_lrh-800300010.m3u8?hdnea=exp=1786807765~acl=/*~id=58751610233779207942712244614493~hmac=40ab0540bbf3d5821ecc5e86919e5da89fe012f9631f73818787680500042765"
+    },
+    {
+      "quality": "TAMIL",
+      "link": "https://sonydaimenew.akamaized.net/hls/live/20000377/cricodi1508/TAM/std_lrh-800300010.m3u8?hdnea=exp=1786807765~acl=/*~id=58751610233779207942712244614493~hmac=40ab0540bbf3d5821ecc5e86919e5da89fe012f9631f73818787680500042765"
+    },
+    {
+      "quality": "TELUGU",
+      "link": "https://sonydaimenew.akamaized.net/hls/live/20000383/cricodi1508/TEL/std_lrh-800300010.m3u8?hdnea=exp=1786807765~acl=/*~id=58751610233779207942712244614493~hmac=40ab0540bbf3d5821ecc5e86919e5da89fe012f9631f73818787680500042765"
+    },
+    {
+        "quality": "KANNADA",
+        "link": "https://sonydaimenew.akamaized.net/hls/live/20000380/cricodi1508/KAN/std_lrh-800300010.m3u8?hdnea=exp=1786807765~acl=/*~id=58751610233779207942712244614493~hmac=40ab0540bbf3d5821ecc5e86919e5da89fe012f9631f73818787680500042765"
+    }
+  ]
+}
