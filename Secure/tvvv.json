@@ -2,12 +2,12 @@
   {
     "name": "SONY SAB HD",
     "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/SonySAB.png",
-    "stream": "https://fanxzone.pages.dev/play?id=st-ssh"
+    "stream": "https://fanxzone.pages.dev/play?id=ssh"
   },
   {
     "name": "SONY SAB SD",
     "logo": "https://jiotvimages.cdn.jio.com/dare_images/images/Sony_SAB.png",
-    "stream": "https://fanxzone.pages.dev/play?id=st-ss"
+    "stream": "https://fanxzone.pages.dev/play?id=sss"
   },
   {
     "name": "DISNEY",
