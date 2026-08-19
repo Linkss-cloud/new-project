@@ -2,37 +2,37 @@
   {
     "name": "SONY SAB HD",
     "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/SonySAB.png",
-    "stream": "https://fanxzone.pages.dev/play?id=ssh"
+    "stream": "https://fanxzone.pages.dev/play?id=st-ssh"
   },
   {
     "name": "SONY SAB SD",
     "logo": "https://jiotvimages.cdn.jio.com/dare_images/images/Sony_SAB.png",
-    "stream": "https://fanxzone.pages.dev/play?id=sss"
+    "stream": "https://fanxzone.pages.dev/play?id=st-sss"
   },
   {
     "name": "DISNEY",
     "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/Disney_Channel.png",
-    "stream": "https://fanxzone.pages.dev/play?id=dc"
+    "stream": "https://fanxzone.pages.dev/play?id=st-dc"
   },
   {
     "name": "POGO",
     "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/Pogo_Hindi.png",
-    "stream": "https://fanxzone.pages.dev/play?id=ph"
+    "stream": "https://fanxzone.pages.dev/play?id=st-ph"
   },
   {
     "name": "CN SD",
     "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/CNHindi.png",
-    "stream": "https://fanxzone.pages.dev/play?id=cnh"
+    "stream": "https://fanxzone.pages.dev/play?id=st-cnh"
   },
   {
     "name": "CN HD",
     "logo": "https://jiotv.catchup.cdn.jio.com/dare_images/images/CNHDHindi.png",
-    "stream": "https://fanxzone.pages.dev/play?id=cnhh"
+    "stream": "https://fanxzone.pages.dev/play?id=st-cnhh"
   },
   {
     "name": "HUNGAMA",
     "logo": "hhttps://jiotv.catchup.cdn.jio.com/dare_images/images/Hungama.png",
-    "stream": "https://fanxzone.pages.dev/play?id=h"
+    "stream": "https://fanxzone.pages.dev/play?id=st-h"
   },
     
 ]
