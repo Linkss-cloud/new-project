@@ -4,7 +4,7 @@ const serverListEl = document.getElementById("serverList");
 const videoElement = document.getElementById("videoPlayer");
 const videoContainer = document.getElementById("videoContainer");
 
-const JSON_URL = "https://raw.githubusercontent.com/doctor-8trange/zyphx8/refs/heads/main/data/fancode.json";
+const JSON_URL = "https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json";
 
 let player;
 let ui;
