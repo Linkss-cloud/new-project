@@ -4,158 +4,201 @@
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SPORTS ZONE – Watch Live Sports</title>
-
+    <title>SPORTS ZONE – Live Sports Streaming</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
 
-
-    <!-- Popunder Ad Script -->
-    <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
-
-
 </head>
-
 
 <body>
 
+    <header class="site-header">
 
-<header class="site-header">
+        <div class="header-inner">
 
-<div class="header-inner">
+            <a href="index.html" class="brand-logo">
 
+                SPORTS<span> ZONE</span>
 
-<a href="index.html" class="brand-logo gradient-text">
-SPORTS ZONE
-</a>
+            </a>
 
+            <div class="header-status">
 
+                <span class="status-dot"></span>
 
-<a href="https://t.me/+rtK_sfY8t_A2NDU1"
-target="_blank"
-class="btn-telegram">
+                SPORTS STREAMING
 
+            </div>
 
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="local-clock">
 
-<line x1="22" y1="2" x2="11" y2="13"></line>
+                <div id="localTime">
+                    --:--:--
+                </div>
 
-<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                <small>
+                    LOCAL TIME
+                </small>
 
-</svg>
+            </div>
 
+            <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank" rel="noopener noreferrer" class="telegram-btn">
 
-<span>
-JOIN TELEGRAM
-</span>
+                JOIN TELEGRAM
 
+            </a>
 
-</a>
+        </div>
 
+    </header>
 
-</div>
 
-</header>
+    <main class="main-container">
 
 
+        <!-- HERO -->
 
+        <section class="hero-box">
 
+            <div class="hero-grid"></div>
 
-<main>
+            <div class="hero-content">
 
+                <div class="hero-label">
 
-<section class="matches-section">
+                    <span class="hero-live-dot"></span>
 
+                    <span id="heroLabel">
+                        LIVE SPORTS STREAMING
+                    </span>
 
-<div class="section-header">
+                </div>
 
-<h2>
-LIVE & UPCOMING EVENTS
-</h2>
 
-</div>
+                <h1 id="heroTitle">
+                    Watch Live Sports
+                </h1>
 
 
+                <p id="heroSubtitle">
+                    Cricket, Football, Racing & Fighting
+                </p>
 
-<div id="matchContainer" class="match-grid"></div>
 
+                <a id="heroWatchButton" href="#" class="hero-watch-btn hidden">
 
+                    ▶ WATCH LIVE
 
-</section>
+                </a>
 
+            </div>
 
-</main>
+        </section>
 
 
 
+        <!-- EVENTS -->
 
+        <section class="events-section">
 
-<footer class="site-footer">
+            <div class="section-heading">
 
-<p>
-© SPORTS ZONE • ALL RIGHTS RESERVED
-</p>
+                <div>
 
-</footer>
+                    <span class="small-label">
+                        SCHEDULE
+                    </span>
 
+                    <h2>
+                        Live & Upcoming Events
+                    </h2>
 
+                </div>
 
+                <span id="eventCount" class="event-count">
 
+                    0 EVENTS
 
-<!-- Telegram Popup -->
+                </span>
 
-<div id="popup" class="popup-overlay">
+            </div>
 
 
-<div class="popup-box">
+            <div id="matchContainer" class="match-list">
 
+                <div class="loading">
+                    LOADING EVENTS...
+                </div>
 
-<button id="popup-close" class="popup-close">
-×
-</button>
+            </div>
 
+        </section>
 
+    </main>
 
-<h2>
-Welcome to Sports Zone
-</h2>
 
+    <footer class="footer">
 
+        <span>
+            SPORTS ZONE
+        </span>
 
-<p>
-Join our Telegram channel for live match updates and notifications.
-</p>
+        <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank" rel="noopener noreferrer">
 
+            Telegram
 
+        </a>
 
-<a href="https://t.me/+rtK_sfY8t_A2NDU1"
-target="_blank">
+        <span class="footer-copy">
+            © ALL RIGHTS RESERVED
+        </span>
 
-JOIN TELEGRAM
+    </footer>
 
-</a>
 
+    <!-- =========================================
+     POPUNDER AD
+     ========================================= -->
 
+    <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js">
+    </script>
 
-</div>
+    <script type="text/javascript">
 
+        window.addEventListener("DOMContentLoaded", function () {
 
-</div>
+            if (
+                window.aclib &&
+                typeof window.aclib.runPop === "function"
+            ) {
 
+                aclib.runPop({
+                    zoneId: "11800802"
+                });
 
+            }
 
+        });
 
+    </script>
 
-<script type="module" src="js/home.js"></script>
 
+    <!-- =========================================
+     SPORTS ZONE JAVASCRIPT
+     ========================================= -->
+
+    <script type="module" src="js/home.js">
+    </script>
 
 </body>
 
