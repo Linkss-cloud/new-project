@@ -5,51 +5,23 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="referrer"
-        content="no-referrer"
-    >
+    <meta name="referrer" content="no-referrer">
 
-    <title>Watch - Sports Zone</title>
+    <title>Watch Live - Sports Zone</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <!-- FONT -->
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
-
-    
-
-    <!-- SHAKA PLAYER -->
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/shaka-player.ui.min.js"></script>
 
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css"
-    >
-
-
-    <!-- HLS PLAYER -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@5.1.10/dist/controls.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-
-    <!-- CSS -->
-
-    <link
-        rel="stylesheet"
-        href="css/watch.css"
-    >
+    <link rel="stylesheet" href="css/watch.css">
 
 </head>
 
@@ -57,180 +29,262 @@
 <body>
 
 
-<header class="player-header">
+    <header class="topbar">
 
-    <div class="player-header-inner">
+        <div class="topbar-inner">
 
-        <a
-            href="index.html"
-            class="player-brand gradient-text"
-        >
-            SPORTS ZONE
-        </a>
+            <a href="index.html" class="logo">
 
+                <span class="logo-mark">
+                    ▶
+                </span>
 
-        <a
-            href="https://t.me/+rtK_sfY8t_A2NDU1"
-            class="btn-telegram"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            JOIN TELEGRAM
-        </a>
+                <span>
+                    SPORTS<span>ZONE</span>
+                </span>
 
-    </div>
-
-</header>
+            </a>
 
 
+            <div class="header-actions">
 
-<main class="player-container">
+                <a href="index.html" class="back-btn">
+                    ← Schedule
+                </a>
 
 
-    <!-- MATCH INFO -->
+                <a href="https://t.me/+rtK_sfY8t_A2NDU1" target="_blank" rel="noopener noreferrer" class="telegram-btn">
+                    Telegram
+                </a>
 
-    <section class="match-header-info">
+            </div>
 
-        <div class="title-row">
+        </div>
 
-            <span class="live-indicator">
-                LIVE
-            </span>
+    </header>
 
-            <h1 id="matchName">
-                LOADING...
+
+
+    <main class="page">
+
+
+        <!-- MATCH HEADER -->
+
+        <section class="match-card">
+
+            <div class="match-meta">
+
+                <span id="statusBadge" class="status-badge">
+                    LIVE
+                </span>
+
+
+                <span id="categoryText" class="category">
+                    SPORTS
+                </span>
+
+            </div>
+
+
+            <h1 id="matchName" class="match-name">
+                Loading match...
             </h1>
 
+
+            <p id="matchTitle" class="match-title">
+                Please wait
+            </p>
+
+        </section>
+
+
+
+        <!-- PLAYER -->
+
+        <section class="player-card">
+
+            <div id="video-wrapper" class="video-wrapper">
+
+
+                <!-- LOADER -->
+
+                <div id="loader" class="loader">
+
+                    <div class="spinner"></div>
+
+                    <span id="loaderText">
+                        Loading stream...
+                    </span>
+
+                </div>
+
+
+
+                <!-- ERROR -->
+
+                <div id="player-error" class="player-error" style="display:none;">
+
+                    <div class="error-icon">
+                        !
+                    </div>
+
+
+                    <h3 id="errorTitle">
+                        Stream unavailable
+                    </h3>
+
+
+                    <p id="errorText">
+                        Please try another server.
+                    </p>
+
+
+                    <button id="retryButton" class="retry-btn" type="button">
+                        Retry
+                    </button>
+
+                </div>
+
+
+
+                <!-- SHAKA -->
+
+                <div id="shaka-container" class="player-layer" style="display:none;">
+
+                    <video id="videoPlayer" class="video-element" playsinline muted autoplay></video>
+
+                </div>
+
+
+
+                <!-- HLS -->
+
+                <div id="ios-container" class="player-layer" style="display:none;">
+
+                    <video id="ios-video" class="video-element" playsinline muted autoplay controls></video>
+
+                </div>
+
+
+
+                <!-- IFRAME -->
+
+                <div id="iframe-container" class="player-layer" style="display:none;">
+
+                    <iframe id="stream-frame" title="Live Stream"
+                        allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen
+                        referrerpolicy="no-referrer"></iframe>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- SERVERS -->
+
+        <section class="servers-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        STREAM SOURCES
+                    </span>
+
+
+                    <h2>
+                        Available Servers
+                    </h2>
+
+                </div>
+
+
+                <button id="refreshButton" class="refresh-btn" type="button">
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+
+
+            <div id="serverList" class="server-list">
+
+                <div class="server-placeholder">
+                    Loading servers...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- HELP -->
+
+        <section class="help-card">
+
+            <div class="help-icon">
+                ?
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Playback Help
+                </h3>
+
+
+                <p>
+                    If the current stream is not working,
+                    select another available server above.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <footer class="footer">
+
+        <div>
+            SPORTS ZONE
         </div>
 
+        <span>
+            Live Sports Streaming
+        </span>
 
-        <h2 id="matchTitle">
-            PLEASE WAIT
-        </h2>
-
-    </section>
-
-
-
-    <!-- VIDEO -->
-
-    <div class="video-wrapper">
-
-
-        <div id="loader">
-            Loading Stream...
-        </div>
+    </footer>
 
 
 
-        <!-- SHAKA PLAYER -->
+    <!-- =========================================
+     POPUNDER AD
+     ========================================= -->
 
-        <div
-            id="shaka-container"
-            class="shaka-video-container"
-            style="display:none;"
-        >
+    <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js">
+    </script>
 
-            <video
-                id="videoPlayer"
-                playsinline
-                controls
-                autoplay
-                muted
-            ></video>
+    <script type="text/javascript">
 
-        </div>
+        window.addEventListener("DOMContentLoaded", function () {
 
-
-
-        <!-- HLS / NORMAL VIDEO -->
-
-        <div
-            id="ios-container"
-            style="display:none;"
-        >
-
-            <video
-                id="ios-video"
-                controls
-                playsinline
-                autoplay
-                muted
-            ></video>
-
-        </div>
-
-
-
-        <!-- IFRAME -->
-
-        <div
-            id="iframe-container"
-            style="
-                display:none;
-                width:100%;
-                height:100%;
-            "
-        >
-
-            <iframe
-                id="stream-frame"
-                width="100%"
-                height="100%"
-                frameborder="0"
-                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                allowfullscreen
-            ></iframe>
-
-        </div>
-
-
-    </div>
-
-
-
-    <!-- SERVERS -->
-
-    <div
-        id="serverList"
-        class="server-list"
-    ></div>
-
-
-</main>
-
-
-
-<footer class="player-footer">
-
-    © SPORTS ZONE • ALL RIGHTS RESERVED
-
-</footer>
-
-
-
-<!-- POPUNDER -->
-
-<script
-    id="aclib"
-    type="text/javascript"
-    src="//acscdn.com/script/aclib.js"
-></script>
-
-
-<script type="text/javascript">
-
-(function () {
-
-    let clickCount = 0;
-
-    document.addEventListener(
-        "click",
-        function () {
-
-            clickCount++;
-
-            if (clickCount % 2 === 1) {
+            if (
+                window.aclib &&
+                typeof window.aclib.runPop === "function"
+            ) {
 
                 aclib.runPop({
                     zoneId: "11800802"
@@ -238,28 +292,20 @@
 
             }
 
-        },
-        true
-    );
+        });
 
-})();
-
-</script>
+    </script>
 
 
 
-<!-- PLAYER SCRIPTS -->
+    <!-- =========================================
+     SPORTS ZONE PLAYER SCRIPTS
+     ========================================= -->
 
-<script
-    type="module"
-    src="js/cookie-shaka.js"
-></script>
+    <script type="module" src="js/cookie-shaka.js"></script>
 
 
-<script
-    type="module"
-    src="js/player.js"
-></script>
+    <script type="module" src="js/player.js"></script>
 
 
 </body>
