@@ -1,762 +1,808 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+:root {
+  --bg: #030712;
+  --panel: #07111f;
+  --panel-2: #0a1627;
 
-:root{
+  --border: rgba(148, 163, 184, 0.16);
 
-    --bg-main:#020817;
-    --bg-panel:#071229;
-    --bg-input:#1E293B;
-    --border:#334155;
+  --cyan: #00e5ff;
+  --cyan-soft: rgba(0, 229, 255, 0.12);
 
-    --accent:#00E5FF;
-    --danger:#EF4444;
+  --green: #22c55e;
+  --red: #ef4444;
 
-    --text:#ffffff;
-    --muted:#94A3B8;
+  --white: #ffffff;
+  --muted: #8fa0b7;
 
-    --font:'Sora',sans-serif;
-
+  --font: "Sora", sans-serif;
 }
 
-
-
-body{
-
-    font-family:var(--font);
-
-    background:var(--bg-main);
-
-    color:var(--text);
-
-    min-height:100vh;
-
-    display:flex;
-
-    flex-direction:column;
-
+html {
+  background: var(--bg);
 }
 
+body {
+  min-height: 100vh;
 
+  background:
+    radial-gradient(circle at 20% 0%, rgba(0, 229, 255, 0.06), transparent 30%),
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(59, 130, 246, 0.06),
+      transparent 25%
+    ),
+    var(--bg);
 
+  color: var(--white);
 
-a{
+  font-family: var(--font);
 
-    text-decoration:none;
-
-    color:inherit;
-
+  display: flex;
+  flex-direction: column;
 }
 
-
-
-
-
-/* HEADER */
-
-
-.player-header{
-
-    position:sticky;
-
-    top:0;
-
-    z-index:100;
-
-    padding:22px 20px;
-
-    background:var(--bg-panel);
-
-    border-bottom:1px solid var(--border);
-
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
+/* =========================================
+   HEADER
+========================================= */
 
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 
-.player-header-inner{
+  background: rgba(3, 7, 18, 0.88);
 
-    max-width:1200px;
+  backdrop-filter: blur(18px);
 
-    margin:auto;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
+  border-bottom: 1px solid var(--border);
 }
 
+.topbar-inner {
+  width: 100%;
+  max-width: 1200px;
 
+  margin: auto;
 
+  padding: 15px 20px;
 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-.player-brand{
-
-    font-size:32px;
-
-    font-weight:800;
-
-    letter-spacing:2px;
-
+  gap: 20px;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
 
+  gap: 10px;
 
+  font-size: 20px;
+  font-weight: 800;
 
-
-.gradient-text{
-
-    background:
-
-    linear-gradient(
-    90deg,
-    #fff,
-    var(--accent)
-    );
-
-    -webkit-background-clip:text;
-
-    -webkit-text-fill-color:transparent;
-
+  letter-spacing: -0.5px;
 }
 
-
-
-
-
-.btn-telegram{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding:11px 16px;
-
-    background:var(--bg-input);
-
-    border:1px solid var(--border);
-
-    border-radius:12px;
-
-    font-size:12px;
-
-    font-weight:800;
-
+.logo > span:last-child span {
+  color: var(--cyan);
 }
 
+.logo-mark {
+  width: 34px;
+  height: 34px;
 
+  border-radius: 10px;
 
+  display: grid;
+  place-items: center;
 
+  background: linear-gradient(135deg, #00e5ff, #2563eb);
 
-.btn-telegram:hover{
+  color: #001018;
 
-    border-color:var(--accent);
+  font-size: 13px;
 
-    color:var(--accent);
-
+  box-shadow: 0 8px 25px rgba(0, 229, 255, 0.22);
 }
 
-
-
-
-
-/* MAIN */
-
-
-.player-container{
-
-    width:100%;
-
-    max-width:1100px;
-
-    margin:40px auto;
-
-    padding:0 20px;
-
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+.back-btn,
+.telegram-btn {
+  padding: 9px 13px;
 
+  border: 1px solid var(--border);
 
+  border-radius: 9px;
 
+  font-size: 11px;
+  font-weight: 700;
 
-
-/* MATCH INFO */
-
-
-.match-header-info{
-
-    margin-bottom:25px;
-
+  transition: 0.2s ease;
 }
 
-
-
-.title-row{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
+.back-btn {
+  color: var(--muted);
 }
 
-
-
-
-.live-indicator{
-
-    background:
-
-    rgba(239,68,68,.15);
-
-
-    border:1px solid rgba(239,68,68,.4);
-
-
-    color:var(--danger);
-
-
-    padding:5px 10px;
-
-
-    border-radius:8px;
-
-
-    font-size:11px;
-
-
-    font-weight:800;
-
+.back-btn:hover {
+  color: var(--white);
+  border-color: var(--cyan);
 }
 
+.telegram-btn {
+  background: var(--cyan);
 
+  color: #001018;
 
-
-
-
-#matchName{
-
-    font-size:25px;
-
-    font-weight:800;
-
-    text-transform:uppercase;
-
+  border-color: var(--cyan);
 }
 
-
-
-#matchTitle{
-
-    color:var(--muted);
-
-    font-size:14px;
-
-    margin-top:6px;
-
+.telegram-btn:hover {
+  opacity: 0.88;
 }
 
-/* =========================
-      VIDEO PLAYER
-========================= */
+/* =========================================
+   PAGE
+========================================= */
 
+.page {
+  width: 100%;
+  max-width: 1200px;
 
-.video-wrapper{
+  margin: 0 auto;
 
-    position:relative;
+  padding: 32px 20px 50px;
 
-    width:100%;
-
-    aspect-ratio:16/9;
-
-    min-height:300px;
-
-    background:#000;
-
-    border-radius:20px;
-
-    overflow:hidden;
-
-    border:1px solid var(--border);
-
+  flex: 1;
 }
 
+/* =========================================
+   MATCH
+========================================= */
 
-
-/* ALL PLAYER BOX */
-
-#shaka-container,
-#ios-container,
-#iframe-container{
-
-    position:absolute;
-
-    inset:0;
-
-    width:100%;
-
-    height:100%;
-
+.match-card {
+  margin-bottom: 20px;
 }
 
+.match-meta {
+  display: flex;
+  align-items: center;
 
+  gap: 9px;
 
-/* VIDEO SIZE */
-
-
-#videoPlayer,
-#ios-video{
-
-    width:100% !important;
-
-    height:100% !important;
-
-    display:block;
-
-    object-fit:contain;
-
-    background:#000;
-
+  margin-bottom: 10px;
 }
 
+.status-badge {
+  display: inline-flex;
+  align-items: center;
 
+  gap: 6px;
 
+  padding: 5px 9px;
 
-#stream-frame{
+  border-radius: 7px;
 
-    width:100%;
+  color: #ff6b6b;
 
-    height:100%;
+  background: rgba(239, 68, 68, 0.09);
 
-    border:0;
+  border: 1px solid rgba(239, 68, 68, 0.24);
 
-    display:block;
-
+  font-size: 10px;
+  font-weight: 800;
 }
 
+.status-badge::before {
+  content: "";
 
+  width: 6px;
+  height: 6px;
 
+  border-radius: 50%;
 
+  background: #ef4444;
 
-
-/* SHAKA UI FIX */
-
-
-/* remove full black bottom overlay */
-
-.shaka-controls-container{
-
-    background:transparent !important;
-
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
 }
 
+.status-badge.offline {
+  color: var(--muted);
 
+  background: rgba(148, 163, 184, 0.08);
 
-.shaka-bottom-controls{
-
-    background:transparent !important;
-
+  border-color: var(--border);
 }
 
+.status-badge.offline::before {
+  background: var(--muted);
 
-
-.shaka-controls-button-panel{
-
-    background:rgba(0,0,0,.35) !important;
-
+  box-shadow: none;
 }
 
+.category {
+  color: var(--muted);
 
+  font-size: 10px;
 
+  font-weight: 700;
 
-
-/* LOADER */
-
-
-#loader{
-
-    position:absolute;
-
-    top:50%;
-
-    left:50%;
-
-
-    transform:translate(-50%,-50%);
-
-
-    background:rgba(0,0,0,.8);
-
-
-    padding:15px 25px;
-
-
-    border-radius:30px;
-
-
-    font-weight:700;
-
-
-    z-index:50;
-
-
-    display:none;
-
+  letter-spacing: 1px;
 }
 
+.match-name {
+  font-size: clamp(24px, 4vw, 42px);
 
+  line-height: 1.08;
 
+  font-weight: 800;
 
+  letter-spacing: -1.5px;
 
-/* SERVER BUTTONS */
-
-
-.server-list{
-
-    margin-top:25px;
-
-    display:grid;
-
-    grid-template-columns:repeat(2,1fr);
-
-    gap:15px;
-
+  text-transform: uppercase;
 }
 
+.match-title {
+  margin-top: 8px;
 
+  color: var(--muted);
 
-
-
-.server-btn-play{
-
-
-    padding:18px;
-
-
-    background:var(--bg-panel);
-
-
-    border:1px solid var(--border);
-
-
-    border-radius:12px;
-
-
-    color:white;
-
-
-    font-family:inherit;
-
-
-    font-weight:800;
-
-
-    cursor:pointer;
-
-
-    transition:.3s;
-
-
+  font-size: 13px;
 }
 
+/* =========================================
+   PLAYER
+========================================= */
 
+.player-card {
+  width: 100%;
 
+  border: 1px solid var(--border);
 
-.server-btn-play:hover{
+  border-radius: 16px;
 
+  overflow: hidden;
 
-    border-color:var(--accent);
+  background: #000;
 
-
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
 }
 
+.video-wrapper {
+  position: relative;
 
+  width: 100%;
 
+  aspect-ratio: 16 / 9;
 
+  min-height: 280px;
 
+  background: #000;
 
-.server-btn-play.active{
-
-
-    border-color:var(--accent);
-
-
-    color:var(--accent);
-
-
-    box-shadow:
-
-    0 0 15px rgba(0,229,255,.2);
-
-
+  overflow: hidden;
 }
 
-/* =========================
-        FOOTER
-========================= */
+.player-layer {
+  position: absolute;
 
+  inset: 0;
 
-.player-footer{
-
-    margin-top:auto;
-
-    padding:25px;
-
-
-    background:var(--bg-panel);
-
-
-    border-top:1px solid var(--border);
-
-
-    text-align:center;
-
-
-    color:var(--muted);
-
-
-    font-size:12px;
-
-
-    letter-spacing:2px;
-
+  width: 100%;
+  height: 100%;
 }
 
+.video-element {
+  width: 100% !important;
+  height: 100% !important;
 
+  display: block;
 
+  object-fit: contain;
 
-
-
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-
-
-.player-header{
-
-    padding:16px;
-
+  background: #000;
 }
 
+#stream-frame {
+  width: 100%;
+  height: 100%;
 
+  border: 0;
 
+  display: block;
 
-.player-brand{
-
-    font-size:24px;
-
+  background: #000;
 }
 
+/* =========================================
+   LOADER
+========================================= */
 
+.loader {
+  position: absolute;
 
+  inset: 0;
 
-.btn-telegram span{
+  z-index: 30;
 
-    display:none;
+  display: flex;
 
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  background: rgba(0, 0, 0, 0.72);
+
+  font-size: 12px;
+
+  color: #dbeafe;
 }
 
+.spinner {
+  width: 34px;
+  height: 34px;
 
+  border-radius: 50%;
 
+  border: 3px solid rgba(255, 255, 255, 0.15);
 
-.player-container{
+  border-top-color: var(--cyan);
 
-    margin:25px auto;
-
-    padding:0 15px;
-
+  animation: spin 0.8s linear infinite;
 }
 
-
-
-
-
-#matchName{
-
-    font-size:19px;
-
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
+/* =========================================
+   ERROR
+========================================= */
 
+.player-error {
+  position: absolute;
 
+  inset: 0;
 
-.video-wrapper{
+  z-index: 40;
 
-    aspect-ratio:16/9;
+  background: radial-gradient(
+    circle,
+    rgba(239, 68, 68, 0.08),
+    rgba(0, 0, 0, 0.96)
+  );
 
-    min-height:220px;
+  display: flex;
 
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 20px;
 }
 
+.error-icon {
+  width: 40px;
+  height: 40px;
 
+  display: grid;
+  place-items: center;
 
+  border-radius: 50%;
 
-.server-list{
+  background: rgba(239, 68, 68, 0.12);
 
+  border: 1px solid rgba(239, 68, 68, 0.3);
 
-    grid-template-columns:1fr;
+  color: #ff6b6b;
 
+  font-weight: 800;
 
+  margin-bottom: 12px;
 }
 
-
-
-
-.server-btn-play{
-
-
-    padding:15px;
-
+.player-error h3 {
+  font-size: 15px;
 }
 
+.player-error p {
+  margin-top: 5px;
 
+  color: var(--muted);
 
+  font-size: 11px;
 }
 
+.retry-btn {
+  margin-top: 15px;
 
+  padding: 9px 16px;
 
+  border: 1px solid var(--cyan);
 
+  border-radius: 8px;
 
+  background: var(--cyan);
 
+  color: #001018;
 
-/* SMALL DEVICES */
+  font-family: inherit;
 
+  font-size: 11px;
+  font-weight: 800;
 
-@media(max-width:450px){
-
-
-
-.player-brand{
-
-    font-size:21px;
-
+  cursor: pointer;
 }
 
+/* =========================================
+   SERVERS
+========================================= */
 
-
-.video-wrapper{
-
-    min-height:200px;
-
+.servers-section {
+  margin-top: 25px;
 }
 
+.section-heading {
+  display: flex;
 
+  align-items: flex-end;
+  justify-content: space-between;
 
-#matchTitle{
+  gap: 15px;
 
-    font-size:12px;
-
+  margin-bottom: 13px;
 }
 
+.section-label {
+  color: var(--cyan);
 
+  font-size: 9px;
 
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
 }
 
-/* =====================================
-   SHAKA PLAYER CONTROL OVERLAY FIX
-===================================== */
+.section-heading h2 {
+  margin-top: 3px;
 
+  font-size: 18px;
 
-/* Main control background remove */
-
-.shaka-controls-container{
-
-    background:transparent !important;
-
-    background-image:none !important;
-
+  font-weight: 800;
 }
 
+.refresh-btn {
+  padding: 8px 12px;
 
+  border: 1px solid var(--border);
 
-/* Bottom control bar */
+  border-radius: 8px;
 
-.shaka-bottom-controls{
+  background: var(--panel);
 
-    background:linear-gradient(
-        transparent,
-        rgba(0,0,0,0.25)
-    ) !important;
+  color: var(--muted);
 
+  font-family: inherit;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
 }
 
+.refresh-btn:hover {
+  color: var(--cyan);
 
-
-/* Remove extra black panels */
-
-.shaka-controls-button-panel{
-
-    background:transparent !important;
-
+  border-color: var(--cyan);
 }
 
+.server-list {
+  display: grid;
 
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 
-/* Control buttons */
-
-.shaka-control-button{
-
-    background:transparent !important;
-
+  gap: 10px;
 }
 
+.server-btn {
+  position: relative;
 
+  min-height: 65px;
 
-/* Video always full */
+  padding: 13px;
 
-.shaka-video-container{
+  border-radius: 11px;
 
-    width:100% !important;
+  border: 1px solid var(--border);
 
-    height:100% !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.025),
+    rgba(255, 255, 255, 0.01)
+  );
 
-    background:#000 !important;
+  color: white;
 
+  font-family: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
 }
 
+.server-btn:hover {
+  border-color: rgba(0, 229, 255, 0.5);
 
-
-.shaka-video-container video{
-
-    width:100% !important;
-
-    height:100% !important;
-
-    object-fit:contain !important;
-
+  transform: translateY(-1px);
 }
 
+.server-btn.active {
+  border-color: var(--cyan);
 
+  background: linear-gradient(
+    135deg,
+    rgba(0, 229, 255, 0.1),
+    rgba(0, 229, 255, 0.025)
+  );
 
-/* Hide empty black overlay */
-
-.shaka-controls-container:not(.shaka-controls-visible){
-
-    opacity:0;
-
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.07);
 }
 
+.server-top {
+  display: flex;
 
+  justify-content: space-between;
 
-/* Mobile */
-
-@media(max-width:768px){
-
-
-.shaka-bottom-controls{
-
-    padding-bottom:5px !important;
-
+  align-items: center;
 }
 
+.server-name {
+  font-size: 12px;
 
+  font-weight: 800;
+}
+
+.server-type {
+  color: var(--muted);
+
+  font-size: 9px;
+
+  text-transform: uppercase;
+}
+
+.server-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 8px;
+
+  color: var(--muted);
+
+  font-size: 9px;
+}
+
+.server-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--green);
+
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+.server-placeholder {
+  grid-column: 1 / -1;
+
+  padding: 25px;
+
+  text-align: center;
+
+  border: 1px dashed var(--border);
+
+  border-radius: 11px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+/* =========================================
+   HELP
+========================================= */
+
+.help-card {
+  margin-top: 25px;
+
+  display: flex;
+
+  gap: 12px;
+
+  padding: 16px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.help-icon {
+  flex: 0 0 auto;
+
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 8px;
+
+  background: var(--cyan-soft);
+
+  color: var(--cyan);
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.help-card h3 {
+  font-size: 12px;
+}
+
+.help-card p {
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+
+  line-height: 1.6;
+}
+
+/* =========================================
+   SHAKA
+========================================= */
+
+.shaka-video-container {
+  width: 100% !important;
+  height: 100% !important;
+
+  background: #000 !important;
+}
+
+.shaka-video-container video {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: contain !important;
+}
+
+.shaka-controls-container {
+  background: transparent !important;
+}
+
+.shaka-bottom-controls {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)) !important;
+}
+
+.shaka-controls-button-panel {
+  background: transparent !important;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+  padding: 25px 20px;
+
+  border-top: 1px solid var(--border);
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-size: 10px;
+
+  letter-spacing: 1px;
+}
+
+.footer div {
+  color: var(--white);
+
+  font-weight: 800;
+
+  margin-bottom: 5px;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+  .topbar-inner {
+    padding: 12px 15px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+  }
+
+  .back-btn {
+    display: none;
+  }
+
+  .telegram-btn {
+    padding: 8px 10px;
+    font-size: 9px;
+  }
+
+  .page {
+    padding: 23px 14px 40px;
+  }
+
+  .match-name {
+    font-size: 23px;
+  }
+
+  .video-wrapper {
+    min-height: 210px;
+    border-radius: 12px;
+  }
+
+  .server-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .server-btn {
+    min-height: 60px;
+  }
+}
+
+@media (max-width: 430px) {
+  .server-list {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: center;
+  }
 }
