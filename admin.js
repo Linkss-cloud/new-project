@@ -1,67 +1,51 @@
 import { db, auth } from "./firebase.js";
 
 import {
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    doc,
-    updateDoc
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 import {
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
 
 /* ==================================================
    ELEMENTS
 ================================================== */
 
-const loginScreen =
-    document.getElementById("loginScreen");
+const loginScreen = document.getElementById("loginScreen");
 
-const dashboardScreen =
-    document.getElementById("dashboardScreen");
+const dashboardScreen = document.getElementById("dashboardScreen");
 
-const loginForm =
-    document.getElementById("loginForm");
+const loginForm = document.getElementById("loginForm");
 
-const loginError =
-    document.getElementById("loginError");
+const loginError = document.getElementById("loginError");
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-const matchForm =
-    document.getElementById("matchForm");
+const matchForm = document.getElementById("matchForm");
 
-const serverContainer =
-    document.getElementById("serverFieldsContainer");
+const serverContainer = document.getElementById("serverFieldsContainer");
 
-const addServerBtn =
-    document.getElementById("addServerBtn");
+const addServerBtn = document.getElementById("addServerBtn");
 
-const matchList =
-    document.getElementById("matchList");
+const matchList = document.getElementById("matchList");
 
-const formTitle =
-    document.getElementById("formTitle");
+const formTitle = document.getElementById("formTitle");
 
-const cancelEditBtn =
-    document.getElementById("cancelEditBtn");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
 
-const matchStatus =
-    document.getElementById("matchStatus");
+const matchStatus = document.getElementById("matchStatus");
 
-const scheduleGroup =
-    document.getElementById("scheduleGroup");
+const scheduleGroup = document.getElementById("scheduleGroup");
 
-const scheduledAt =
-    document.getElementById("scheduledAt");
-
+const scheduledAt = document.getElementById("scheduledAt");
 
 let serverCount = 0;
 
@@ -69,194 +53,112 @@ let editId = null;
 
 let matchesData = {};
 
-
 /* ==================================================
    AUTH
 ================================================== */
 
 onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loginScreen.style.display = "none";
 
-    if (user) {
+    dashboardScreen.style.display = "block";
 
-        loginScreen.style.display = "none";
+    loadMatches();
+  } else {
+    loginScreen.style.display = "flex";
 
-        dashboardScreen.style.display = "block";
-
-        loadMatches();
-
-    } else {
-
-        loginScreen.style.display = "flex";
-
-        dashboardScreen.style.display = "none";
-
-    }
-
+    dashboardScreen.style.display = "none";
+  }
 });
-
 
 /* ==================================================
    LOGIN
 ================================================== */
 
-loginForm.addEventListener(
-    "submit",
-    async (e) => {
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-        e.preventDefault();
+  loginError.textContent = "";
 
-        loginError.textContent = "";
+  const email = document.getElementById("adminEmail").value.trim();
 
-        const email =
-            document
-                .getElementById("adminEmail")
-                .value
-                .trim();
+  const password = document.getElementById("adminPassword").value;
 
-        const password =
-            document
-                .getElementById("adminPassword")
-                .value;
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
 
-
-        try {
-
-            await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-
-        } catch (error) {
-
-            console.error(
-                "LOGIN ERROR:",
-                error
-            );
-
-            loginError.textContent =
-                "INVALID LOGIN";
-
-        }
-
-    }
-);
-
+    loginError.textContent = "INVALID LOGIN";
+  }
+});
 
 /* ==================================================
    LOGOUT
 ================================================== */
 
-logoutBtn.addEventListener(
-    "click",
-    async () => {
-
-        try {
-
-            await signOut(auth);
-
-        } catch (error) {
-
-            console.error(
-                "LOGOUT ERROR:",
-                error
-            );
-
-        }
-
-    }
-);
-
+logoutBtn.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("LOGOUT ERROR:", error);
+  }
+});
 
 /* ==================================================
    STATUS / SCHEDULE
 ================================================== */
 
 function updateScheduleVisibility() {
+  if (matchStatus.value === "Upcoming") {
+    scheduleGroup.style.display = "flex";
 
-    if (
-        matchStatus.value === "Upcoming"
-    ) {
+    scheduledAt.required = true;
+  } else {
+    scheduleGroup.style.display = "none";
 
-        scheduleGroup.style.display =
-            "flex";
-
-        scheduledAt.required =
-            true;
-
-    } else {
-
-        scheduleGroup.style.display =
-            "none";
-
-        scheduledAt.required =
-            false;
-
-    }
-
+    scheduledAt.required = false;
+  }
 }
 
-
-matchStatus.addEventListener(
-    "change",
-    updateScheduleVisibility
-);
-
+matchStatus.addEventListener("change", updateScheduleVisibility);
 
 /* ==================================================
    ADD SERVER
 ================================================== */
 
-addServerBtn.addEventListener(
-    "click",
-    () => {
-
-        addServerField();
-
-    }
-);
-
+addServerBtn.addEventListener("click", () => {
+  addServerField();
+});
 
 /* ==================================================
    ADD SERVER FIELD
 ================================================== */
 
 window.addServerField = function (
+  name = "",
 
-    name = "",
+  type = "shaka",
 
-    type = "shaka",
+  url = "",
 
-    url = "",
+  key = "",
 
-    key = "",
+  cookie = "",
 
-    cookie = "",
-
-    whatToShow = "dash"
-
+  whatToShow = "dash",
 ) {
+  serverCount++;
 
-    serverCount++;
+  const id = "server_" + serverCount;
 
+  const div = document.createElement("div");
 
-    const id =
-        "server_" + serverCount;
+  div.className = "server-block";
 
+  div.id = id;
 
-    const div =
-        document.createElement("div");
-
-
-    div.className =
-        "server-block";
-
-
-    div.id =
-        id;
-
-
-    div.innerHTML = `
+  div.innerHTML = `
 
         <button
             type="button"
@@ -433,486 +335,223 @@ window.addServerField = function (
 
     `;
 
-
-    serverContainer.appendChild(
-        div
-    );
-
+  serverContainer.appendChild(div);
 };
-
 
 /* ==================================================
    REMOVE SERVER
 ================================================== */
 
-window.removeServerField = function (
-    id
-) {
+window.removeServerField = function (id) {
+  const element = document.getElementById(id);
 
-    const element =
-        document.getElementById(id);
-
-
-    if (element) {
-
-        element.remove();
-
-    }
-
+  if (element) {
+    element.remove();
+  }
 };
-
 
 /* ==================================================
    DETECT STREAM TYPE
 ================================================== */
 
-window.detectStreamType = function (
-    input
-) {
+window.detectStreamType = function (input) {
+  const block = input.closest(".server-block");
 
-    const block =
-        input.closest(
-            ".server-block"
-        );
+  if (!block) return;
 
+  const type = block.querySelector(".srv-type");
 
-    if (!block) return;
+  const url = input.value.trim().toLowerCase();
 
+  if (url.includes(".m3u8")) {
+    type.value = "hls";
 
-    const type =
-        block.querySelector(
-            ".srv-type"
-        );
+    return;
+  }
 
+  if (url.includes(".mpd")) {
+    type.value = "shaka";
 
-    const url =
-        input.value
-            .trim()
-            .toLowerCase();
+    return;
+  }
 
-
-    if (
-        url.includes(".m3u8")
-    ) {
-
-        type.value =
-            "hls";
-
-        return;
-
-    }
-
-
-    if (
-        url.includes(".mpd")
-    ) {
-
-        type.value =
-            "shaka";
-
-        return;
-
-    }
-
-
-    if (
-        url.includes("fancode") ||
-        url.includes("cloudfront.net")
-    ) {
-
-        type.value =
-            "fancode";
-
-    }
-
+  if (url.includes("fancode") || url.includes("cloudfront.net")) {
+    type.value = "fancode";
+  }
 };
-
 
 /* ==================================================
    ESCAPE ATTRIBUTE
 ================================================== */
 
 function escapeAttribute(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
 
-    return String(value ?? "")
+    .replace(/"/g, "&quot;")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+    .replace(/</g, "&lt;")
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        );
-
+    .replace(/>/g, "&gt;");
 }
-
 
 /* ==================================================
    GET SERVERS
 ================================================== */
 
 function getServers() {
+  const servers = [];
 
-    const servers = [];
+  document.querySelectorAll(".server-block").forEach((block) => {
+    const name = block.querySelector(".srv-name").value.trim();
 
+    const type = block.querySelector(".srv-type").value;
 
-    document
-        .querySelectorAll(
-            ".server-block"
-        )
-        .forEach(
-            (block) => {
+    const watchType = block.querySelector(".srv-watch-type").value;
 
-                const name =
-                    block
-                        .querySelector(
-                            ".srv-name"
-                        )
-                        .value
-                        .trim();
+    const url = block.querySelector(".srv-url").value.trim();
 
+    const key = block.querySelector(".srv-key").value.trim();
 
-                const type =
-                    block
-                        .querySelector(
-                            ".srv-type"
-                        )
-                        .value;
+    const cookie = block.querySelector(".srv-cookie").value.trim();
 
+    servers.push({
+      channelName: name,
 
-                const watchType =
-                    block
-                        .querySelector(
-                            ".srv-watch-type"
-                        )
-                        .value;
-
-
-                const url =
-                    block
-                        .querySelector(
-                            ".srv-url"
-                        )
-                        .value
-                        .trim();
-
-
-                const key =
-                    block
-                        .querySelector(
-                            ".srv-key"
-                        )
-                        .value
-                        .trim();
-
-
-                const cookie =
-                    block
-                        .querySelector(
-                            ".srv-cookie"
-                        )
-                        .value
-                        .trim();
-
-
-                servers.push({
-
-                    channelName:
-                        name,
-
-                    /*
+      /*
                     Actual player type
                     */
 
-                    type:
-                        type,
+      type: type,
 
-                    /*
+      /*
                     Watch page display value
                     */
 
-                    whatToShow:
-                        watchType,
+      whatToShow: watchType,
 
-                    url:
-                        url,
+      url: url,
 
-                    mpd:
-                        url,
+      mpd: url,
 
-                    key:
-                        key,
+      key: key,
 
-                    cookie:
-                        cookie
+      cookie: cookie,
+    });
+  });
 
-                });
-
-            }
-        );
-
-
-    return servers;
-
+  return servers;
 }
-
 
 /* ==================================================
    CREATE / UPDATE MATCH
 ================================================== */
 
-matchForm.addEventListener(
-    "submit",
-    async (e) => {
+matchForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-        e.preventDefault();
+  try {
+    const status = matchStatus.value;
 
+    let scheduledTime = null;
 
-        try {
+    if (status === "Upcoming") {
+      if (!scheduledAt.value) {
+        alert("Please select match start date & time.");
 
-            const status =
-                matchStatus.value;
+        return;
+      }
 
-
-            let scheduledTime =
-                null;
-
-
-            if (
-                status === "Upcoming"
-            ) {
-
-                if (!scheduledAt.value) {
-
-                    alert(
-                        "Please select match start date & time."
-                    );
-
-                    return;
-
-                }
-
-
-                scheduledTime =
-                    new Date(
-                        scheduledAt.value
-                    ).toISOString();
-
-            }
-
-
-            const payload = {
-
-                matchName:
-                    document
-                        .getElementById("matchName")
-                        .value
-                        .trim(),
-
-
-                leagueName:
-                    document
-                        .getElementById("leagueName")
-                        .value
-                        .trim(),
-
-
-                posterUrl:
-                    document
-                        .getElementById("posterUrl")
-                        .value
-                        .trim(),
-
-
-                sport:
-                    document
-                        .getElementById("sport")
-                        .value,
-
-
-                status:
-                    status,
-
-
-                scheduledAt:
-                    scheduledTime,
-
-
-                servers:
-                    getServers(),
-
-
-                updatedAt:
-                    new Date().toISOString()
-
-            };
-
-
-            if (editId) {
-
-                await updateDoc(
-                    doc(
-                        db,
-                        "matches",
-                        editId
-                    ),
-                    payload
-                );
-
-            } else {
-
-                await addDoc(
-                    collection(
-                        db,
-                        "matches"
-                    ),
-                    payload
-                );
-
-            }
-
-
-            alert(
-                editId
-                    ? "MATCH UPDATED"
-                    : "MATCH PUBLISHED"
-            );
-
-
-            resetForm();
-
-            await loadMatches();
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "SAVE MATCH ERROR:",
-                error
-            );
-
-            alert(
-                "ERROR SAVING MATCH. CHECK CONSOLE."
-            );
-
-        }
-
+      scheduledTime = new Date(scheduledAt.value).toISOString();
     }
-);
 
+    const payload = {
+      matchName: document.getElementById("matchName").value.trim(),
+
+      leagueName: document.getElementById("leagueName").value.trim(),
+
+      posterUrl: document.getElementById("posterUrl").value.trim(),
+
+      sport: document.getElementById("sport").value,
+
+      status: status,
+
+      scheduledAt: scheduledTime,
+
+      servers: getServers(),
+
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (editId) {
+      await updateDoc(doc(db, "matches", editId), payload);
+    } else {
+      await addDoc(collection(db, "matches"), payload);
+    }
+
+    alert(editId ? "MATCH UPDATED" : "MATCH PUBLISHED");
+
+    resetForm();
+
+    await loadMatches();
+  } catch (error) {
+    console.error("SAVE MATCH ERROR:", error);
+
+    alert("ERROR SAVING MATCH. CHECK CONSOLE.");
+  }
+});
 
 /* ==================================================
    LOAD MATCHES
 ================================================== */
 
 async function loadMatches() {
+  matchList.innerHTML = "<p class='loading-text'>Loading...</p>";
 
-    matchList.innerHTML =
-        "<p class='loading-text'>Loading...</p>";
+  try {
+    const snap = await getDocs(collection(db, "matches"));
 
+    matchesData = {};
 
-    try {
+    let html = "";
 
-        const snap =
-            await getDocs(
-                collection(
-                    db,
-                    "matches"
-                )
-            );
+    snap.forEach((item) => {
+      const data = item.data();
 
+      matchesData[item.id] = data;
 
-        matchesData = {};
+      const status = String(data.status || "Upcoming").toLowerCase();
 
+      const isLive = status === "live";
 
-        let html = "";
+      let dateText = "";
 
+      if (data.scheduledAt) {
+        const date = new Date(data.scheduledAt);
 
-        snap.forEach(
-            (item) => {
+        if (!Number.isNaN(date.getTime())) {
+          dateText = date.toLocaleString(undefined, {
+            dateStyle: "medium",
 
-                const data =
-                    item.data();
+            timeStyle: "short",
+          });
+        }
+      }
 
-
-                matchesData[item.id] =
-                    data;
-
-
-                const status =
-                    String(
-                        data.status ||
-                        "Upcoming"
-                    ).toLowerCase();
-
-
-                const isLive =
-                    status === "live";
-
-
-                let dateText = "";
-
-
-                if (
-                    data.scheduledAt
-                ) {
-
-                    const date =
-                        new Date(
-                            data.scheduledAt
-                        );
-
-
-                    if (
-                        !Number.isNaN(
-                            date.getTime()
-                        )
-                    ) {
-
-                        dateText =
-                            date.toLocaleString(
-                                undefined,
-                                {
-                                    dateStyle:
-                                        "medium",
-
-                                    timeStyle:
-                                        "short"
-                                }
-                            );
-
-                    }
-
-                }
-
-
-                html += `
+      html += `
 
                     <div class="match-item">
 
                         ${
-                            data.posterUrl
-                                ? `
+                          data.posterUrl
+                            ? `
                                     <img
                                         src="${escapeAttribute(data.posterUrl)}"
                                         alt=""
                                         onerror="this.style.display='none'"
                                     >
                                 `
-                                : `
+                            : `
                                     <div class="no-poster">
                                         NO POSTER
                                     </div>
@@ -926,71 +565,59 @@ async function loadMatches() {
                             <div class="admin-match-status
                                 ${isLive ? "live" : "upcoming"}">
 
-                                ${
-                                    isLive
-                                        ? "🔴 LIVE"
-                                        : "🕐 UPCOMING"
-                                }
+                                ${isLive ? "🔴 LIVE" : "🕐 UPCOMING"}
 
                             </div>
 
 
                             <h3>
-                                ${escapeHTML(
-                                    data.matchName
-                                )}
+                                ${escapeHTML(data.matchName)}
                             </h3>
 
 
                             ${
-                                data.leagueName
-                                    ? `
+                              data.leagueName
+                                ? `
                                         <p class="admin-league">
-                                            ${escapeHTML(
-                                                data.leagueName
-                                            )}
+                                            ${escapeHTML(data.leagueName)}
                                         </p>
                                     `
-                                    : ""
+                                : ""
                             }
 
 
                             ${
-                                data.sport
-                                    ? `
+                              data.sport
+                                ? `
                                         <span class="sport-label">
-                                            ${escapeHTML(
-                                                data.sport
-                                            )}
+                                            ${escapeHTML(data.sport)}
                                         </span>
                                     `
-                                    : ""
+                                : ""
                             }
 
 
                             ${
-                                Array.isArray(data.servers)
-                                    ? `
+                              Array.isArray(data.servers)
+                                ? `
                                         <span class="player-label">
                                             SERVERS:
                                             ${data.servers.length}
                                         </span>
                                     `
-                                    : ""
+                                : ""
                             }
 
 
                             ${
-                                !isLive && dateText
-                                    ? `
+                              !isLive && dateText
+                                ? `
                                         <p class="admin-time">
                                             STARTS:
-                                            ${escapeHTML(
-                                                dateText
-                                            )}
+                                            ${escapeHTML(dateText)}
                                         </p>
                                     `
-                                    : ""
+                                : ""
                             }
 
 
@@ -1019,387 +646,185 @@ async function loadMatches() {
                     </div>
 
                 `;
+    });
 
-            }
-        );
-
-
-        if (!html) {
-
-            html = `
+    if (!html) {
+      html = `
                 <div class="empty-list">
                     NO MATCHES FOUND
                 </div>
             `;
-
-        }
-
-
-        matchList.innerHTML =
-            html;
-
     }
 
-    catch (error) {
+    matchList.innerHTML = html;
+  } catch (error) {
+    console.error("LOAD MATCH ERROR:", error);
 
-        console.error(
-            "LOAD MATCH ERROR:",
-            error
-        );
-
-
-        matchList.innerHTML = `
+    matchList.innerHTML = `
             <div class="empty-list">
                 ERROR LOADING MATCHES
             </div>
         `;
-
-    }
-
+  }
 }
-
 
 /* ==================================================
    EDIT MATCH
 ================================================== */
 
-window.editMatch = function (
-    id
-) {
+window.editMatch = function (id) {
+  const data = matchesData[id];
 
-    const data =
-        matchesData[id];
+  if (!data) return;
 
+  editId = id;
 
-    if (!data) return;
+  formTitle.textContent = "EDIT MATCH";
 
+  cancelEditBtn.style.display = "block";
 
-    editId =
-        id;
+  document.getElementById("matchName").value = data.matchName || "";
 
+  document.getElementById("leagueName").value = data.leagueName || "";
 
-    formTitle.textContent =
-        "EDIT MATCH";
+  document.getElementById("posterUrl").value = data.posterUrl || "";
 
+  document.getElementById("sport").value = data.sport || "cricket";
 
-    cancelEditBtn.style.display =
-        "block";
+  document.getElementById("matchStatus").value = data.status || "Upcoming";
 
+  if (data.scheduledAt) {
+    const date = new Date(data.scheduledAt);
 
-    document
-        .getElementById("matchName")
-        .value =
-        data.matchName || "";
-
-
-    document
-        .getElementById("leagueName")
-        .value =
-        data.leagueName || "";
-
-
-    document
-        .getElementById("posterUrl")
-        .value =
-        data.posterUrl || "";
-
-
-    document
-        .getElementById("sport")
-        .value =
-        data.sport || "cricket";
-
-
-    document
-        .getElementById("matchStatus")
-        .value =
-        data.status || "Upcoming";
-
-
-    if (
-        data.scheduledAt
-    ) {
-
-        const date =
-            new Date(
-                data.scheduledAt
-            );
-
-
-        if (
-            !Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            scheduledAt.value =
-                toDateTimeLocal(date);
-
-        }
-
-    } else {
-
-        scheduledAt.value =
-            "";
-
+    if (!Number.isNaN(date.getTime())) {
+      scheduledAt.value = toDateTimeLocal(date);
     }
+  } else {
+    scheduledAt.value = "";
+  }
 
+  updateScheduleVisibility();
 
-    updateScheduleVisibility();
+  serverContainer.innerHTML = "";
 
+  if (Array.isArray(data.servers) && data.servers.length) {
+    data.servers.forEach((server) => {
+      addServerField(
+        server.channelName || "",
 
-    serverContainer.innerHTML =
-        "";
+        server.type || "shaka",
 
+        server.url || server.mpd || "",
 
-    if (
-        Array.isArray(data.servers) &&
-        data.servers.length
-    ) {
+        server.key || "",
 
-        data.servers.forEach(
-            (server) => {
+        server.cookie || "",
 
-                addServerField(
-
-                    server.channelName ||
-                    "",
-
-                    server.type ||
-                    "shaka",
-
-                    server.url ||
-                    server.mpd ||
-                    "",
-
-                    server.key ||
-                    "",
-
-                    server.cookie ||
-                    "",
-
-                    /*
+        /*
                     New field.
                     Old records => DASH
                     */
 
-                    server.whatToShow ||
-                    "dash"
-
-                );
-
-            }
-        );
-
-    } else {
-
-        addServerField();
-
-    }
-
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
+        server.whatToShow || "dash",
+      );
     });
+  } else {
+    addServerField();
+  }
 
+  window.scrollTo({
+    top: 0,
+
+    behavior: "smooth",
+  });
 };
-
 
 /* ==================================================
    DATE LOCAL
 ================================================== */
 
 function toDateTimeLocal(date) {
+  const year = date.getFullYear();
 
-    const year =
-        date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
 
+  const day = String(date.getDate()).padStart(2, "0");
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
+  const hours = String(date.getHours()).padStart(2, "0");
 
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const hours =
-        String(
-            date.getHours()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const minutes =
-        String(
-            date.getMinutes()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
-
 
 /* ==================================================
    CANCEL
 ================================================== */
 
-cancelEditBtn.addEventListener(
-    "click",
-    () => {
-
-        resetForm();
-
-    }
-);
-
+cancelEditBtn.addEventListener("click", () => {
+  resetForm();
+});
 
 /* ==================================================
    RESET
 ================================================== */
 
 function resetForm() {
+  editId = null;
 
-    editId =
-        null;
+  formTitle.textContent = "CREATE MATCH";
 
+  cancelEditBtn.style.display = "none";
 
-    formTitle.textContent =
-        "CREATE MATCH";
+  matchForm.reset();
 
+  matchStatus.value = "Live";
 
-    cancelEditBtn.style.display =
-        "none";
+  scheduledAt.value = "";
 
+  serverContainer.innerHTML = "";
 
-    matchForm.reset();
+  addServerField();
 
-
-    matchStatus.value =
-        "Live";
-
-
-    scheduledAt.value =
-        "";
-
-
-    serverContainer.innerHTML =
-        "";
-
-
-    addServerField();
-
-
-    updateScheduleVisibility();
-
+  updateScheduleVisibility();
 }
-
 
 /* ==================================================
    DELETE
 ================================================== */
 
-window.deleteMatch =
-    async function(id) {
+window.deleteMatch = async function (id) {
+  if (!confirm("Delete this match?")) {
+    return;
+  }
 
-        if (
-            !confirm(
-                "Delete this match?"
-            )
-        ) {
+  try {
+    await deleteDoc(doc(db, "matches", id));
 
-            return;
+    await loadMatches();
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
 
-        }
-
-
-        try {
-
-            await deleteDoc(
-                doc(
-                    db,
-                    "matches",
-                    id
-                )
-            );
-
-
-            await loadMatches();
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "DELETE ERROR:",
-                error
-            );
-
-
-            alert(
-                "ERROR DELETING MATCH"
-            );
-
-        }
-
-    };
-
+    alert("ERROR DELETING MATCH");
+  }
+};
 
 /* ==================================================
    ESCAPE HTML
 ================================================== */
 
 function escapeHTML(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
 
-    return String(value ?? "")
+    .replace(/</g, "&lt;")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+    .replace(/>/g, "&gt;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+    .replace(/"/g, "&quot;")
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+    .replace(/'/g, "&#039;");
 }
-
 
 /* ==================================================
    START
