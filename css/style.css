@@ -1,728 +1,649 @@
-:root {
-  --bg: #080808;
-  --card: #0d0d0d;
-  --card-hover: #111111;
-
-  --border: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(255, 255, 255, 0.22);
-
-  --text: #f5f5f5;
-  --muted: #777;
-
-  --green: #22c55e;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-/* RESET */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root{
+
+--bg:#020817;
+--panel:#071229;
+--input:#1e293b;
+--border:#334155;
+
+--accent:#00e5ff;
+
+--text:#fff;
+--muted:#94a3b8;
+
+--font:'Sora',sans-serif;
+
+--radius:20px;
+
 }
 
-html {
-  scroll-behavior: smooth;
+
+
+body{
+
+font-family:var(--font);
+
+background:var(--bg);
+
+color:white;
+
+min-height:100vh;
+
+line-height:1.5;
+
 }
 
-body {
-  min-height: 100vh;
 
-  background:
-    radial-gradient(
-      circle at 50% -20%,
-      rgba(255, 255, 255, 0.045),
-      transparent 40%
-    ),
-    var(--bg);
 
-  color: var(--text);
 
-  font-family: "Instrument Sans", sans-serif;
+a{
+
+text-decoration:none;
+
+color:inherit;
+
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+
+
+
+
+/* HEADER */
+
+
+.site-header{
+
+position:sticky;
+
+top:0;
+
+z-index:1000;
+
+background:rgba(7,18,41,.95);
+
+border-bottom:1px solid var(--border);
+
+padding:20px;
+
+backdrop-filter:blur(10px);
+
 }
 
-/* =====================================
-   HEADER
-===================================== */
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
 
-  background: rgba(8, 8, 8, 0.92);
+.header-inner{
 
-  backdrop-filter: blur(18px);
+max-width:1200px;
 
-  border-bottom: 1px solid var(--border);
+margin:auto;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+gap:20px;
+
 }
 
-.header-inner {
-  width: min(1450px, 92%);
 
-  height: 66px;
 
-  margin: auto;
+.brand-logo{
 
-  display: flex;
+font-size:32px;
 
-  align-items: center;
+font-weight:800;
 
-  gap: 22px;
+letter-spacing:2px;
+
 }
 
-/* LOGO */
 
-.brand-logo {
-  font-family: "Bricolage Grotesque", sans-serif;
 
-  font-size: 20px;
+.gradient-text{
 
-  font-weight: 800;
+background:
 
-  letter-spacing: -1px;
+linear-gradient(
+90deg,
+white,
+var(--accent)
+);
+
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
 }
 
-.brand-logo span {
-  color: #666;
+
+
+
+
+.header-actions{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
 }
 
-/* STATUS */
 
-.header-status {
-  display: flex;
 
-  align-items: center;
 
-  gap: 8px;
+#search{
 
-  padding: 7px 10px;
 
-  border: 1px solid var(--border);
+width:260px;
 
-  color: #777;
+padding:12px 18px;
 
-  font-family: "JetBrains Mono", monospace;
+border-radius:30px;
 
-  font-size: 9px;
+border:1px solid var(--border);
+
+background:var(--input);
+
+color:white;
+
+outline:none;
+
+font-family:inherit;
+
 }
 
-.status-dot {
-  width: 6px;
-  height: 6px;
 
-  border-radius: 50%;
 
-  background: var(--green);
 
-  box-shadow: 0 0 9px rgba(34, 197, 94, 0.7);
+
+.btn-telegram{
+
+padding:12px 18px;
+
+background:var(--input);
+
+border:1px solid var(--border);
+
+border-radius:12px;
+
+font-size:12px;
+
+font-weight:800;
+
 }
 
-/* CLOCK */
 
-.local-clock {
-  margin-left: auto;
 
-  text-align: right;
+.btn-telegram:hover{
+
+border-color:var(--accent);
+
+color:var(--accent);
+
 }
 
-.local-clock div {
-  color: white;
 
-  font-family: "JetBrains Mono", monospace;
 
-  font-size: 13px;
 
-  font-weight: 700;
 
-  font-variant-numeric: tabular-nums;
+/* SECTION */
+
+
+.matches-section{
+
+max-width:1200px;
+
+margin:45px auto;
+
+padding:0 20px;
+
 }
 
-.local-clock small {
-  display: block;
 
-  margin-top: 3px;
 
-  color: #555;
+.section-header{
 
-  font-family: "JetBrains Mono", monospace;
+margin-bottom:25px;
 
-  font-size: 8px;
+padding-bottom:12px;
+
+border-bottom:1px solid var(--border);
+
 }
 
-/* TELEGRAM */
 
-.telegram-btn {
-  padding: 10px 15px;
 
-  border: 1px solid var(--border);
+.section-header h2{
 
-  font-family: "JetBrains Mono", monospace;
+font-size:20px;
 
-  font-size: 9px;
+color:var(--muted);
 
-  font-weight: 700;
-
-  transition: 0.2s;
 }
 
-.telegram-btn:hover {
-  background: white;
 
-  color: black;
 
-  border-color: white;
+
+
+/* GRID */
+
+
+.match-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(
+auto-fill,
+minmax(320px,1fr)
+);
+
+gap:25px;
+
 }
 
-/* =====================================
-   MAIN
-===================================== */
 
-.main-container {
-  width: min(1450px, 92%);
 
-  margin: auto;
 
-  padding: 28px 0 80px;
+
+/* CARD */
+
+
+.match-card{
+
+background:var(--panel);
+
+border:1px solid var(--border);
+
+border-radius:var(--radius);
+
+overflow:hidden;
+
+box-shadow:
+
+0 12px 40px rgba(0,0,0,.4);
+
+transition:.3s;
+
 }
 
-/* =====================================
-   HERO
-===================================== */
 
-.hero-box {
-  position: relative;
 
-  min-height: 280px;
+.match-card:hover{
 
-  overflow: hidden;
+transform:translateY(-5px);
 
-  border: 1px solid var(--border);
+border-color:var(--accent);
 
-  background:
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(255, 255, 255, 0.09),
-      transparent 35%
-    ),
-    #0b0b0b;
 }
 
-.hero-grid {
-  position: absolute;
 
-  inset: 0;
 
-  opacity: 0.23;
 
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+.card-thumb{
 
-  background-size: 45px 45px;
+position:relative;
+
+aspect-ratio:16/9;
+
+background:black;
+
 }
 
-.hero-content {
-  position: relative;
 
-  z-index: 2;
 
-  padding: 50px;
+.card-thumb img{
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
 }
 
-.hero-label {
-  display: flex;
 
-  align-items: center;
 
-  gap: 9px;
 
-  margin-bottom: 17px;
 
-  color: #888;
+.status-badge{
 
-  font-family: "JetBrains Mono", monospace;
+position:absolute;
 
-  font-size: 10px;
+top:15px;
 
-  letter-spacing: 1px;
+left:15px;
+
+padding:7px 13px;
+
+border-radius:20px;
+
+background:#020817;
+
+border:1px solid var(--border);
+
+font-size:11px;
+
+font-weight:800;
+
 }
 
-.hero-live-dot {
-  width: 7px;
-  height: 7px;
 
-  border-radius: 50%;
 
-  background: var(--green);
 
-  box-shadow: 0 0 12px var(--green);
+
+.card-details{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:20px;
+
+gap:10px;
+
 }
 
-.hero-content h1 {
-  max-width: 1000px;
 
-  font-family: "Bricolage Grotesque", sans-serif;
 
-  font-size: clamp(36px, 6vw, 72px);
+.card-info h3{
 
-  font-weight: 800;
+font-size:17px;
 
-  line-height: 0.96;
+font-weight:800;
 
-  letter-spacing: -2.5px;
+text-transform:uppercase;
+
 }
 
-.hero-content p {
-  margin-top: 18px;
 
-  color: #777;
 
-  font-family: "JetBrains Mono", monospace;
+.card-info p{
 
-  font-size: 11px;
+color:var(--muted);
+
+font-size:12px;
+
 }
 
-/* HERO WATCH */
 
-.hero-watch-btn {
-  display: inline-flex;
 
-  align-items: center;
 
-  justify-content: center;
 
-  margin-top: 28px;
+.favorite-btn{
 
-  padding: 12px 20px;
+background:none;
 
-  background: white;
+border:none;
 
-  color: black;
+color:#ffd700;
 
-  border: 1px solid white;
+font-size:25px;
 
-  font-family: "JetBrains Mono", monospace;
+cursor:pointer;
 
-  font-size: 10px;
-
-  font-weight: 700;
-
-  transition: 0.2s;
 }
 
-.hero-watch-btn:hover {
-  background: transparent;
 
-  color: white;
+
+
+
+.card-actions{
+
+padding:0 20px 20px;
+
 }
 
-.hidden {
-  display: none !important;
+
+
+.btn-play{
+
+display:flex;
+
+justify-content:center;
+
+padding:15px;
+
+border-radius:12px;
+
+background:
+
+linear-gradient(
+135deg,
+#00e5ff,
+#00b8d4
+);
+
+
+color:#000;
+
+font-weight:900;
+
 }
 
-/* =====================================
-   EVENTS
-===================================== */
 
-.events-section {
-  margin-top: 55px;
+
+
+
+.no-live{
+
+padding:25px;
+
+background:var(--panel);
+
+border-radius:15px;
+
+text-align:center;
+
+color:var(--muted);
+
 }
 
-.section-heading {
-  display: flex;
 
-  align-items: flex-end;
 
-  justify-content: space-between;
 
-  gap: 20px;
+.hidden{
 
-  margin-bottom: 22px;
+display:none;
+
 }
 
-.small-label {
-  display: block;
 
-  margin-bottom: 7px;
 
-  color: #555;
 
-  font-family: "JetBrains Mono", monospace;
 
-  font-size: 9px;
+/* POPUP */
 
-  letter-spacing: 1px;
+
+.popup-overlay{
+
+position:fixed;
+
+inset:0;
+
+background:rgba(2,8,23,.85);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+z-index:9999;
+
 }
 
-.section-heading h2 {
-  font-family: "Bricolage Grotesque", sans-serif;
 
-  font-size: 28px;
 
-  letter-spacing: -1px;
+.popup-box{
+
+width:360px;
+
+max-width:90%;
+
+background:var(--panel);
+
+padding:30px;
+
+border-radius:20px;
+
+border:1px solid var(--border);
+
+text-align:center;
+
+position:relative;
+
 }
 
-.event-count {
-  color: #555;
 
-  font-family: "JetBrains Mono", monospace;
 
-  font-size: 9px;
+.popup-box h2{
+
+background:
+
+linear-gradient(
+90deg,
+white,
+var(--accent)
+);
+
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+margin-bottom:15px;
+
 }
 
-/* =====================================
-   MATCH LIST
-===================================== */
 
-.match-list {
-  display: flex;
 
-  flex-direction: column;
+.popup-box p{
 
-  gap: 10px;
+color:var(--muted);
+
+margin-bottom:20px;
+
 }
 
-/* =====================================
-   CARD
-===================================== */
 
-.match-card {
-  min-height: 92px;
 
-  display: flex;
+.popup-box a{
 
-  align-items: center;
+display:inline-block;
 
-  gap: 18px;
+padding:12px 25px;
 
-  padding: 17px 20px;
+background:var(--accent);
 
-  background: var(--card);
+color:#020817;
 
-  border: 1px solid var(--border);
+border-radius:30px;
 
-  transition:
-    background 0.2s,
-    border-color 0.2s,
-    transform 0.2s;
+font-weight:900;
+
 }
 
-.match-card:hover {
-  background: var(--card-hover);
 
-  border-color: var(--border-hover);
 
-  transform: translateY(-1px);
+.popup-close{
+
+position:absolute;
+
+right:15px;
+
+top:10px;
+
+background:none;
+
+border:none;
+
+color:white;
+
+font-size:25px;
+
+cursor:pointer;
+
 }
 
-/* SPORT */
 
-.sport-icon {
-  width: 48px;
-  height: 48px;
 
-  flex-shrink: 0;
 
-  display: grid;
 
-  place-items: center;
+/* FOOTER */
 
-  background: #111;
 
-  border: 1px solid var(--border);
+.site-footer{
 
-  font-size: 22px;
+margin-top:50px;
+
+padding:25px;
+
+text-align:center;
+
+background:var(--panel);
+
+border-top:1px solid var(--border);
+
+color:var(--muted);
+
+font-size:12px;
+
 }
 
-/* INFO */
 
-.match-info {
-  flex: 1;
 
-  min-width: 0;
+
+
+@media(max-width:768px){
+
+
+.header-inner{
+
+flex-direction:column;
+
 }
 
-.match-name {
-  color: white;
 
-  font-family: "Bricolage Grotesque", sans-serif;
+.header-actions{
 
-  font-size: 17px;
+width:100%;
 
-  font-weight: 700;
-
-  line-height: 1.2;
 }
 
-.league-name {
-  margin-top: 6px;
 
-  color: #777;
+#search{
 
-  font-family: "JetBrains Mono", monospace;
+width:100%;
 
-  font-size: 10px;
-
-  font-weight: 500;
-
-  text-transform: uppercase;
-
-  letter-spacing: 0.6px;
 }
 
-/* =====================================
-   TIMER
-===================================== */
 
-.match-time {
-  min-width: 150px;
+.match-grid{
 
-  text-align: right;
+grid-template-columns:1fr;
+
 }
 
-.time-label {
-  margin-bottom: 5px;
 
-  color: #555;
+.brand-logo{
 
-  font-family: "JetBrains Mono", monospace;
+font-size:25px;
 
-  font-size: 8px;
-
-  letter-spacing: 0.6px;
 }
 
-.countdown {
-  color: white;
 
-  font-family: "JetBrains Mono", monospace;
-
-  font-size: 12px;
-
-  font-weight: 700;
-
-  font-variant-numeric: tabular-nums;
-}
-
-/* =====================================
-   WATCH
-===================================== */
-
-.watch-btn {
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  min-width: 120px;
-
-  padding: 11px 15px;
-
-  background: white;
-
-  color: black;
-
-  border: 1px solid white;
-
-  font-family: "JetBrains Mono", monospace;
-
-  font-size: 9px;
-
-  font-weight: 700;
-
-  white-space: nowrap;
-
-  transition: 0.2s;
-}
-
-.watch-btn:hover {
-  background: transparent;
-
-  color: white;
-}
-
-/* =====================================
-   LOADING
-===================================== */
-
-.loading,
-.empty {
-  padding: 50px 20px;
-
-  text-align: center;
-
-  color: #666;
-
-  border: 1px solid var(--border);
-
-  font-family: "JetBrains Mono", monospace;
-
-  font-size: 10px;
-}
-
-/* =====================================
-   FOOTER
-===================================== */
-
-.footer {
-  min-height: 80px;
-
-  padding: 28px 4%;
-
-  border-top: 1px solid var(--border);
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 25px;
-
-  color: #555;
-
-  font-family: "JetBrains Mono", monospace;
-
-  font-size: 9px;
-}
-
-.footer span:first-child {
-  color: white;
-}
-
-.footer a:hover {
-  color: white;
-}
-
-.footer-copy {
-  margin-left: auto;
-}
-
-/* =====================================
-   MOBILE
-===================================== */
-
-@media (max-width: 700px) {
-  .header-inner {
-    width: 94%;
-
-    height: 60px;
-
-    gap: 12px;
-  }
-
-  .header-status {
-    display: none;
-  }
-
-  .telegram-btn {
-    display: none;
-  }
-
-  .local-clock {
-    margin-left: auto;
-  }
-
-  .main-container {
-    width: 94%;
-
-    padding-top: 15px;
-  }
-
-  .hero-box {
-    min-height: 235px;
-  }
-
-  .hero-content {
-    padding: 32px 24px;
-  }
-
-  .hero-content h1 {
-    font-size: 40px;
-
-    letter-spacing: -1.5px;
-  }
-
-  .section-heading {
-    align-items: flex-start;
-  }
-
-  .section-heading h2 {
-    font-size: 23px;
-  }
-
-  .match-card {
-    min-height: 85px;
-
-    gap: 12px;
-
-    padding: 14px;
-  }
-
-  .sport-icon {
-    width: 42px;
-    height: 42px;
-
-    font-size: 19px;
-  }
-
-  .match-name {
-    font-size: 14px;
-  }
-
-  .league-name {
-    font-size: 8px;
-  }
-
-  .match-time {
-    min-width: 115px;
-  }
-
-  .countdown {
-    font-size: 9px;
-  }
-
-  .watch-btn {
-    min-width: 100px;
-
-    padding: 9px;
-
-    font-size: 8px;
-  }
-}
-
-@media (max-width: 500px) {
-  .match-card {
-    flex-wrap: wrap;
-  }
-
-  .match-info {
-    width: calc(100% - 60px);
-
-    flex: none;
-  }
-
-  .match-time {
-    margin-left: 54px;
-
-    text-align: left;
-  }
-
-  .watch-btn {
-    margin-left: auto;
-  }
-
-  .footer {
-    flex-wrap: wrap;
-  }
-
-  .footer-copy {
-    width: 100%;
-
-    margin-left: 0;
-  }
 }
