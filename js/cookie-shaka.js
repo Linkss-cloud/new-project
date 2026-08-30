@@ -1,234 +1,362 @@
-console.log("COOKIE SHAKA JS LOADED");
+console.log("COOKIE SHAKA FILE LOADED");
+
 
 let cookiePlayer = null;
 
-/* =========================================
-   HELPERS
-========================================= */
 
-function get(id) {
-  return document.getElementById(id);
-}
+window.loadCookieShaka = async function(stream){
 
-function cookieLoader(message) {
-  const loader = get("loader");
 
-  const text = get("loaderText");
+    console.log(
+        "COOKIE STREAM RECEIVED:",
+        stream
+    );
 
-  if (text) {
-    text.textContent = message;
-  }
 
-  if (loader) {
-    loader.style.display = "flex";
-  }
-}
 
-function hideCookieLoader() {
-  const loader = get("loader");
+    const video =
+    document.getElementById("videoPlayer");
 
-  if (loader) {
-    loader.style.display = "none";
-  }
-}
 
-/* =========================================
-   STOP
-========================================= */
 
-window.stopCookieShaka = async function () {
-  if (!cookiePlayer) {
-    return;
-  }
+    const loader =
+    document.getElementById("loader");
 
-  try {
-    await cookiePlayer.unload();
-  } catch (error) {
-    console.warn("COOKIE SHAKA UNLOAD:", error);
-  }
-};
 
-/* =========================================
-   LOAD
-========================================= */
 
-window.loadCookieShaka = async function (stream) {
-  console.log("COOKIE STREAM:", stream);
+    const box =
+    document.getElementById("shaka-container");
 
-  const video = get("videoPlayer");
 
-  const box = get("shaka-container");
 
-  if (!video) {
-    console.error("videoPlayer missing");
+    try{
 
-    return false;
-  }
 
-  if (!box) {
-    console.error("shaka-container missing");
+        if(box){
 
-    return false;
-  }
+            box.style.display="block";
 
-  const url = stream.mpd || stream.url;
+        }
 
-  if (!url) {
-    cookieLoader("STREAM URL MISSING");
 
-    return false;
-  }
 
-  try {
-    box.style.display = "block";
+        shaka.polyfill.installAll();
 
-    cookieLoader("Loading stream...");
 
-    video.muted = true;
 
-    video.autoplay = true;
+        if(
+            !shaka.Player.isBrowserSupported()
+        ){
 
-    video.playsInline = true;
+            console.error(
+                "SHAKA NOT SUPPORTED"
+            );
 
-    /* =================================
-               SHAKA
-            ================================= */
-
-    if (typeof shaka === "undefined") {
-      cookieLoader("SHAKA NOT LOADED");
-
-      return false;
-    }
-
-    shaka.polyfill.installAll();
-
-    if (!shaka.Player.isBrowserSupported()) {
-      cookieLoader("BROWSER NOT SUPPORTED");
-
-      return false;
-    }
-
-    /* =================================
-               PLAYER
-            ================================= */
-
-    if (!cookiePlayer) {
-      cookiePlayer = new shaka.Player();
-
-      await cookiePlayer.attach(video);
-    } else {
-      await cookiePlayer.unload();
-    }
-
-    /* =================================
-               ERROR
-            ================================= */
-
-    cookiePlayer.addEventListener("error", function (event) {
-      console.error("COOKIE SHAKA ERROR:", event.detail);
-    });
-
-    /* =================================
-               DRM
-            ================================= */
-
-    cookiePlayer.configure({
-      drm: {
-        clearKeys: {},
-      },
-    });
-
-    /* =================================
-               CLEAR KEY
-            ================================= */
-
-    if (stream.key && String(stream.key).includes(":")) {
-      const parts = String(stream.key).split(":");
-
-      const kid = parts[0].trim().toLowerCase();
-
-      const key = parts.slice(1).join(":").trim().toLowerCase();
-
-      cookiePlayer.configure({
-        drm: {
-          clearKeys: {
-            [kid]: key,
-          },
-        },
-      });
-    }
-
-    /* =================================
-               AUTH/TOKEN
-            ================================= */
-
-    const token = stream.cookie ? String(stream.cookie).trim() : "";
-
-    if (token) {
-      const networkingEngine = cookiePlayer.getNetworkingEngine();
-
-      if (networkingEngine) {
-        networkingEngine.clearAllRequestFilters();
-
-        networkingEngine.registerRequestFilter(function (type, request) {
-          if (!request || !request.uris || !request.uris.length) {
             return;
-          }
 
-          const original = request.uris[0];
+        }
 
-          /*
-           * Only append the supplied
-           * authorized token.
-           */
 
-          if (!original.includes("__hdnea__")) {
-            const separator = original.includes("?") ? "&" : "?";
 
-            request.uris[0] = original + separator + token;
-          }
+
+
+
+        if(!cookiePlayer){
+
+
+            cookiePlayer =
+            new shaka.Player();
+
+
+
+            await cookiePlayer.attach(
+                video
+            );
+
+
+        }
+        else{
+
+
+            await cookiePlayer.unload();
+
+
+        }
+
+
+
+
+
+
+        cookiePlayer.configure({
+
+            drm:{
+
+                clearKeys:{}
+
+            }
+
         });
-      }
+
+
+
+
+        cookiePlayer.getNetworkingEngine()
+        .clearAllRequestFilters();
+
+
+
+
+
+
+        /*
+            CLEAR KEY
+        */
+
+
+        if(
+            stream.key &&
+            stream.key.includes(":")
+        ){
+
+
+            const key =
+            stream.key.split(":");
+
+
+            const kid =
+            key[0]
+            .trim()
+            .toLowerCase();
+
+
+            const value =
+            key[1]
+            .trim()
+            .toLowerCase();
+
+
+
+            console.log(
+                "CLEAR KEY:",
+                kid
+            );
+
+
+
+            cookiePlayer.configure({
+
+                drm:{
+
+                    clearKeys:{
+
+
+                        [kid]:value
+
+
+                    }
+
+                }
+
+            });
+
+
+        }
+
+
+
+
+
+
+
+
+        /*
+            COOKIE REQUEST
+        */
+
+
+        const token =
+        stream.cookie.trim();
+
+
+
+
+        cookiePlayer.getNetworkingEngine()
+        .registerRequestFilter(
+
+        (type,request)=>{
+
+
+            console.log(
+                "REQUEST:",
+                request.uris[0]
+            );
+
+
+
+            if(token){
+
+
+
+                /*
+                  Header
+                */
+
+
+                request.headers["Referer"] =
+                "https://www.jiotv.com/";
+
+
+
+                request.headers["User-Agent"] =
+                "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+
+
+
+
+                /*
+                  URL TOKEN
+                */
+
+
+                if(
+                    request.uris[0]
+                    .startsWith("https://")
+                    &&
+                    !request.uris[0]
+                    .includes("__hdnea__")
+                ){
+
+
+                    request.uris[0] +=
+
+                    (
+                        request.uris[0]
+                        .includes("?")
+                        ?
+                        "&"
+                        :
+                        "?"
+                    )
+
+                    +
+                    token;
+
+
+                }
+
+
+
+            }
+
+
+
+        });
+
+
+
+
+
+
+
+
+        const url =
+        stream.mpd ||
+        stream.url;
+
+
+
+
+        console.log(
+            "LOADING:",
+            url
+        );
+
+
+
+        await cookiePlayer.load(
+            url
+        );
+
+
+
+
+        console.log(
+            "COOKIE SHAKA PLAYING"
+        );
+
+
+
+        video.muted=false;
+
+
+        video.play()
+        .catch(err=>{
+
+            console.log(
+                "PLAY BLOCKED",
+                err
+            );
+
+        });
+
+
+
+
+
+        video.onplaying=()=>{
+
+
+            console.log(
+                "VIDEO STARTED"
+            );
+
+
+            if(loader)
+                loader.style.display="none";
+
+
+        };
+
+
+
+        cookiePlayer.addEventListener(
+        "error",
+        e=>{
+
+
+            console.error(
+                "SHAKA ERROR",
+                e.detail
+            );
+
+
+        });
+
+
+
     }
 
-    /* =================================
-               LOAD
-            ================================= */
 
-    console.log("COOKIE SHAKA LOAD:", url);
+    catch(error){
 
-    await cookiePlayer.load(url);
 
-    console.log("COOKIE SHAKA SUCCESS");
+        console.error(
+            "COOKIE SHAKA ERROR",
+            error
+        );
 
-    /* =================================
-               PLAY
-            ================================= */
 
-    try {
-      await video.play();
+        if(loader){
 
-      hideCookieLoader();
-    } catch (error) {
-      console.warn("COOKIE AUTOPLAY BLOCKED:", error);
+            loader.innerHTML =
+            "STREAM ERROR";
+
+        }
+
+
     }
 
-    video.onplaying = function () {
-      hideCookieLoader();
-    };
 
-    setTimeout(function () {
-      if (video.readyState >= 3 && !video.paused) {
-        hideCookieLoader();
-      }
-    }, 1500);
 
-    return true;
-  } catch (error) {
-    console.error("COOKIE SHAKA ERROR:", error);
-
-    cookieLoader("STREAM ERROR");
-
-    return false;
-  }
 };
