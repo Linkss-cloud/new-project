@@ -7,13 +7,15 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="referrer" content="no-referrer">
 
     <title>SPORTS ZONE ADMIN</title>
 
+
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 
+
     <link rel="stylesheet" href="css/admin.css">
+
 
 </head>
 
@@ -21,72 +23,113 @@
 <body>
 
 
-    <!-- ==================================================
-     LOGIN
-================================================== -->
 
     <div id="loginScreen" class="login-wrapper">
 
+
+
         <div class="dash-panel login-card">
 
+
+
             <div class="brand-logo">
-                <span class="gradient-text">SPORTS</span> ADMIN
+
+                <span class="gradient-text">
+                    SPORTS
+                </span>
+
+                ADMIN
+
             </div>
+
+
+
 
             <p class="login-sub">
                 MANAGE LIVE STREAMS & MATCHES
             </p>
 
 
+
+
+
             <form id="loginForm">
+
+
 
                 <div class="input-group">
 
-                    <label>
-                        EMAIL
-                    </label>
+                    <label>Email</label>
+
 
                     <input type="email" id="adminEmail" required>
 
+
                 </div>
+
+
+
 
 
                 <div class="input-group">
 
-                    <label>
-                        PASSWORD
-                    </label>
+                    <label>Password</label>
+
 
                     <input type="password" id="adminPassword" required>
+
 
                 </div>
 
 
-                <p id="loginError" class="error-text"></p>
 
 
-                <button type="submit" class="btn-primary btn-block">
+
+                <p id="loginError" class="error-text">
+                </p>
+
+
+
+
+
+                <button class="btn-primary btn-block">
+
                     LOGIN
+
                 </button>
+
+
 
             </form>
 
+
+
         </div>
+
+
 
     </div>
 
 
 
-    <!-- ==================================================
-     DASHBOARD
-================================================== -->
+
+
+
+
+
 
     <main id="dashboardScreen" style="display:none;">
 
 
+
+
+
         <header class="site-header">
 
+
             <div class="header-inner">
+
+
 
                 <div class="brand-logo">
 
@@ -99,242 +142,296 @@
                 </div>
 
 
+
+
                 <button id="logoutBtn" class="btn-logout">
+
                     LOGOUT
+
                 </button>
+
+
 
             </div>
 
+
         </header>
+
+
+
+
+
+
 
 
 
         <div class="dashboard-wrapper">
 
 
+
             <div class="dash-grid">
 
 
-                <!-- ==================================================
-     CREATE / EDIT MATCH
-================================================== -->
+
+
 
                 <section class="dash-panel">
 
 
+
                     <div class="panel-header">
 
+
                         <h2 id="formTitle">
+
                             CREATE MATCH
+
                         </h2>
 
 
-                        <button type="button" id="cancelEditBtn" class="btn-cancel" style="display:none;">
+
+                        <button id="cancelEditBtn" style="display:none;">
+
                             CANCEL
+
                         </button>
 
+
+
                     </div>
+
+
+
+
+
+
 
 
 
                     <form id="matchForm">
 
 
-                        <!-- MATCH NAME -->
+
+
+
 
                         <div class="input-group">
 
                             <label>
-                                MATCH NAME
+                                Match Name
                             </label>
 
-                            <input id="matchName" type="text" placeholder="India vs Pakistan" required>
+
+                            <input id="matchName" required>
+
 
                         </div>
 
 
 
-                        <!-- LEAGUE -->
+
+
+
+
+
 
                         <div class="input-group">
 
                             <label>
-                                LEAGUE NAME
+                                Match Title
                             </label>
 
-                            <input id="leagueName" type="text" placeholder="Asia Cup">
+
+                            <input id="matchTitle" required>
+
 
                         </div>
 
 
 
-                        <!-- SPORT -->
+
+
+
+
+
 
                         <div class="input-group">
 
                             <label>
-                                SPORT
+                                Poster URL
                             </label>
 
-                            <select id="sport">
 
-                                <option value="cricket">
-                                    🏏 CRICKET
-                                </option>
+                            <input id="posterUrl" required>
 
-                                <option value="football">
-                                    ⚽ FOOTBALL
-                                </option>
-
-                                <option value="racing">
-                                    🏎️ RACING
-                                </option>
-
-                                <option value="fighting">
-                                    🥊 FIGHTING
-                                </option>
-
-                            </select>
 
                         </div>
 
 
 
-                        <!-- POSTER -->
+
+
+
+
+
 
                         <div class="input-group">
 
                             <label>
-                                POSTER URL
-                                <span class="optional">
-                                    OPTIONAL
-                                </span>
+                                Status
                             </label>
 
-                            <input id="posterUrl" type="url" placeholder="https://...">
 
-                        </div>
-
-
-
-                        <!-- STATUS -->
-
-                        <div class="input-group">
-
-                            <label>
-                                STATUS
-                            </label>
 
                             <select id="matchStatus">
 
+
                                 <option value="Live">
-                                    🔴 LIVE
+
+                                    LIVE
+
                                 </option>
 
+
+
                                 <option value="Upcoming">
-                                    🕐 UPCOMING
+
+                                    UPCOMING
+
                                 </option>
+
+
 
                             </select>
 
-                        </div>
-
-
-
-                        <!-- SCHEDULE -->
-
-                        <div class="input-group" id="scheduleGroup">
-
-                            <label>
-                                START DATE & TIME
-                            </label>
-
-                            <input id="scheduledAt" type="datetime-local">
-
-                            <small class="field-help">
-                                Upcoming match ka countdown isi time se chalega.
-                            </small>
 
                         </div>
 
 
 
-                        <!-- ==================================================
-     STREAM SERVERS
-================================================== -->
+
+
+
+
+
 
                         <div class="servers-section">
 
 
-                            <div class="server-heading">
 
-                                <h3>
-                                    STREAM SERVERS
-                                </h3>
+                            <button type="button" id="addServerBtn" class="btn-add-server">
 
 
-                                <button type="button" id="addServerBtn" class="btn-add-server">
-                                    + ADD SERVER
-                                </button>
+                                + ADD SERVER
+
+
+                            </button>
+
+
+
+
+
+                            <div id="serverFieldsContainer">
 
                             </div>
 
 
-                            <div id="serverFieldsContainer"></div>
+
 
 
                         </div>
 
 
 
-                        <!-- SUBMIT -->
 
-                        <button type="submit" class="btn-primary btn-block">
+
+
+
+
+                        <button class="btn-primary btn-block">
+
+
                             PUBLISH MATCH
+
+
                         </button>
+
+
+
+
 
 
                     </form>
 
 
+
+
+
                 </section>
 
 
 
-                <!-- ==================================================
-     MANAGE MATCHES
-================================================== -->
+
+
+
 
                 <section class="dash-panel">
 
 
+
                     <div class="panel-header">
 
+
                         <h2>
+
                             MANAGE MATCHES
+
                         </h2>
 
+
                     </div>
+
+
+
 
 
                     <div id="matchList">
-                        Loading...
+
                     </div>
+
+
 
 
                 </section>
 
 
+
+
+
+
+
             </div>
 
+
         </div>
+
+
+
+
 
 
     </main>
 
 
 
+
+
+
+
+
+
     <script type="module" src="admin.js"></script>
+
 
 
 </body>
