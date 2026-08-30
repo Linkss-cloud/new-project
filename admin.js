@@ -15,10 +15,6 @@ import {
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-/* ==================================================
-   ELEMENTS
-================================================== */
-
 const loginScreen = document.getElementById("loginScreen");
 
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -41,21 +37,11 @@ const formTitle = document.getElementById("formTitle");
 
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 
-const matchStatus = document.getElementById("matchStatus");
-
-const scheduleGroup = document.getElementById("scheduleGroup");
-
-const scheduledAt = document.getElementById("scheduledAt");
-
 let serverCount = 0;
 
 let editId = null;
 
 let matchesData = {};
-
-/* ==================================================
-   AUTH
-================================================== */
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -71,69 +57,29 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-/* ==================================================
-   LOGIN
-================================================== */
-
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  loginError.textContent = "";
-
-  const email = document.getElementById("adminEmail").value.trim();
-
-  const password = document.getElementById("adminPassword").value;
-
   try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    console.error("LOGIN ERROR:", error);
+    await signInWithEmailAndPassword(
+      auth,
 
-    loginError.textContent = "INVALID LOGIN";
+      adminEmail.value,
+
+      adminPassword.value,
+    );
+  } catch (error) {
+    loginError.innerText = "INVALID LOGIN";
   }
 });
 
-/* ==================================================
-   LOGOUT
-================================================== */
+logoutBtn.onclick = () => {
+  signOut(auth);
+};
 
-logoutBtn.addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error("LOGOUT ERROR:", error);
-  }
-});
-
-/* ==================================================
-   STATUS / SCHEDULE
-================================================== */
-
-function updateScheduleVisibility() {
-  if (matchStatus.value === "Upcoming") {
-    scheduleGroup.style.display = "flex";
-
-    scheduledAt.required = true;
-  } else {
-    scheduleGroup.style.display = "none";
-
-    scheduledAt.required = false;
-  }
-}
-
-matchStatus.addEventListener("change", updateScheduleVisibility);
-
-/* ==================================================
-   ADD SERVER
-================================================== */
-
-addServerBtn.addEventListener("click", () => {
+addServerBtn.onclick = () => {
   addServerField();
-});
-
-/* ==================================================
-   ADD SERVER FIELD
-================================================== */
+};
 
 window.addServerField = function (
   name = "",
@@ -145,691 +91,403 @@ window.addServerField = function (
   key = "",
 
   cookie = "",
-
-  whatToShow = "dash",
 ) {
   serverCount++;
 
-  const id = "server_" + serverCount;
-
-  const div = document.createElement("div");
+  let div = document.createElement("div");
 
   div.className = "server-block";
 
-  div.id = id;
-
+  div.id = "server_" + serverCount;
   div.innerHTML = `
 
-        <button
-            type="button"
-            class="btn-delete-server"
-            onclick="removeServerField('${id}')"
-        >
-            REMOVE
-        </button>
+
+<button
+
+type="button"
+
+class="btn-delete-server"
+
+onclick="removeServerField('${div.id}')">
+
+REMOVE
+
+</button>
 
 
-        <!-- SERVER NAME -->
-
-        <div class="input-group">
-
-            <label>
-                CHANNEL NAME
-            </label>
-
-            <input
-                class="srv-name"
-                value="${escapeAttribute(name)}"
-                placeholder="Star Sports HD"
-                required
-            >
-
-        </div>
 
 
-        <!-- STREAM TYPE -->
 
-        <div class="input-group">
+<div class="input-group">
 
-            <label>
-                STREAM TYPE
-            </label>
-
-            <select class="srv-type">
-
-                <option
-                    value="shaka"
-                    ${type === "shaka" ? "selected" : ""}
-                >
-                    SHAKA / DASH DRM
-                </option>
+<label>
+SERVER NAME
+</label>
 
 
-                <option
-                    value="cookie"
-                    ${type === "cookie" ? "selected" : ""}
-                >
-                    COOKIE SHAKA / DASH
-                </option>
+<input
+
+class="srv-name"
+
+value="${name}"
+
+required>
+
+</div>
 
 
-                <option
-                    value="hls"
-                    ${type === "hls" ? "selected" : ""}
-                >
-                    HLS / M3U8
-                </option>
 
 
-                <option
-                    value="fancode"
-                    ${type === "fancode" ? "selected" : ""}
-                >
-                    FANCODE
-                </option>
 
 
-                <option
-                    value="iframe"
-                    ${type === "iframe" ? "selected" : ""}
-                >
-                    IFRAME
-                </option>
 
-            </select>
+<div class="input-group">
 
-        </div>
+<label>
+STREAM TYPE
+</label>
 
 
-        <!-- WHAT TO SHOW -->
 
-        <div class="input-group">
-
-            <label>
-                WHAT TO SHOW ON WATCH PAGE
-            </label>
-
-            <select class="srv-watch-type">
-
-                <option
-                    value="dash"
-                    ${whatToShow === "dash" ? "selected" : ""}
-                >
-                    DASH
-                </option>
+<select class="srv-type">
 
 
-                <option
-                    value="hls"
-                    ${whatToShow === "hls" ? "selected" : ""}
-                >
-                    HLS
-                </option>
 
-            </select>
+<option value="shaka"
+${type === "shaka" ? "selected" : ""}>
 
-            <small class="field-help">
-                Watch page par channel name ke saath ye value show hogi.
-            </small>
+SHAKA DRM
 
-        </div>
+</option>
 
 
-        <!-- STREAM URL -->
 
-        <div class="input-group">
+<option value="cookie"
+${type === "cookie" ? "selected" : ""}>
 
-            <label>
-                STREAM URL
-            </label>
+COOKIE SHAKA
 
-            <input
-                class="srv-url"
-                value="${escapeAttribute(url)}"
-                placeholder="MPD / M3U8 / IFRAME URL"
-                oninput="detectStreamType(this)"
-                required
-            >
-
-        </div>
+</option>
 
 
-        <!-- DRM KEY -->
 
-        <div class="input-group">
+<option value="hls"
+${type === "hls" ? "selected" : ""}>
 
-            <label>
-                DRM KEY
-                <span class="optional">
-                    OPTIONAL
-                </span>
-            </label>
+HLS / IOS
 
-            <input
-                class="srv-key"
-                value="${escapeAttribute(key)}"
-                placeholder="kid:key"
-            >
-
-        </div>
+</option>
 
 
-        <!-- COOKIE -->
 
-        <div class="input-group">
 
-            <label>
-                COOKIE / TOKEN
-                <span class="optional">
-                    OPTIONAL
-                </span>
-            </label>
+<option value="fancode"
+${type === "fancode" ? "selected" : ""}>
 
-            <input
-                class="srv-cookie"
-                value="${escapeAttribute(cookie)}"
-                placeholder="Optional"
-            >
+FANCODE
 
-        </div>
+</option>
 
-    `;
+
+
+
+<option value="iframe"
+${type === "iframe" ? "selected" : ""}>
+
+IFRAME
+
+</option>
+
+
+</select>
+
+</div>
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+STREAM URL
+</label>
+
+
+<input
+
+class="srv-url"
+
+value="${url}"
+
+placeholder="MPD / M3U8 / IFRAME"
+
+oninput="detectStreamType(this)">
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+DRM KEY (kid:key)
+</label>
+
+
+<input
+
+class="srv-key"
+
+value="${key}">
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+<label>
+COOKIE
+
+</label>
+
+
+<input
+
+class="srv-cookie"
+
+value="${cookie}">
+
+
+</div>
+
+
+
+`;
 
   serverContainer.appendChild(div);
 };
 
-/* ==================================================
-   REMOVE SERVER
-================================================== */
-
-window.removeServerField = function (id) {
-  const element = document.getElementById(id);
-
-  if (element) {
-    element.remove();
-  }
-};
-
-/* ==================================================
-   DETECT STREAM TYPE
-================================================== */
-
 window.detectStreamType = function (input) {
-  const block = input.closest(".server-block");
+  let block = input.closest(".server-block");
 
-  if (!block) return;
+  let type = block.querySelector(".srv-type");
 
-  const type = block.querySelector(".srv-type");
-
-  const url = input.value.trim().toLowerCase();
-
-  if (url.includes(".m3u8")) {
-    type.value = "hls";
-
-    return;
-  }
-
-  if (url.includes(".mpd")) {
-    type.value = "shaka";
-
-    return;
-  }
+  let url = input.value.toLowerCase();
 
   if (url.includes("fancode") || url.includes("cloudfront.net")) {
     type.value = "fancode";
+  } else if (url.includes(".m3u8")) {
+    type.value = "hls";
+  } else if (url.includes(".mpd")) {
+    type.value = "cookie";
   }
 };
 
-/* ==================================================
-   ESCAPE ATTRIBUTE
-================================================== */
+window.removeServerField = function (id) {
+  document.getElementById(id).remove();
+};
 
-function escapeAttribute(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-
-    .replace(/"/g, "&quot;")
-
-    .replace(/</g, "&lt;")
-
-    .replace(/>/g, "&gt;");
-}
-
-/* ==================================================
-   GET SERVERS
-================================================== */
-
-function getServers() {
-  const servers = [];
-
-  document.querySelectorAll(".server-block").forEach((block) => {
-    const name = block.querySelector(".srv-name").value.trim();
-
-    const type = block.querySelector(".srv-type").value;
-
-    const watchType = block.querySelector(".srv-watch-type").value;
-
-    const url = block.querySelector(".srv-url").value.trim();
-
-    const key = block.querySelector(".srv-key").value.trim();
-
-    const cookie = block.querySelector(".srv-cookie").value.trim();
-
-    servers.push({
-      channelName: name,
-
-      /*
-                    Actual player type
-                    */
-
-      type: type,
-
-      /*
-                    Watch page display value
-                    */
-
-      whatToShow: watchType,
-
-      url: url,
-
-      mpd: url,
-
-      key: key,
-
-      cookie: cookie,
-    });
-  });
-
-  return servers;
-}
-
-/* ==================================================
-   CREATE / UPDATE MATCH
-================================================== */
+addServerField();
 
 matchForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  try {
-    const status = matchStatus.value;
+  let payload = {
+    matchName: document.getElementById("matchName").value,
 
-    let scheduledTime = null;
+    matchTitle: document.getElementById("matchTitle").value,
 
-    if (status === "Upcoming") {
-      if (!scheduledAt.value) {
-        alert("Please select match start date & time.");
+    posterUrl: document.getElementById("posterUrl").value,
 
-        return;
-      }
+    status: document.getElementById("matchStatus").value,
 
-      scheduledTime = new Date(scheduledAt.value).toISOString();
-    }
+    servers: [],
 
-    const payload = {
-      matchName: document.getElementById("matchName").value.trim(),
+    updatedAt: new Date().toISOString(),
+  };
 
-      leagueName: document.getElementById("leagueName").value.trim(),
+  document
 
-      posterUrl: document.getElementById("posterUrl").value.trim(),
+    .querySelectorAll(".server-block")
 
-      sport: document.getElementById("sport").value,
+    .forEach((block) => {
+      payload.servers.push({
+        channelName: block.querySelector(".srv-name").value,
 
-      status: status,
+        type: block.querySelector(".srv-type").value,
 
-      scheduledAt: scheduledTime,
+        url: block.querySelector(".srv-url").value,
 
-      servers: getServers(),
+        mpd: block.querySelector(".srv-url").value,
 
-      updatedAt: new Date().toISOString(),
-    };
+        key: block.querySelector(".srv-key").value,
 
-    if (editId) {
-      await updateDoc(doc(db, "matches", editId), payload);
-    } else {
-      await addDoc(collection(db, "matches"), payload);
-    }
-
-    alert(editId ? "MATCH UPDATED" : "MATCH PUBLISHED");
-
-    resetForm();
-
-    await loadMatches();
-  } catch (error) {
-    console.error("SAVE MATCH ERROR:", error);
-
-    alert("ERROR SAVING MATCH. CHECK CONSOLE.");
-  }
-});
-
-/* ==================================================
-   LOAD MATCHES
-================================================== */
-
-async function loadMatches() {
-  matchList.innerHTML = "<p class='loading-text'>Loading...</p>";
-
-  try {
-    const snap = await getDocs(collection(db, "matches"));
-
-    matchesData = {};
-
-    let html = "";
-
-    snap.forEach((item) => {
-      const data = item.data();
-
-      matchesData[item.id] = data;
-
-      const status = String(data.status || "Upcoming").toLowerCase();
-
-      const isLive = status === "live";
-
-      let dateText = "";
-
-      if (data.scheduledAt) {
-        const date = new Date(data.scheduledAt);
-
-        if (!Number.isNaN(date.getTime())) {
-          dateText = date.toLocaleString(undefined, {
-            dateStyle: "medium",
-
-            timeStyle: "short",
-          });
-        }
-      }
-
-      html += `
-
-                    <div class="match-item">
-
-                        ${
-                          data.posterUrl
-                            ? `
-                                    <img
-                                        src="${escapeAttribute(data.posterUrl)}"
-                                        alt=""
-                                        onerror="this.style.display='none'"
-                                    >
-                                `
-                            : `
-                                    <div class="no-poster">
-                                        NO POSTER
-                                    </div>
-                                `
-                        }
-
-
-                        <div class="match-item-content">
-
-
-                            <div class="admin-match-status
-                                ${isLive ? "live" : "upcoming"}">
-
-                                ${isLive ? "🔴 LIVE" : "🕐 UPCOMING"}
-
-                            </div>
-
-
-                            <h3>
-                                ${escapeHTML(data.matchName)}
-                            </h3>
-
-
-                            ${
-                              data.leagueName
-                                ? `
-                                        <p class="admin-league">
-                                            ${escapeHTML(data.leagueName)}
-                                        </p>
-                                    `
-                                : ""
-                            }
-
-
-                            ${
-                              data.sport
-                                ? `
-                                        <span class="sport-label">
-                                            ${escapeHTML(data.sport)}
-                                        </span>
-                                    `
-                                : ""
-                            }
-
-
-                            ${
-                              Array.isArray(data.servers)
-                                ? `
-                                        <span class="player-label">
-                                            SERVERS:
-                                            ${data.servers.length}
-                                        </span>
-                                    `
-                                : ""
-                            }
-
-
-                            ${
-                              !isLive && dateText
-                                ? `
-                                        <p class="admin-time">
-                                            STARTS:
-                                            ${escapeHTML(dateText)}
-                                        </p>
-                                    `
-                                : ""
-                            }
-
-
-                            <div class="admin-actions">
-
-                                <button
-                                    onclick="editMatch('${item.id}')"
-                                    class="edit-btn"
-                                >
-                                    EDIT
-                                </button>
-
-
-                                <button
-                                    onclick="deleteMatch('${item.id}')"
-                                    class="delete-btn"
-                                >
-                                    DELETE
-                                </button>
-
-                            </div>
-
-
-                        </div>
-
-                    </div>
-
-                `;
+        cookie: block.querySelector(".srv-cookie").value,
+      });
     });
 
-    if (!html) {
-      html = `
-                <div class="empty-list">
-                    NO MATCHES FOUND
-                </div>
-            `;
-    }
+  if (editId) {
+    await updateDoc(
+      doc(db, "matches", editId),
 
-    matchList.innerHTML = html;
-  } catch (error) {
-    console.error("LOAD MATCH ERROR:", error);
+      payload,
+    );
+  } else {
+    await addDoc(
+      collection(db, "matches"),
 
-    matchList.innerHTML = `
-            <div class="empty-list">
-                ERROR LOADING MATCHES
-            </div>
-        `;
+      payload,
+    );
   }
+
+  resetForm();
+
+  loadMatches();
+});
+
+async function loadMatches() {
+  matchList.innerHTML = "Loading...";
+
+  const snap = await getDocs(collection(db, "matches"));
+
+  matchesData = {};
+
+  let html = "";
+
+  snap.forEach((item) => {
+    let data = item.data();
+
+    matchesData[item.id] = data;
+
+    html += `
+
+
+
+<div class="match-item">
+
+
+
+<img src="${data.posterUrl}">
+
+
+
+<h3>
+
+${data.matchName}
+
+</h3>
+
+
+
+<p>
+
+${data.matchTitle}
+
+</p>
+
+
+
+
+<button onclick="editMatch('${item.id}')">
+
+EDIT
+
+</button>
+
+
+
+
+<button onclick="deleteMatch('${item.id}')">
+
+DELETE
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+  });
+
+  matchList.innerHTML = html;
 }
 
-/* ==================================================
-   EDIT MATCH
-================================================== */
-
 window.editMatch = function (id) {
-  const data = matchesData[id];
-
-  if (!data) return;
+  let data = matchesData[id];
 
   editId = id;
 
-  formTitle.textContent = "EDIT MATCH";
+  formTitle.innerText = "EDIT MATCH";
 
   cancelEditBtn.style.display = "block";
 
-  document.getElementById("matchName").value = data.matchName || "";
+  matchName.value = data.matchName;
 
-  document.getElementById("leagueName").value = data.leagueName || "";
+  matchTitle.value = data.matchTitle;
 
-  document.getElementById("posterUrl").value = data.posterUrl || "";
+  posterUrl.value = data.posterUrl;
 
-  document.getElementById("sport").value = data.sport || "cricket";
-
-  document.getElementById("matchStatus").value = data.status || "Upcoming";
-
-  if (data.scheduledAt) {
-    const date = new Date(data.scheduledAt);
-
-    if (!Number.isNaN(date.getTime())) {
-      scheduledAt.value = toDateTimeLocal(date);
-    }
-  } else {
-    scheduledAt.value = "";
-  }
-
-  updateScheduleVisibility();
+  matchStatus.value = data.status;
 
   serverContainer.innerHTML = "";
 
-  if (Array.isArray(data.servers) && data.servers.length) {
-    data.servers.forEach((server) => {
-      addServerField(
-        server.channelName || "",
+  data.servers.forEach((server) => {
+    addServerField(
+      server.channelName,
 
-        server.type || "shaka",
+      server.type,
 
-        server.url || server.mpd || "",
+      server.url || server.mpd,
 
-        server.key || "",
+      server.key,
 
-        server.cookie || "",
-
-        /*
-                    New field.
-                    Old records => DASH
-                    */
-
-        server.whatToShow || "dash",
-      );
-    });
-  } else {
-    addServerField();
-  }
-
-  window.scrollTo({
-    top: 0,
-
-    behavior: "smooth",
+      server.cookie,
+    );
   });
 };
 
-/* ==================================================
-   DATE LOCAL
-================================================== */
-
-function toDateTimeLocal(date) {
-  const year = date.getFullYear();
-
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-
-  const day = String(date.getDate()).padStart(2, "0");
-
-  const hours = String(date.getHours()).padStart(2, "0");
-
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
-/* ==================================================
-   CANCEL
-================================================== */
-
-cancelEditBtn.addEventListener("click", () => {
+cancelEditBtn.onclick = () => {
   resetForm();
-});
-
-/* ==================================================
-   RESET
-================================================== */
+};
 
 function resetForm() {
   editId = null;
 
-  formTitle.textContent = "CREATE MATCH";
+  formTitle.innerText = "CREATE MATCH";
 
   cancelEditBtn.style.display = "none";
 
   matchForm.reset();
 
-  matchStatus.value = "Live";
-
-  scheduledAt.value = "";
-
   serverContainer.innerHTML = "";
 
   addServerField();
-
-  updateScheduleVisibility();
 }
-
-/* ==================================================
-   DELETE
-================================================== */
 
 window.deleteMatch = async function (id) {
-  if (!confirm("Delete this match?")) {
-    return;
-  }
-
-  try {
+  if (confirm("Delete Match?")) {
     await deleteDoc(doc(db, "matches", id));
 
-    await loadMatches();
-  } catch (error) {
-    console.error("DELETE ERROR:", error);
-
-    alert("ERROR DELETING MATCH");
+    loadMatches();
   }
 };
-
-/* ==================================================
-   ESCAPE HTML
-================================================== */
-
-function escapeHTML(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-
-    .replace(/</g, "&lt;")
-
-    .replace(/>/g, "&gt;")
-
-    .replace(/"/g, "&quot;")
-
-    .replace(/'/g, "&#039;");
-}
-
-/* ==================================================
-   START
-================================================== */
-
-addServerField();
-
-updateScheduleVisibility();
