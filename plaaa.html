@@ -1,734 +1,1201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>Join Sports Zone</title>
+
 <link rel="icon" href="/sportlink.png">
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SMZXC121E6"></script>
+
+<!-- =========================
+     GOOGLE ANALYTICS
+========================= -->
+
+<script async
+src="https://www.googletagmanager.com/gtag/js?id=G-SMZXC121E6">
+</script>
+
 <script>
 window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
+
+function gtag(){
+    dataLayer.push(arguments);
+}
+
 gtag('js', new Date());
+
 gtag('config', 'G-SMZXC121E6');
 </script>
 
-<script type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+
+<!-- =========================
+     AClib AD SCRIPT
+========================= -->
+
+<script
+type="text/javascript"
+src="//acscdn.com/script/aclib.js">
+</script>
+
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
 
-html,body{
-width:100%;
-height:100%;
-background:#0a0a0f;
-font-family:'Segoe UI',sans-serif;
-overflow:hidden;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
+
+html,
+body{
+    width:100%;
+    height:100%;
+    background:#0a0a0f;
+    font-family:'Segoe UI',sans-serif;
+    overflow:hidden;
+}
+
+
+/* =========================
+   PLAYER
+========================= */
 
 #main-iframe{
-width:100%;
-height:100%;
-border:none;
-display:block;
-position:absolute;
-top:0;
-left:0;
-z-index:1;
+
+    width:100%;
+    height:100%;
+
+    border:none;
+
+    display:block;
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    z-index:1;
 }
+
+
+/* =========================
+   SOCIAL BUTTON
+========================= */
 
 .social-badges{
-position:absolute;
-top:15px;
-left:15px;
-z-index:9999;
-display:flex;
-flex-direction:column;
-gap:8px;
+
+    position:absolute;
+
+    top:15px;
+    left:15px;
+
+    z-index:9999;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
 }
+
 
 .telegram-btn{
-display:flex;
-align-items:center;
-gap:10px;
-background:linear-gradient(135deg,#1e88e5,#1565c0);
-padding:9px 15px;
-border-radius:12px;
-text-decoration:none;
-color:#fff;
-font-size:15px;
-font-weight:600;
-box-shadow:0 4px 14px rgba(0,0,0,.5);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #1e88e5,
+        #1565c0
+    );
+
+    padding:9px 15px;
+
+    border-radius:12px;
+
+    text-decoration:none;
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    box-shadow:
+    0 4px 14px
+    rgba(0,0,0,.5);
 }
+
 
 .telegram-icon{
-width:30px;
-height:30px;
-background:rgba(255,255,255,.15);
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-border:2px solid #fff;
+
+    width:30px;
+    height:30px;
+
+    background:
+    rgba(255,255,255,.15);
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:2px solid #fff;
 }
+
 
 .telegram-icon svg{
-width:16px;
-height:16px;
-fill:#fff;
+
+    width:16px;
+    height:16px;
+
+    fill:#fff;
 }
 
-/* FULL SCREEN OVERLAY */
 
-#fullscreen-ad{
-position:fixed;
-inset:0;
-width:100vw;
-height:100vh;
-background:#000;
-display:none;
-align-items:center;
-justify-content:center;
-z-index:99999999;
-}
-
-#fullscreen-ad.show{
-display:flex;
-}
-
-.ad-container{
-position:relative;
-width:100%;
-height:100%;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.ad-content{
-width:100%;
-height:100%;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-#ad-close{
-position:absolute;
-top:15px;
-right:15px;
-width:42px;
-height:42px;
-border:none;
-border-radius:50%;
-background:rgba(0,0,0,.8);
-color:#fff;
-font-size:28px;
-font-weight:bold;
-cursor:pointer;
-z-index:100000000;
-display:none;
-}
-
-#ad-close.visible{
-display:block;
-}
-
-/* PICKER */
+/* =========================
+   PICKER
+========================= */
 
 #picker{
-position:absolute;
-inset:0;
-overflow-y:auto;
-background:#0a0a0f;
-display:none;
-z-index:20;
+
+    position:absolute;
+
+    inset:0;
+
+    overflow-y:auto;
+
+    background:#0a0a0f;
+
+    display:none;
+
+    z-index:20;
 }
+
 
 .picker-header{
-position:sticky;
-top:0;
-z-index:10;
-background:linear-gradient(180deg,#0a0a0f 80%,transparent);
-padding:20px 16px 10px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:10;
+
+    background:
+    linear-gradient(
+        180deg,
+        #0a0a0f 80%,
+        transparent
+    );
+
+    padding:20px 16px 10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:12px;
 }
+
 
 .picker-title{
-color:#fff;
-font-size:20px;
-font-weight:700;
-letter-spacing:.5px;
-flex-shrink:0;
+
+    color:#fff;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+    flex-shrink:0;
 }
+
 
 .picker-title span{
-color:#1e88e5;
+
+    color:#1e88e5;
 }
+
 
 .picker-links{
-display:flex;
-align-items:center;
-gap:8px;
-flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-shrink:0;
 }
 
-.tg-link,.wa-link{
-display:flex;
-align-items:center;
-gap:8px;
-padding:8px 13px;
-border-radius:10px;
-text-decoration:none;
-color:#fff;
-font-size:13px;
-font-weight:600;
+
+.tg-link,
+.wa-link{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 13px;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    color:#fff;
+
+    font-size:13px;
+
+    font-weight:600;
 }
+
 
 .tg-link{
-background:linear-gradient(135deg,#1e88e5,#1565c0);
+
+    background:
+    linear-gradient(
+        135deg,
+        #1e88e5,
+        #1565c0
+    );
 }
+
 
 .wa-link{
-background:linear-gradient(135deg,#25d366,#128c7e);
+
+    background:
+    linear-gradient(
+        135deg,
+        #25d366,
+        #128c7e
+    );
 }
 
-.tg-link svg,.wa-link svg{
-width:15px;
-height:15px;
-fill:#fff;
+
+.tg-link svg,
+.wa-link svg{
+
+    width:15px;
+
+    height:15px;
+
+    fill:#fff;
 }
+
+
+/* =========================
+   SEARCH
+========================= */
 
 .search-bar{
-padding:0 16px 12px;
+
+    padding:
+    0 16px 12px;
 }
+
 
 .search-bar input{
-width:100%;
-background:#1a1a2e;
-border:1px solid #2a2a40;
-border-radius:10px;
-padding:10px 14px;
-color:#fff;
-font-size:14px;
-outline:none;
+
+    width:100%;
+
+    background:#1a1a2e;
+
+    border:
+    1px solid #2a2a40;
+
+    border-radius:10px;
+
+    padding:10px 14px;
+
+    color:#fff;
+
+    font-size:14px;
+
+    outline:none;
 }
+
 
 .search-bar input::placeholder{
-color:#555;
+
+    color:#555;
 }
+
 
 .search-bar input:focus{
-border-color:#1e88e5;
+
+    border-color:#1e88e5;
 }
+
+
+/* =========================
+   CHANNEL GRID
+========================= */
 
 .channel-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:10px;
-padding:0 16px 24px;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        auto-fill,
+        minmax(150px,1fr)
+    );
+
+    gap:10px;
+
+    padding:
+    0 16px 24px;
 }
+
 
 .channel-card{
-background:#141420;
-border:1px solid #1e1e30;
-border-radius:12px;
-padding:14px 12px;
-cursor:pointer;
-transition:.15s;
-display:flex;
-align-items:center;
-gap:10px;
-text-decoration:none;
+
+    background:#141420;
+
+    border:
+    1px solid #1e1e30;
+
+    border-radius:12px;
+
+    padding:14px 12px;
+
+    cursor:pointer;
+
+    transition:
+    background .15s,
+    border-color .15s,
+    transform .1s;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    text-decoration:none;
 }
+
 
 .channel-card:active{
-transform:scale(.97);
+
+    transform:scale(.97);
 }
+
 
 .channel-card:hover{
-background:#1a1a2e;
-border-color:#1e88e5;
+
+    background:#1a1a2e;
+
+    border-color:#1e88e5;
 }
+
 
 .channel-dot{
-width:8px;
-height:8px;
-border-radius:50%;
-background:#1e88e5;
-flex-shrink:0;
-box-shadow:0 0 6px #1e88e5;
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#1e88e5;
+
+    flex-shrink:0;
+
+    box-shadow:
+    0 0 6px #1e88e5;
 }
+
 
 .channel-name{
-color:#e0e0e0;
-font-size:13px;
-font-weight:500;
-line-height:1.3;
+
+    color:#e0e0e0;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    line-height:1.3;
 }
 
+
 .no-results{
-color:#444;
-text-align:center;
-padding:40px 16px;
-font-size:14px;
+
+    color:#444;
+
+    text-align:center;
+
+    padding:40px 16px;
+
+    font-size:14px;
 }
+
 </style>
+
 </head>
+
 
 <body>
 
-<!-- PLAYER -->
+
+<!-- =========================
+     MAIN PLAYER
+========================= -->
 
 <iframe
-id="main-iframe"
-allowfullscreen
-allow="encrypted-media; fullscreen; autoplay">
+    id="main-iframe"
+    allowfullscreen
+    allow="encrypted-media; fullscreen; autoplay">
 </iframe>
 
 
-<!-- JOIN BUTTON -->
+<!-- =========================
+     JOIN SPORTS ZONE
+========================= -->
 
-<div class="social-badges" id="social-badges">
+<div
+    class="social-badges"
+    id="social-badges">
 
-<a
-href="https://t.me/+rtK_sfY8t_A2NDU1"
-target="_blank"
-class="telegram-btn"
-id="join-button">
+    <a
+        href="https://t.me/+rtK_sfY8t_A2NDU1"
+        target="_blank"
+        class="telegram-btn"
+        id="join-button">
 
-<div class="telegram-icon">
-<svg viewBox="0 0 24 24">
-<path d="M9.993 15.674l-.398 5.604c.57 0 .817-.245 1.113-.54l2.67-2.557 5.53 4.047c1.014.558 1.734.264 1.987-.939l3.6-16.86.001-.001c.3-1.4-.506-1.95-1.496-1.58L1.27 9.64c-1.37.53-1.35 1.29-.233 1.64l5.68 1.77L19.29 5.73c.59-.39 1.13-.175.69.215"/>
-</svg>
+        <div class="telegram-icon">
+
+            <svg viewBox="0 0 24 24">
+
+                <path d="
+                M9.993 15.674
+                l-.398 5.604
+                c.57 0 .817-.245
+                1.113-.54
+                l2.67-2.557
+                5.53 4.047
+                c1.014.558
+                1.734.264
+                1.987-.939
+                l3.6-16.86
+                .001-.001
+                c.3-1.4-.506-1.95
+                -1.496-1.58
+                L1.27 9.64
+                c-1.37.53
+                -1.35 1.29
+                -.233 1.64
+                l5.68 1.77
+                L19.29 5.73
+                c.59-.39
+                1.13-.175
+                .69.215"/>
+
+            </svg>
+
+        </div>
+
+        <span>
+            Join SPORTS ZONE
+        </span>
+
+    </a>
+
 </div>
 
-<span>Join SPORTS ZONE</span>
 
-</a>
-</div>
-
-
-<!-- FULL SCREEN AD -->
-
-<div id="fullscreen-ad">
-
-<div class="ad-container">
-
-<div class="ad-content" id="ad-content">
-</div>
-
-<button id="ad-close">×</button>
-
-</div>
-
-</div>
-
-
-<!-- CHANNEL PICKER -->
+<!-- =========================
+     CHANNEL PICKER
+========================= -->
 
 <div id="picker">
 
-<div class="picker-header">
+    <div class="picker-header">
 
-<div class="picker-title">
-⚡ <span>Live</span> Channels
-</div>
+        <div class="picker-title">
 
-<div class="picker-links">
+            ⚡
+            <span>Live</span>
+            Channels
 
-<a
-href="https://t.me/+rtK_sfY8t_A2NDU1"
-target="_blank"
-class="tg-link">
+        </div>
 
-<svg viewBox="0 0 24 24">
-<path d="M9.993 15.674l-.398 5.604c.57 0 .817-.245 1.113-.54l2.67-2.557 5.53 4.047c1.014.558 1.734.264 1.987-.939l3.6-16.86.001-.001c.3-1.4-.506-1.95-1.496-1.58L1.27 9.64c-1.37.53-1.35 1.29-.233 1.64l5.68 1.77L19.29 5.73c.59-.39 1.13-.175.69.215"/>
-</svg>
 
-@Sports Zone
+        <div class="picker-links">
 
-</a>
 
-<a
-href="https://t.me/+rtK_sfY8t_A2NDU1"
-target="_blank"
-class="wa-link">
+            <a
+                href="https://t.me/+rtK_sfY8t_A2NDU1"
+                target="_blank"
+                class="tg-link">
 
-<svg viewBox="0 0 24 24">
-<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-</svg>
+                <svg viewBox="0 0 24 24">
 
-WhatsApp
+                    <path d="
+                    M9.993 15.674
+                    l-.398 5.604
+                    c.57 0 .817-.245
+                    1.113-.54
+                    l2.67-2.557
+                    5.53 4.047
+                    c1.014.558
+                    1.734.264
+                    1.987-.939
+                    l3.6-16.86
+                    .001-.001
+                    c.3-1.4-.506-1.95
+                    -1.496-1.58
+                    L1.27 9.64
+                    c-1.37.53
+                    -1.35 1.29
+                    -.233 1.64
+                    l5.68 1.77
+                    L19.29 5.73
+                    c.59-.39
+                    1.13-.175
+                    .69.215"/>
 
-</a>
+                </svg>
 
-</div>
-</div>
+                @Sports Zone
 
-<div class="search-bar">
+            </a>
 
-<input
-type="text"
-id="search-input"
-placeholder="Search channels…"
-autocomplete="off">
 
-</div>
+            <a
+                href="https://t.me/+rtK_sfY8t_A2NDU1"
+                target="_blank"
+                class="wa-link">
 
-<div
-class="channel-grid"
-id="channel-grid">
-</div>
+                <svg viewBox="0 0 24 24">
+
+                    <path d="
+                    M17.472 14.382
+                    c-.297-.149
+                    -1.758-.867
+                    -2.03-.967
+                    -.273-.099
+                    -.471-.148
+                    -.67.15
+                    -.197.297
+                    -.767.966
+                    -.94 1.164
+                    -.173.199
+                    -.347.223
+                    -.644.075
+                    -.297-.15
+                    -1.255-.463
+                    -2.39-1.475
+                    -.883-.788
+                    -1.48-1.761
+                    -1.653-2.059
+                    -.173-.297
+                    -.018-.458
+                    .13-.606
+                    .134-.133
+                    .298-.347
+                    .446-.52
+                    .149-.174
+                    .198-.298
+                    .298-.497
+                    .099-.198
+                    .05-.371
+                    -.025-.52
+                    -.075-.149
+                    -.669-1.612
+                    -.916-2.207
+                    -.242-.579
+                    -.487-.5
+                    -.669-.51
+                    -.173-.008
+                    -.371-.01
+                    -.57-.01
+                    -.198 0
+                    -.52.074
+                    -.792.372
+                    -.272.297
+                    -1.04 1.016
+                    -1.04 2.479
+                    0 1.462
+                    1.065 2.875
+                    1.213 3.074
+                    .149.198
+                    2.096 3.2
+                    5.077 4.487
+                    .709.306
+                    1.262.489
+                    1.694.625
+                    .712.227
+                    1.36.195
+                    1.871.118
+                    .571-.085
+                    1.758-.719
+                    2.006-1.413
+                    .248-.694
+                    .248-1.289
+                    .173-1.413
+                    -.074-.124
+                    -.272-.198
+                    -.57-.347"/>
+
+                </svg>
+
+                WhatsApp
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="search-bar">
+
+        <input
+            type="text"
+            id="search-input"
+            placeholder="Search channels…"
+            autocomplete="off">
+
+    </div>
+
+
+    <div
+        class="channel-grid"
+        id="channel-grid">
+    </div>
 
 </div>
 
 
 <script>
 
-/* ==========================================
-   ODD / EVEN CLICK SYSTEM
-========================================== */
+
+/* =====================================================
+   PAGE LOAD AD
+===================================================== */
+
+function runPageLoadAd(){
+
+    console.log("Trying to run AClib ad...");
+
+
+    if(
+        window.aclib &&
+        typeof window.aclib.runPop === "function"
+    ){
+
+        try{
+
+            window.aclib.runPop({
+
+                zoneId:"11800802"
+
+            });
+
+            console.log(
+                "AClib ad triggered successfully"
+            );
+
+        }
+        catch(error){
+
+            console.log(
+                "AClib error:",
+                error
+            );
+
+        }
+
+    }
+    else{
+
+        console.log(
+            "AClib is not loaded yet."
+        );
+
+        /*
+           Try once again after 2 seconds.
+        */
+
+        setTimeout(function(){
+
+            if(
+                window.aclib &&
+                typeof window.aclib.runPop === "function"
+            ){
+
+                try{
+
+                    window.aclib.runPop({
+
+                        zoneId:"11800802"
+
+                    });
+
+                    console.log(
+                        "AClib ad triggered on retry"
+                    );
+
+                }
+                catch(error){
+
+                    console.log(
+                        "AClib retry error:",
+                        error
+                    );
+
+                }
+
+            }
+
+        },2000);
+
+    }
+
+}
+
+
+/* =====================================================
+   RUN AD WHEN PAGE LOADS
+===================================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        runPageLoadAd();
+
+    }
+);
+
+
+/* =====================================================
+   OPTIONAL:
+   ODD / EVEN JOIN BUTTON CLICKS
+===================================================== */
 
 let joinClickCount = 0;
 
 const joinButton =
 document.getElementById("join-button");
 
-const fullscreenAd =
-document.getElementById("fullscreen-ad");
 
-const adClose =
-document.getElementById("ad-close");
+joinButton.addEventListener(
+    "click",
+    function(e){
 
-
-joinButton.addEventListener("click",function(e){
-
-joinClickCount++;
-
-console.log("JOIN CLICK:",joinClickCount);
+        joinClickCount++;
 
 
-/* ==============================
-   ODD CLICK
-   1,3,5,7...
-============================== */
+        /*
+           1,3,5...
+           RUN AD
+        */
 
-if(joinClickCount % 2 === 1){
+        if(
+            joinClickCount % 2 === 1
+        ){
 
-e.preventDefault();
-
-
-/* RUN AClib POP */
-
-if(
-window.aclib &&
-typeof window.aclib.runPop === "function"
-){
-
-try{
-
-window.aclib.runPop({
-zoneId:"11800802"
-});
-
-}catch(error){
-
-console.log("AClib error:",error);
-
-}
-
-}
+            e.preventDefault();
 
 
-/*
-   FULL SCREEN BLACK OVERLAY
+            if(
+                window.aclib &&
+                typeof window.aclib.runPop === "function"
+            ){
 
-   This covers the entire screen,
-   including iframe/player controls.
-*/
+                try{
 
-fullscreenAd.classList.add("show");
+                    window.aclib.runPop({
 
+                        zoneId:"11800802"
 
-/*
-   Close button appears after 3 seconds.
-*/
+                    });
 
-adClose.classList.remove("visible");
+                }
+                catch(error){
 
-setTimeout(function(){
+                    console.log(
+                        "Click ad error:",
+                        error
+                    );
 
-adClose.classList.add("visible");
+                }
 
-},3000);
+            }
 
-return false;
+            return false;
 
-}
-
-
-/* ==============================
-   EVEN CLICK
-   2,4,6,8...
-============================== */
-
-/*
-   Normal Telegram link.
-   No preventDefault.
-*/
-
-});
+        }
 
 
-/* ==========================================
-   CLOSE FULL SCREEN OVERLAY
-========================================== */
+        /*
+           2,4,6...
+           NORMAL TELEGRAM LINK
+        */
 
-adClose.addEventListener("click",function(){
-
-fullscreenAd.classList.remove("show");
-
-});
+    }
+);
 
 
-/* ==========================================
+/* =====================================================
    MAIN APPLICATION
-========================================== */
+===================================================== */
 
-window.addEventListener("DOMContentLoaded",function(){
+window.addEventListener(
+    "DOMContentLoaded",
+    function(){
 
-const urlParams =
-new URLSearchParams(window.location.search);
-
-const id =
-urlParams.get("id");
-
-const iframe =
-document.getElementById("main-iframe");
-
-const socialBadges =
-document.getElementById("social-badges");
-
-const picker =
-document.getElementById("picker");
+        const urlParams =
+            new URLSearchParams(
+                window.location.search
+            );
 
 
-/* =========================
-   ID AVAILABLE
-========================= */
+        const id =
+            urlParams.get("id");
 
-if(id){
 
-fetch("https://sportlink18.pages.dev/id.json")
+        const iframe =
+            document.getElementById(
+                "main-iframe"
+            );
 
-.then(res => res.json())
 
-.then(data => {
+        const socialBadges =
+            document.getElementById(
+                "social-badges"
+            );
 
-const targetData =
-data.iframes.find(
-item => item.id === id
+
+        const picker =
+            document.getElementById(
+                "picker"
+            );
+
+
+        /* =========================
+           ID EXISTS
+        ========================= */
+
+        if(id){
+
+            fetch(
+                "https://sportlink18.pages.dev/id.json"
+            )
+
+            .then(
+                res => res.json()
+            )
+
+            .then(
+                data => {
+
+                    const targetData =
+                        data.iframes.find(
+                            item =>
+                            item.id === id
+                        );
+
+
+                    if(
+                        targetData &&
+                        targetData.iframeSrc
+                    ){
+
+                        iframe.src =
+                            targetData.iframeSrc;
+
+
+                        if(
+                            targetData.hit
+                        ){
+
+                            fetch(
+                                targetData.hit
+                            )
+                            .catch(
+                                () => {}
+                            );
+
+                        }
+
+                    }
+                    else{
+
+                        showPickerMode(
+                            data.iframes
+                        );
+
+                    }
+
+                }
+            )
+
+            .catch(
+                () => {
+
+                    showError(
+                        "Error loading data"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================
+           NO ID
+        ========================= */
+
+        else{
+
+            socialBadges.style.display =
+                "none";
+
+
+            iframe.style.display =
+                "none";
+
+
+            fetch(
+                "https://sportlink18.pages.dev/id.json"
+            )
+
+            .then(
+                res => res.json()
+            )
+
+            .then(
+                data => {
+
+                    showPickerMode(
+                        data.iframes
+                    );
+
+                }
+            )
+
+            .catch(
+                () => {
+
+                    showError(
+                        "Error loading channels"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================
+           PICKER MODE
+        ========================= */
+
+        function showPickerMode(
+            channels
+        ){
+
+            socialBadges.style.display =
+                "none";
+
+
+            iframe.style.display =
+                "none";
+
+
+            picker.style.display =
+                "block";
+
+
+            renderChannels(
+                channels
+            );
+
+
+            document
+                .getElementById(
+                    "search-input"
+                )
+                .addEventListener(
+                    "input",
+                    function(e){
+
+                        const q =
+                            e.target.value
+                            .toLowerCase();
+
+
+                        renderChannels(
+
+                            channels.filter(
+                                c =>
+                                c.name
+                                .toLowerCase()
+                                .includes(q)
+                            )
+
+                        );
+
+                    }
+                );
+
+        }
+
+
+        /* =========================
+           RENDER CHANNELS
+        ========================= */
+
+        function renderChannels(
+            channels
+        ){
+
+            const grid =
+                document.getElementById(
+                    "channel-grid"
+                );
+
+
+            grid.innerHTML = "";
+
+
+            if(
+                !channels.length
+            ){
+
+                grid.innerHTML =
+                    '<div class="no-results">' +
+                    'No channels found' +
+                    '</div>';
+
+                return;
+
+            }
+
+
+            const seen =
+                new Set();
+
+
+            channels.forEach(
+                ch => {
+
+                    if(
+                        seen.has(
+                            ch.name
+                        )
+                    ){
+
+                        return;
+
+                    }
+
+
+                    seen.add(
+                        ch.name
+                    );
+
+
+                    const card =
+                        document.createElement(
+                            "a"
+                        );
+
+
+                    card.className =
+                        "channel-card";
+
+
+                    card.href =
+                        "?id=" +
+                        encodeURIComponent(
+                            ch.id
+                        );
+
+
+                    card.innerHTML =
+                        '<div class="channel-dot"></div>' +
+                        '<div class="channel-name">' +
+                        ch.name +
+                        '</div>';
+
+
+                    grid.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        function showError(
+            msg
+        ){
+
+            socialBadges.style.display =
+                "none";
+
+
+            iframe.style.display =
+                "none";
+
+
+            const h2 =
+                document.createElement(
+                    "h2"
+                );
+
+
+            h2.style.cssText =
+                "color:#fff;" +
+                "text-align:center;" +
+                "font-family:sans-serif;" +
+                "position:absolute;" +
+                "width:100%;" +
+                "top:50%;" +
+                "transform:translateY(-50%);";
+
+
+            h2.innerText =
+                msg;
+
+
+            document.body.appendChild(
+                h2
+            );
+
+        }
+
+    }
 );
-
-if(
-targetData &&
-targetData.iframeSrc
-){
-
-iframe.src =
-targetData.iframeSrc;
-
-if(targetData.hit){
-
-fetch(targetData.hit)
-.catch(()=>{});
-
-}
-
-}else{
-
-showPickerMode(data.iframes);
-
-}
-
-})
-
-.catch(()=>{
-
-showError("Error loading data");
-
-});
-
-}
-
-
-/* =========================
-   NO ID
-========================= */
-
-else{
-
-socialBadges.style.display =
-"none";
-
-iframe.style.display =
-"none";
-
-fetch("https://sportlink18.pages.dev/id.json")
-
-.then(res => res.json())
-
-.then(data => {
-
-showPickerMode(data.iframes);
-
-})
-
-.catch(()=>{
-
-showError("Error loading channels");
-
-});
-
-}
-
-
-/* =========================
-   PICKER MODE
-========================= */
-
-function showPickerMode(channels){
-
-socialBadges.style.display =
-"none";
-
-iframe.style.display =
-"none";
-
-picker.style.display =
-"block";
-
-renderChannels(channels);
-
-
-document
-.getElementById("search-input")
-.addEventListener("input",function(e){
-
-const q =
-e.target.value.toLowerCase();
-
-renderChannels(
-channels.filter(c =>
-c.name.toLowerCase().includes(q)
-)
-);
-
-});
-
-}
-
-
-/* =========================
-   RENDER CHANNELS
-========================= */
-
-function renderChannels(channels){
-
-const grid =
-document.getElementById("channel-grid");
-
-grid.innerHTML = "";
-
-
-if(!channels.length){
-
-grid.innerHTML =
-'<div class="no-results">No channels found</div>';
-
-return;
-
-}
-
-
-const seen =
-new Set();
-
-
-channels.forEach(ch => {
-
-if(seen.has(ch.name))
-return;
-
-seen.add(ch.name);
-
-
-const card =
-document.createElement("a");
-
-card.className =
-"channel-card";
-
-card.href =
-"?id=" +
-encodeURIComponent(ch.id);
-
-
-card.innerHTML =
-'<div class="channel-dot"></div>' +
-'<div class="channel-name">' +
-ch.name +
-'</div>';
-
-
-grid.appendChild(card);
-
-});
-
-}
-
-
-/* =========================
-   ERROR
-========================= */
-
-function showError(msg){
-
-socialBadges.style.display =
-"none";
-
-iframe.style.display =
-"none";
-
-
-const h2 =
-document.createElement("h2");
-
-
-h2.style.cssText =
-"color:#fff;" +
-"text-align:center;" +
-"font-family:sans-serif;" +
-"position:absolute;" +
-"width:100%;" +
-"top:50%;" +
-"transform:translateY(-50%);";
-
-
-h2.innerText =
-msg;
-
-
-document.body.appendChild(h2);
-
-}
-
-});
 
 </script>
 
