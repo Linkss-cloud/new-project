@@ -1,0 +1,307 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sports Zone · HLS Player</title>
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- Poppins font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Shaka Player UI (latest stable) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+    .video-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    .shaka-video-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+      outline: none;
+    }
+    /* custom loading overlay */
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: #000;
+      color: #fff;
+      z-index: 2000;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .loading-overlay.hidden {
+      opacity: 0;
+      display: none;
+    }
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.15);
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 16px;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* error state (optional, but nice) */
+    .error-message {
+      color: #ff7b7b;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 0 20px;
+      max-width: 90%;
+    }
+    /* shaka ui overrides – ensure fullscreen fills */
+    .shaka-controls-container {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-container">
+    <div class="shaka-video-container" data-shaka-player>
+      <video id="video" autoplay playsinline muted></video>
+      <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <div id="loadingText">Analyzing the stream…</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ----- 1. Parse query parameters: support both ?data= (base64) and ?url= (plain) -----
+      const params = new URLSearchParams(window.location.search);
+      const dataParam = params.get('data');     // base64 encoded
+      const urlParam = params.get('url');       // direct url
+
+      let streamUrl = '';
+      if (dataParam) {
+        try {
+          streamUrl = atob(dataParam);
+        } catch (e) {
+          console.warn('Invalid base64 data parameter, falling back to url if present');
+          streamUrl = urlParam || '';
+        }
+      } else if (urlParam) {
+        streamUrl = urlParam;
+      }
+
+      // If still no url, try hash (fallback)
+      if (!streamUrl && window.location.hash) {
+        streamUrl = window.location.hash.substring(1);
+      }
+
+      // DOM elements
+      const video = document.getElementById('video');
+      const loadingOverlay = document.getElementById('loading');
+      const loadingText = document.getElementById('loadingText');
+
+      // Utility: show error and hide spinner
+      function showError(message) {
+        loadingOverlay.classList.remove('hidden');
+        loadingText.innerHTML = `<span class="error-message">⚠️ ${message}</span>`;
+        const spinner = loadingOverlay.querySelector('.spinner');
+        if (spinner) spinner.style.display = 'none';
+      }
+
+      // If no stream URL found
+      if (!streamUrl || streamUrl.trim() === '') {
+        showError('Missing stream URL. Use ?url= or ?data=');
+        // Try to play nothing, but we stop.
+        return;
+      }
+
+      // ----- 2. Initialize Shaka Player with UI -----
+      let player = null;
+      let ui = null;
+
+      async function initPlayer() {
+        try {
+          // Create Shaka Player instance
+          player = new shaka.Player(video);
+
+          // Get the container that already has class .shaka-video-container
+          const container = document.querySelector('.shaka-video-container');
+          // Create UI overlay (Shaka UI)
+          ui = new shaka.ui.Overlay(player, container, video);
+
+          // UI configuration – clean modern controls
+          ui.configure({
+            controlPanelElements: [
+              'play_pause',
+              'mute',
+              'time_and_duration',
+              'spacer',
+              'quality',
+              'language',
+              'picture_in_picture',
+              'fullscreen',
+              'overflow_menu'
+            ],
+            addSeekBar: true,
+            // hide overflow menu options that are not needed
+            overflowMenuButtons: ['captions', 'quality', 'language', 'picture_in_picture'],
+            // enable keyboard controls (nice)
+            enableKeyboardPlaybackControls: true,
+            // seek bar colors (optional)
+            seekBarColors: {
+              base: 'rgba(255,255,255,0.2)',
+              buffered: 'rgba(255,255,255,0.4)',
+              played: '#3b82f6'
+            }
+          });
+
+          // Shaka player configuration (optimized for live / hls)
+          player.configure({
+            streaming: {
+              bufferingGoal: 8,          // seconds
+              rebufferingGoal: 1.5,
+              bufferBehind: 20,
+              lowLatencyMode: true,      // better for live streams (if supported)
+              retryParameters: {
+                maxAttempts: 3,
+                baseDelay: 1000,
+                backoffFactor: 2,
+                fuzzFactor: 0.5,
+                timeout: 30000
+              }
+            },
+            manifest: {
+              retryParameters: {
+                maxAttempts: 3,
+                baseDelay: 1000,
+                backoffFactor: 2
+              }
+            }
+          });
+
+          // Optional: handle player events for better UX
+          player.addEventListener('error', (event) => {
+            const error = event.detail;
+            console.error('Shaka Player error:', error);
+            // If Shaka fails, fallback to native HLS (for Safari / native support)
+            // but only if we haven't already tried fallback
+            if (!player._fallbackAttempted) {
+              player._fallbackAttempted = true;
+              console.warn('Shaka failed, attempting native HLS playback…');
+              video.src = streamUrl;
+              video.play().catch(e => {
+                showError('Playback error: ' + (e.message || 'unknown'));
+              });
+            } else {
+              showError('Playback error: ' + (error.message || 'unknown'));
+            }
+          });
+
+          // When playback starts, hide loading overlay
+          video.addEventListener('playing', () => {
+            loadingOverlay.classList.add('hidden');
+          }, { once: false });
+
+          // Also listen for 'canplay' in case playing doesn't fire early enough
+          video.addEventListener('canplay', () => {
+            loadingOverlay.classList.add('hidden');
+          }, { once: false });
+
+          // Load the stream
+          await player.load(streamUrl);
+          console.log('Shaka Player loaded stream:', streamUrl);
+
+          // Autoplay handling – try unmuted first (some browsers block)
+          try {
+            await video.play();
+          } catch (playError) {
+            console.warn('Autoplay with sound blocked, muting and retrying…', playError);
+            video.muted = true;
+            await video.play();
+            // Optionally show unmute hint, but we keep it simple
+          }
+
+          // If after 10 seconds the stream hasn't started, show a hint
+          setTimeout(() => {
+            if (video.paused || video.readyState < 2) {
+              // still not playing? show a gentle message
+              loadingText.textContent = 'Still loading… please check your connection.';
+            }
+          }, 10000);
+
+        } catch (e) {
+          console.error('Initialization error:', e);
+          // If Shaka fails to load the manifest (e.g., CORS, bad url), fallback to native HLS
+          if (!player || !player._fallbackAttempted) {
+            player._fallbackAttempted = true;
+            console.warn('Shaka initialization failed, trying native video element fallback…');
+            video.src = streamUrl;
+            video.play().catch(err => {
+              showError('Native playback failed: ' + (err.message || 'unknown error'));
+            });
+            // hide loading when/if it plays
+            video.addEventListener('playing', () => {
+              loadingOverlay.classList.add('hidden');
+            });
+            // also handle error on native fallback
+            video.addEventListener('error', () => {
+              showError('Native playback error');
+            });
+          } else {
+            showError('Failed to load stream: ' + (e.message || 'unknown error'));
+          }
+        }
+      }
+
+      // ----- 3. Start when DOM ready -----
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPlayer);
+      } else {
+        // DOM already ready
+        initPlayer();
+      }
+
+      // ----- 4. Also handle window resize for UI (optional) -----
+      window.addEventListener('resize', () => {
+        // Shaka UI handles resize automatically
+      });
+
+      // ----- 5. Expose player for debugging (optional) -----
+      window.__player = () => player;
+    })();
+  </script>
+
+</body>
+</html>
