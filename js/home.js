@@ -1,499 +1,626 @@
 import { db } from "../firebase.js";
 
-
 import {
-
-collection,
-getDocs
-
-}
-
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
-
-
+// ======================================================
+// DOM ELEMENTS
+// ======================================================
 
 const matchesBox =
-document.getElementById("matches");
-
+  document.getElementById("matches");
 
 const upcomingBox =
-document.getElementById("upcoming");
-
+  document.getElementById("upcoming");
 
 const favoritesBox =
-document.getElementById("favorites");
-
+  document.getElementById("favorites");
 
 const favoritesSection =
-document.getElementById("favorites-section");
-
+  document.getElementById("favorites-section");
 
 const search =
-document.getElementById("search");
+  document.getElementById("search");
 
 
+// ======================================================
+// GLOBAL DATA
+// ======================================================
 
-
-let matches=[];
-
+let matches = [];
 
 let favorites =
-JSON.parse(localStorage.getItem("favorites")) || [];
+  JSON.parse(
+    localStorage.getItem("favorites")
+  ) || [];
 
 
+// ======================================================
+// LOAD MATCHES
+// ======================================================
 
+async function loadMatches() {
 
+  try {
 
+    const snapshot =
+      await getDocs(
+        collection(db, "matches")
+      );
 
 
-async function loadMatches(){
+    matches = [];
 
 
-try{
+    snapshot.forEach(docSnap => {
 
+      const data =
+        docSnap.data();
 
-const snap =
-await getDocs(
-collection(db,"matches")
-);
 
+      let servers =
+        data.servers || [];
 
 
-matches=[];
+      // If servers is a single string
+      if (typeof servers === "string") {
 
+        servers = [servers];
 
+      }
 
-snap.forEach(doc=>{
 
+      matches.push({
 
-const data =
-doc.data();
+        id:
+          docSnap.id,
 
+        title:
+          data.matchName ||
+          "Unknown Match",
 
+        league:
+          data.matchTitle ||
+          "",
 
-matches.push({
+        thumbnail:
+          data.posterUrl ||
+          "",
 
+        status:
+          data.status === "Live"
+            ? "LIVE"
+            : "UPCOMING",
 
-id:doc.id,
+        servers:
+          servers
 
+      });
 
-title:
-data.matchName || "Unknown Match",
+    });
 
 
-league:
-data.matchTitle || "",
+    console.log(
+      "Matches:",
+      matches
+    );
 
 
-thumbnail:
-data.posterUrl || "",
+    render();
 
+  }
 
-status:
-data.status==="Live"
-?
-"LIVE"
-:
-"UPCOMING",
+  catch (error) {
 
+    console.error(
+      "Firestore error:",
+      error
+    );
 
-servers:
-data.servers || []
 
+    matchesBox.innerHTML = `
 
-});
+      <div class="no-live">
 
+        Database connection error
 
-});
+      </div>
 
+    `;
 
-
-render();
-
-
-}
-
-catch(error){
-
-
-console.log(error);
-
-
-matchesBox.innerHTML=
-
-`
-
-<div class="no-live">
-
-Database connection error
-
-</div>
-
-`;
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-function createCard(match){
-
-
-
-const card =
-document.createElement("div");
-
-
-card.className="match-card";
-
-
-
-const fav =
-favorites.includes(match.id);
-
-
-
-card.innerHTML=
-
-
-`
-
-<div class="card-thumb">
-
-
-<img
-
-src="${match.thumbnail}"
-
-loading="lazy"
-
-alt="${match.title}"
-
->
-
-
-<div class="status-badge">
-
-${match.status==="LIVE"
-?
-"🔴 LIVE"
-:
-"⏰ UPCOMING"
-}
-
-</div>
-
-
-</div>
-
-
-
-
-<div class="card-details">
-
-
-<div class="card-info">
-
-
-<h3>
-
-${match.title}
-
-</h3>
-
-
-<p>
-
-${match.league}
-
-</p>
-
-
-</div>
-
-
-
-
-<button class="favorite-btn">
-
-${fav ? "★":"☆"}
-
-</button>
-
-
-
-</div>
-
-
-
-
-<div class="card-actions">
-
-
-<a href="watch.html?id=${match.id}"
-
-class="btn-play">
-
-▶ WATCH NOW
-
-</a>
-
-
-</div>
-
-`;
-
-
-
-
-
-
-card.querySelector(".favorite-btn").onclick=()=>{
-
-
-toggleFavorite(match.id);
-
-
-render();
-
-
-};
-
-
-
-return card;
-
+  }
 
 }
 
 
+// ======================================================
+// GET STREAM URL
+// ======================================================
 
+function getStreamUrl(match) {
 
+  if (!match) {
+    return "";
+  }
 
 
+  const servers =
+    match.servers;
 
 
+  if (!servers) {
+    return "";
+  }
 
-function render(list=matches){
 
+  // ----------------------------------------------------
+  // STRING
+  // ----------------------------------------------------
 
-matchesBox.innerHTML="";
+  if (typeof servers === "string") {
 
-upcomingBox.innerHTML="";
+    return servers;
 
-favoritesBox.innerHTML="";
+  }
 
 
+  // ----------------------------------------------------
+  // ARRAY
+  // ----------------------------------------------------
 
-let live =
-list.filter(
-m=>m.status==="LIVE"
-);
+  if (Array.isArray(servers)) {
 
+    for (const server of servers) {
 
 
-let upcoming =
-list.filter(
-m=>m.status==="UPCOMING"
-);
+      // Example:
+      // ["https://example.com/live.m3u8"]
 
+      if (typeof server === "string") {
 
+        if (
+          server.startsWith("http://") ||
+          server.startsWith("https://")
+        ) {
 
+          return server;
 
-if(live.length){
+        }
 
+      }
 
-live.forEach(m=>
 
-matchesBox.appendChild(
-createCard(m)
-)
+      // Example:
+      // [{url:"https://example.com/live.m3u8"}]
 
-);
+      if (
+        server &&
+        typeof server === "object"
+      ) {
 
+        const url =
+          server.url ||
+          server.streamUrl ||
+          server.stream ||
+          server.link ||
+          server.hlsUrl ||
+          server.fancode ||
+          "";
 
-}
 
-else{
+        if (
+          typeof url === "string" &&
+          (
+            url.startsWith("http://") ||
+            url.startsWith("https://")
+          )
+        ) {
 
+          return url;
 
-matchesBox.innerHTML=
+        }
 
-`
-<div class="no-live">
+      }
 
-🔴 No live matches available
+    }
 
-</div>
-`;
+  }
 
-}
 
+  // ----------------------------------------------------
+  // OBJECT
+  // ----------------------------------------------------
 
-
-
-if(upcoming.length){
-
-
-upcoming.forEach(m=>
-
-upcomingBox.appendChild(
-createCard(m)
-)
-
-);
-
-
-}
-
-else{
-
-
-upcomingBox.innerHTML=
-
-`
-<div class="no-live">
-
-⏰ No upcoming matches
-
-</div>
-
-`;
-
-}
-
-
-
-
-let favMatches =
-matches.filter(
-m=>favorites.includes(m.id)
-);
-
-
-
-if(favMatches.length){
-
-
-favoritesSection.classList.remove("hidden");
-
-
-favMatches.forEach(m=>
-
-favoritesBox.appendChild(
-createCard(m)
-)
-
-);
-
-
-}
-
-else{
-
-
-favoritesSection.classList.add("hidden");
-
+  if (
+    typeof servers === "object" &&
+    !Array.isArray(servers)
+  ) {
+
+    return (
+      servers.url ||
+      servers.streamUrl ||
+      servers.stream ||
+      servers.link ||
+      servers.hlsUrl ||
+      servers.fancode ||
+      ""
+    );
+
+  }
+
+
+  return "";
 
 }
 
 
+// ======================================================
+// CREATE CARD
+// ======================================================
+
+function createCard(match) {
+
+  const card =
+    document.createElement("div");
+
+
+  card.className =
+    "match-card";
+
+
+  const isFavorite =
+    favorites.includes(
+      match.id
+    );
+
+
+  card.innerHTML = `
+
+    <div class="card-thumb">
+
+      <img
+        src="${escapeHtml(match.thumbnail)}"
+        loading="lazy"
+        alt="${escapeHtml(match.title)}"
+      >
+
+      <div class="status-badge">
+
+        ${
+          match.status === "LIVE"
+            ? "🔴 LIVE"
+            : "⏰ UPCOMING"
+        }
+
+      </div>
+
+    </div>
+
+
+    <div class="card-details">
+
+      <div class="card-info">
+
+        <h3>
+          ${escapeHtml(match.title)}
+        </h3>
+
+        <p>
+          ${escapeHtml(match.league)}
+        </p>
+
+      </div>
+
+
+      <button
+        class="favorite-btn"
+        type="button"
+        aria-label="Favorite"
+      >
+
+        ${
+          isFavorite
+            ? "★"
+            : "☆"
+        }
+
+      </button>
+
+    </div>
+
+
+    <div class="card-actions">
+
+      <a
+        href="watch.html?id=${encodeURIComponent(match.id)}"
+        class="btn-play"
+      >
+
+        ▶ WATCH NOW
+
+      </a>
+
+    </div>
+
+  `;
+
+
+  // ====================================================
+  // FAVORITE BUTTON
+  // ====================================================
+
+  const favoriteButton =
+    card.querySelector(
+      ".favorite-btn"
+    );
+
+
+  favoriteButton.onclick = () => {
+
+    toggleFavorite(
+      match.id
+    );
+
+    render();
+
+  };
+
+
+  return card;
 
 }
 
 
+// ======================================================
+// ESCAPE HTML
+// ======================================================
+
+function escapeHtml(value) {
+
+  if (!value) {
+    return "";
+  }
 
 
-
-
-
-
-
-function toggleFavorite(id){
-
-
-if(favorites.includes(id)){
-
-
-favorites =
-favorites.filter(
-x=>x!==id
-);
-
-
-}
-
-else{
-
-
-favorites.push(id);
-
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 
 }
 
 
+// ======================================================
+// RENDER
+// ======================================================
 
-localStorage.setItem(
+function render(list = matches) {
 
-"favorites",
+  matchesBox.innerHTML = "";
 
-JSON.stringify(favorites)
+  upcomingBox.innerHTML = "";
 
-);
+  favoritesBox.innerHTML = "";
 
+
+  // ----------------------------------------------------
+  // LIVE
+  // ----------------------------------------------------
+
+  const live =
+    list.filter(
+      match =>
+        match.status === "LIVE"
+    );
+
+
+  // ----------------------------------------------------
+  // UPCOMING
+  // ----------------------------------------------------
+
+  const upcoming =
+    list.filter(
+      match =>
+        match.status === "UPCOMING"
+    );
+
+
+  // ----------------------------------------------------
+  // LIVE MATCHES
+  // ----------------------------------------------------
+
+  if (live.length > 0) {
+
+    live.forEach(match => {
+
+      matchesBox.appendChild(
+        createCard(match)
+      );
+
+    });
+
+  }
+
+  else {
+
+    matchesBox.innerHTML = `
+
+      <div class="no-live">
+
+        🔴 No live matches available
+
+      </div>
+
+    `;
+
+  }
+
+
+  // ----------------------------------------------------
+  // UPCOMING MATCHES
+  // ----------------------------------------------------
+
+  if (upcoming.length > 0) {
+
+    upcoming.forEach(match => {
+
+      upcomingBox.appendChild(
+        createCard(match)
+      );
+
+    });
+
+  }
+
+  else {
+
+    upcomingBox.innerHTML = `
+
+      <div class="no-live">
+
+        ⏰ No upcoming matches
+
+      </div>
+
+    `;
+
+  }
+
+
+  // ----------------------------------------------------
+  // FAVORITES
+  // ----------------------------------------------------
+
+  const favoriteMatches =
+    matches.filter(
+      match =>
+        favorites.includes(
+          match.id
+        )
+    );
+
+
+  if (favoriteMatches.length > 0) {
+
+    favoritesSection
+      .classList
+      .remove("hidden");
+
+
+    favoriteMatches.forEach(match => {
+
+      favoritesBox.appendChild(
+        createCard(match)
+      );
+
+    });
+
+  }
+
+  else {
+
+    favoritesSection
+      .classList
+      .add("hidden");
+
+  }
 
 }
 
 
+// ======================================================
+// FAVORITES
+// ======================================================
+
+function toggleFavorite(id) {
+
+  if (
+    favorites.includes(id)
+  ) {
+
+    favorites =
+      favorites.filter(
+        item =>
+          item !== id
+      );
+
+  }
+
+  else {
+
+    favorites.push(id);
+
+  }
 
 
+  localStorage.setItem(
+    "favorites",
+    JSON.stringify(favorites)
+  );
+
+}
 
 
+// ======================================================
+// SEARCH
+// ======================================================
+
+if (search) {
+
+  search.addEventListener(
+    "input",
+    () => {
+
+      const value =
+        search.value
+          .toLowerCase()
+          .trim();
 
 
+      if (!value) {
 
-search.addEventListener(
-"input",
-()=>{
+        render();
 
+        return;
 
-let value =
-search.value.toLowerCase();
-
+      }
 
 
-let filtered =
-matches.filter(m=>
+      const filtered =
+        matches.filter(match => {
 
-m.title.toLowerCase().includes(value)
+          const title =
+            match.title
+              .toLowerCase();
 
-||
-
-m.league.toLowerCase().includes(value)
-
-);
-
-
-
-render(filtered);
+          const league =
+            match.league
+              .toLowerCase();
 
 
-});
+          return (
+            title.includes(value) ||
+            league.includes(value)
+          );
+
+        });
 
 
+      render(filtered);
+
+    }
+  );
+
+}
 
 
-
+// ======================================================
+// START
+// ======================================================
 
 loadMatches();
