@@ -42,6 +42,7 @@
 
         body {
             min-height: 100vh;
+
             background:
                 radial-gradient(
                     circle at top right,
@@ -56,6 +57,7 @@
                 #06080d;
 
             color: #f8fafc;
+
             font-family:
                 Inter,
                 ui-sans-serif,
@@ -85,22 +87,29 @@
         .container {
             width: 100%;
             max-width: 1180px;
+
             margin: 0 auto;
-            padding: 28px 20px 50px;
+
+            padding:
+                28px
+                20px
+                50px;
         }
 
 
         /* =====================================================
-           TOP HEADER
+           HEADER
         ===================================================== */
 
         .topbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             gap: 20px;
 
             padding: 18px 20px;
+
             margin-bottom: 22px;
 
             background:
@@ -110,11 +119,15 @@
                     rgba(10, 14, 22, 0.96)
                 );
 
-            border: 1px solid rgba(255, 255, 255, 0.07);
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.07);
+
             border-radius: 18px;
 
             box-shadow:
-                0 18px 50px rgba(0, 0, 0, 0.28);
+                0 18px 50px
+                rgba(0, 0, 0, 0.28);
 
             backdrop-filter: blur(14px);
         }
@@ -122,6 +135,7 @@
         .brand {
             display: flex;
             align-items: center;
+
             gap: 13px;
         }
 
@@ -143,7 +157,8 @@
                 );
 
             box-shadow:
-                0 8px 24px rgba(249, 115, 22, 0.25);
+                0 8px 24px
+                rgba(249, 115, 22, 0.25);
 
             font-size: 23px;
         }
@@ -153,7 +168,9 @@
 
             font-size: 21px;
             line-height: 1.1;
+
             font-weight: 800;
+
             letter-spacing: -0.5px;
         }
 
@@ -161,17 +178,19 @@
             margin: 5px 0 0;
 
             color: #64748b;
+
             font-size: 12px;
         }
 
 
         /* =====================================================
-           RELOAD BUTTON
+           RELOAD
         ===================================================== */
 
         .reload-btn {
             display: inline-flex;
             align-items: center;
+
             gap: 8px;
 
             padding: 11px 15px;
@@ -181,7 +200,9 @@
             background: #1e293b;
             color: #e2e8f0;
 
-            border: 1px solid #334155;
+            border:
+                1px solid
+                #334155;
 
             cursor: pointer;
 
@@ -196,8 +217,11 @@
 
         .reload-btn:hover {
             background: #273449;
+
             border-color: #475569;
-            transform: translateY(-1px);
+
+            transform:
+                translateY(-1px);
         }
 
 
@@ -208,49 +232,69 @@
         .status {
             display: flex;
             align-items: center;
+
             gap: 10px;
 
             min-height: 48px;
 
             padding: 13px 16px;
+
             margin-bottom: 24px;
 
             border-radius: 12px;
 
-            background: rgba(15, 23, 42, 0.78);
-            border: 1px solid #1e293b;
+            background:
+                rgba(15, 23, 42, 0.78);
+
+            border:
+                1px solid
+                #1e293b;
 
             color: #cbd5e1;
+
             font-size: 13px;
             font-weight: 600;
         }
 
         .status::before {
             content: "";
+
             width: 8px;
             height: 8px;
 
             flex: 0 0 auto;
 
             border-radius: 50%;
+
             background: #64748b;
         }
 
         .status.success {
             color: #a7f3d0;
-            border-color: rgba(16, 185, 129, 0.25);
-            background: rgba(6, 78, 59, 0.18);
+
+            border-color:
+                rgba(16, 185, 129, 0.25);
+
+            background:
+                rgba(6, 78, 59, 0.18);
         }
 
         .status.success::before {
             background: #10b981;
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.7);
+
+            box-shadow:
+                0 0 12px
+                rgba(16, 185, 129, 0.7);
         }
 
         .status.error {
             color: #fecaca;
-            border-color: rgba(239, 68, 68, 0.25);
-            background: rgba(127, 29, 29, 0.16);
+
+            border-color:
+                rgba(239, 68, 68, 0.25);
+
+            background:
+                rgba(127, 29, 29, 0.16);
         }
 
         .status.error::before {
@@ -264,10 +308,12 @@
         .status.loading::before {
             background: #facc15;
 
-            animation: pulse 1.2s infinite;
+            animation:
+                pulse 1.2s infinite;
         }
 
         @keyframes pulse {
+
             0% {
                 opacity: 0.35;
                 transform: scale(0.8);
@@ -282,6 +328,7 @@
                 opacity: 0.35;
                 transform: scale(0.8);
             }
+
         }
 
 
@@ -296,18 +343,23 @@
 
             background: #020617;
 
-            border: 1px solid #1e293b;
+            border:
+                1px solid
+                #1e293b;
+
             border-radius: 18px;
 
             overflow: hidden;
 
             box-shadow:
-                0 25px 70px rgba(0, 0, 0, 0.45);
+                0 25px 70px
+                rgba(0, 0, 0, 0.45);
         }
 
         .player-header {
             display: flex;
             align-items: center;
+
             gap: 10px;
 
             min-height: 50px;
@@ -323,7 +375,9 @@
 
             color: #e2e8f0;
 
-            border-bottom: 1px solid #1e293b;
+            border-bottom:
+                1px solid
+                #1e293b;
 
             font-size: 14px;
             font-weight: 700;
@@ -340,7 +394,8 @@
             background: #f97316;
 
             box-shadow:
-                0 0 12px rgba(249, 115, 22, 0.7);
+                0 0 12px
+                rgba(249, 115, 22, 0.7);
         }
 
         .shaka-video-container {
@@ -371,13 +426,15 @@
         .shaka-spinner,
         .shaka-spinner-svg {
             display: none !important;
+
             visibility: hidden !important;
+
             opacity: 0 !important;
         }
 
 
         /* =====================================================
-           SECTION HEADER
+           SECTION
         ===================================================== */
 
         .section {
@@ -398,6 +455,7 @@
             margin: 0;
 
             font-size: 20px;
+
             font-weight: 800;
 
             letter-spacing: -0.4px;
@@ -411,24 +469,109 @@
             font-size: 12px;
         }
 
+
+        /* =====================================================
+           LIVE / UPCOMING SECTION LABEL
+        ===================================================== */
+
+        .section-label {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            margin:
+                28px
+                0
+                13px;
+        }
+
+        .section-label:first-child {
+            margin-top: 0;
+        }
+
+        .section-label h3 {
+            margin: 0;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.2px;
+        }
+
+        .section-label-line {
+            flex: 1;
+
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1e293b,
+                    transparent
+                );
+        }
+
+        .section-label.live h3 {
+            color: #6ee7b7;
+        }
+
+        .section-label.upcoming h3 {
+            color: #fbbf24;
+        }
+
+        .section-label-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+        }
+
+        .section-label.live
+        .section-label-dot {
+            background: #10b981;
+
+            box-shadow:
+                0 0 10px
+                rgba(16, 185, 129, 0.8);
+        }
+
+        .section-label.upcoming
+        .section-label-dot {
+            background: #f59e0b;
+        }
+
+
+        /* =====================================================
+           LIVE BADGE
+        ===================================================== */
+
         .live-badge {
             display: inline-flex;
             align-items: center;
+
             gap: 7px;
 
             padding: 7px 10px;
 
             border-radius: 999px;
 
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.18);
+            background:
+                rgba(16, 185, 129, 0.08);
+
+            border:
+                1px solid
+                rgba(16, 185, 129, 0.18);
 
             color: #6ee7b7;
 
             font-size: 11px;
+
             font-weight: 800;
 
             text-transform: uppercase;
+
             letter-spacing: 0.5px;
         }
 
@@ -441,7 +584,10 @@
             border-radius: 50%;
 
             background: #10b981;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+
+            box-shadow:
+                0 0 10px
+                rgba(16, 185, 129, 0.8);
         }
 
 
@@ -480,7 +626,9 @@
                     rgba(10, 15, 24, 0.98)
                 );
 
-            border: 1px solid #1e293b;
+            border:
+                1px solid
+                #1e293b;
 
             overflow: hidden;
 
@@ -513,32 +661,38 @@
         }
 
         .event:hover {
-            transform: translateY(-3px);
+            transform:
+                translateY(-3px);
 
             border-color: #334155;
 
             box-shadow:
-                0 18px 40px rgba(0, 0, 0, 0.25);
+                0 18px 40px
+                rgba(0, 0, 0, 0.25);
         }
 
 
         /* =====================================================
-           EVENT TITLE
+           EVENT TOP
         ===================================================== */
 
-        .event-title {
+        .event-top {
             display: flex;
             align-items: flex-start;
+            justify-content: space-between;
+
+            gap: 12px;
+
+            margin-bottom: 17px;
+        }
+
+        .event-title-wrap {
+            display: flex;
+            align-items: flex-start;
+
             gap: 9px;
 
-            color: #f8fafc;
-
-            font-size: 16px;
-            line-height: 1.4;
-
-            font-weight: 800;
-
-            margin-bottom: 8px;
+            min-width: 0;
         }
 
         .event-number {
@@ -551,18 +705,252 @@
 
             padding: 0 7px;
 
+            flex: 0 0 auto;
+
             border-radius: 8px;
 
-            background: rgba(249, 115, 22, 0.10);
-            border: 1px solid rgba(249, 115, 22, 0.18);
+            background:
+                rgba(249, 115, 22, 0.10);
+
+            border:
+                1px solid
+                rgba(249, 115, 22, 0.18);
 
             color: #fb923c;
 
             font-size: 11px;
+
+            font-weight: 800;
         }
 
-        .event-name {
-            padding-top: 3px;
+        .event-title {
+            padding-top: 2px;
+
+            color: #f8fafc;
+
+            font-size: 16px;
+
+            line-height: 1.35;
+
+            font-weight: 800;
+        }
+
+        .event-category {
+            margin-top: 4px;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           EVENT STATUS
+        ===================================================== */
+
+        .event-status {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 6px;
+
+            flex: 0 0 auto;
+
+            padding: 6px 9px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.4px;
+
+            text-transform: uppercase;
+        }
+
+        .event-status.live {
+            color: #6ee7b7;
+
+            background:
+                rgba(16, 185, 129, 0.09);
+
+            border:
+                1px solid
+                rgba(16, 185, 129, 0.2);
+        }
+
+        .event-status.live::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #10b981;
+
+            box-shadow:
+                0 0 8px
+                rgba(16, 185, 129, 0.8);
+        }
+
+        .event-status.upcoming {
+            color: #fcd34d;
+
+            background:
+                rgba(245, 158, 11, 0.08);
+
+            border:
+                1px solid
+                rgba(245, 158, 11, 0.2);
+        }
+
+        .event-status.upcoming::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #f59e0b;
+        }
+
+
+        /* =====================================================
+           TEAMS
+        ===================================================== */
+
+        .teams {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                auto
+                1fr;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 15px;
+
+            padding: 14px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(2, 6, 23, 0.55);
+
+            border:
+                1px solid
+                rgba(51, 65, 85, 0.65);
+        }
+
+        .team {
+            min-width: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+        }
+
+        .team-logo {
+            width: 52px;
+            height: 52px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #172033,
+                    #0f172a
+                );
+
+            border:
+                1px solid
+                #334155;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 20px
+                rgba(0, 0, 0, 0.22);
+        }
+
+        .team-logo img {
+            width: 100%;
+            height: 100%;
+
+            padding: 7px;
+
+            object-fit: contain;
+        }
+
+        .team-fallback {
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            font-weight: 900;
+        }
+
+        .team-name {
+            max-width: 100%;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            color: #e2e8f0;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            text-align: center;
+        }
+
+        .vs {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            color: #64748b;
+
+            background:
+                #111827;
+
+            border:
+                1px solid
+                #334155;
+
+            font-size: 10px;
+
+            font-weight: 900;
         }
 
 
@@ -572,26 +960,70 @@
 
         .event-info {
             display: flex;
+
             align-items: center;
+
+            justify-content: center;
+
             flex-wrap: wrap;
-            gap: 7px;
+
+            gap: 8px;
 
             min-height: 22px;
+
+            margin-bottom: 15px;
 
             color: #64748b;
 
             font-size: 12px;
 
-            margin-bottom: 15px;
+            text-align: center;
         }
 
-        .event-info .separator {
+        .event-info-item {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+        }
+
+        .event-info-separator {
             color: #334155;
+        }
+
+        .upcoming-time {
+            color: #fbbf24;
+
+            font-weight: 700;
         }
 
 
         /* =====================================================
-           STREAM AREA
+           COUNTDOWN
+        ===================================================== */
+
+        .countdown {
+            margin-top: -5px;
+
+            margin-bottom: 15px;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+        .countdown strong {
+            color: #fbbf24;
+        }
+
+
+        /* =====================================================
+           STREAMS
         ===================================================== */
 
         .streams {
@@ -610,8 +1042,11 @@
             position: relative;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             gap: 7px;
 
             min-height: 42px;
@@ -621,13 +1056,17 @@
             border-radius: 10px;
 
             background: #111827;
+
             color: #cbd5e1;
 
-            border: 1px solid #334155;
+            border:
+                1px solid
+                #334155;
 
             cursor: pointer;
 
             font-size: 12px;
+
             font-weight: 800;
 
             transition:
@@ -638,12 +1077,15 @@
         }
 
         .stream-btn:hover {
-            transform: translateY(-1px);
+            transform:
+                translateY(-1px);
+
             color: #fff;
         }
 
         .stream-btn.dash {
-            border-color: rgba(124, 58, 237, 0.45);
+            border-color:
+                rgba(124, 58, 237, 0.45);
 
             background:
                 linear-gradient(
@@ -661,7 +1103,8 @@
         }
 
         .stream-btn.hls {
-            border-color: rgba(2, 132, 199, 0.45);
+            border-color:
+                rgba(2, 132, 199, 0.45);
 
             background:
                 linear-gradient(
@@ -680,7 +1123,7 @@
 
 
         /* =====================================================
-           EMPTY STATE
+           EMPTY
         ===================================================== */
 
         .empty {
@@ -694,62 +1137,12 @@
                 rgba(15, 23, 42, 0.55);
 
             border:
-                1px dashed #334155;
+                1px dashed
+                #334155;
 
             border-radius: 14px;
 
             font-size: 13px;
-        }
-
-
-        /* =====================================================
-           DEBUG
-        ===================================================== */
-
-        .debug-box {
-            margin-top: 30px;
-
-            border-radius: 15px;
-
-            border: 1px solid #1e293b;
-
-            overflow: hidden;
-
-            background: #080c13;
-        }
-
-        .debug-header {
-            padding: 12px 15px;
-
-            background: #0f172a;
-
-            border-bottom: 1px solid #1e293b;
-
-            color: #94a3b8;
-
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        pre {
-            margin: 0;
-
-            white-space: pre-wrap;
-            word-break: break-word;
-
-            padding: 15px;
-
-            color: #64748b;
-
-            background: #05070a;
-
-            font-size: 11px;
-
-            line-height: 1.6;
-
-            overflow-x: auto;
-
-            max-height: 420px;
         }
 
 
@@ -802,6 +1195,7 @@
 
             .reload-btn {
                 padding: 9px 11px;
+
                 font-size: 11px;
             }
 
@@ -820,7 +1214,22 @@
             .streams {
                 grid-template-columns: 1fr 1fr;
             }
+
+            .teams {
+                padding: 12px;
+            }
+
+            .team-logo {
+                width: 46px;
+                height: 46px;
+            }
+
+            .team-name {
+                font-size: 12px;
+            }
+
         }
+
 
         @media (max-width: 420px) {
 
@@ -836,9 +1245,40 @@
                 grid-template-columns: 1fr;
             }
 
+            .event-top {
+                gap: 8px;
+            }
+
+            .event-status {
+                padding:
+                    5px
+                    7px;
+
+                font-size: 9px;
+            }
+
             .event-title {
                 font-size: 15px;
             }
+
+            .teams {
+                gap: 7px;
+            }
+
+            .team-logo {
+                width: 42px;
+                height: 42px;
+            }
+
+            .team-name {
+                font-size: 11px;
+            }
+
+            .vs {
+                width: 30px;
+                height: 30px;
+            }
+
         }
 
     </style>
@@ -883,10 +1323,13 @@
             onclick="loadEvents()"
             type="button"
         >
+
             🔄
+
             <span>
                 Refresh Events
             </span>
+
         </button>
 
     </header>
@@ -948,11 +1391,11 @@
             <div>
 
                 <h2 class="section-title">
-                    Live Events
+                    Sports Schedule
                 </h2>
 
                 <p class="section-subtitle">
-                    Currently available matches and streams
+                    Live matches and upcoming events
                 </p>
 
             </div>
@@ -964,36 +1407,70 @@
         </div>
 
 
+        <!-- =================================================
+             LIVE EVENTS
+        ================================================== -->
+
         <div
-            id="events"
-            class="events"
+            id="liveSection"
         >
-            <div class="empty">
-                ⏳ Loading events...
+
+            <div class="section-label live">
+
+                <span class="section-label-dot"></span>
+
+                <h3>
+                    Live Now
+                </h3>
+
+                <div class="section-label-line"></div>
+
             </div>
+
+
+            <div
+                id="liveEvents"
+                class="events"
+            ></div>
+
         </div>
+
+
+        <!-- =================================================
+             UPCOMING EVENTS
+        ================================================== -->
+
+        <div
+            id="upcomingSection"
+        >
+
+            <div class="section-label upcoming">
+
+                <span class="section-label-dot"></span>
+
+                <h3>
+                    Upcoming
+                </h3>
+
+                <div class="section-label-line"></div>
+
+            </div>
+
+
+            <div
+                id="upcomingEvents"
+                class="events"
+            ></div>
+
+        </div>
+
 
     </section>
 
 
     <!-- =====================================================
-         DEBUG
+         FOOTER
     ====================================================== -->
-
-    <section class="section">
-
-        <div class="debug-box">
-
-            <div class="debug-header">
-                🛠 Debug Information
-            </div>
-
-            <pre id="debug">Waiting...</pre>
-
-        </div>
-
-    </section>
-
 
     <div class="footer">
         Sports Zone • Live Streaming
@@ -1023,33 +1500,21 @@ let shakaUI = null;
    STATUS
 ========================================================= */
 
-function setStatus(message, type = "") {
+function setStatus(
+    message,
+    type = ""
+) {
 
     const element =
-        document.getElementById("status");
+        document.getElementById(
+            "status"
+        );
 
     element.textContent =
         message;
 
     element.className =
         "status " + type;
-}
-
-
-/* =========================================================
-   DEBUG
-========================================================= */
-
-function debug(data) {
-
-    document.getElementById("debug").textContent =
-        typeof data === "string"
-            ? data
-            : JSON.stringify(
-                data,
-                null,
-                2
-            );
 }
 
 
@@ -1173,9 +1638,6 @@ async function fetchEvents() {
     }
 
 
-    debug(data);
-
-
     if (!response.ok) {
 
         throw new Error(
@@ -1190,20 +1652,8 @@ async function fetchEvents() {
 
 
 /* =========================================================
-   EVENT TIME HELPERS
+   DATE / TIME
 ========================================================= */
-
-/*
- * Converts common API date/time values into
- * a JavaScript timestamp.
- *
- * Supports:
- *
- * - ISO date strings
- * - Unix seconds
- * - Unix milliseconds
- * - Date objects
- */
 
 function getTimestamp(value) {
 
@@ -1212,23 +1662,22 @@ function getTimestamp(value) {
         value === null ||
         value === ""
     ) {
+
         return null;
     }
 
 
     /* Number */
 
-    if (typeof value === "number") {
+    if (
+        typeof value === "number"
+    ) {
 
-        /*
-         * Unix seconds are usually 10 digits.
-         * Milliseconds are usually 13 digits.
-         */
-
-        if (value < 10000000000) {
+        if (
+            value < 10000000000
+        ) {
 
             return value * 1000;
-
         }
 
         return value;
@@ -1239,28 +1688,43 @@ function getTimestamp(value) {
 
     if (
         typeof value === "string" &&
-        /^\d+$/.test(value.trim())
+        /^\d+$/.test(
+            value.trim()
+        )
     ) {
 
         const number =
-            Number(value.trim());
+            Number(
+                value.trim()
+            );
 
-        if (number < 10000000000) {
+        if (
+            number < 10000000000
+        ) {
 
             return number * 1000;
-
         }
 
         return number;
     }
 
 
-    /* Date string */
+    /*
+     * API example:
+     *
+     * 2026/09/15 18:20:12 +0000
+     *
+     * Date.parse() supports this format
+     * in modern browsers.
+     */
 
     const parsed =
         Date.parse(value);
 
-    if (!Number.isNaN(parsed)) {
+
+    if (
+        !Number.isNaN(parsed)
+    ) {
 
         return parsed;
     }
@@ -1271,215 +1735,226 @@ function getTimestamp(value) {
 
 
 /* =========================================================
-   CHECK IF EVENT HAS ENDED
+   GET EVENT START
 ========================================================= */
 
-function isEventEnded(event) {
+function getEventStart(event) {
 
     const info =
-        event.eventInfo || {};
+        event.eventInfo ||
+        {};
 
 
-    /*
-     * Possible END time fields.
-     *
-     * If your API has one of these,
-     * it will automatically be used.
-     */
-
-    const endFields = [
-
-        event.endTime,
-        event.endDate,
-        event.endAt,
-        event.endsAt,
-
-        info.endTime,
-        info.endDate,
-        info.endAt,
-        info.endsAt,
-
-        event.matchEndTime,
-        info.matchEndTime
-
-    ];
-
-
-    for (const value of endFields) {
-
-        const timestamp =
-            getTimestamp(value);
-
-        if (
-            timestamp !== null &&
-            timestamp <= Date.now()
-        ) {
-
-            return true;
-        }
-    }
-
-
-    /*
-     * If no explicit end time exists,
-     * check common START/event time fields.
-     *
-     * This is intentionally conservative:
-     * only hide old events when an API
-     * time field is clearly available.
-     */
-
-    const startFields = [
-
-        event.startTime,
-        event.startDate,
-        event.startAt,
-        event.startsAt,
-
-        event.eventTime,
-        event.eventDate,
+    const fields = [
 
         info.startTime,
+
+        event.startTime,
+
         info.startDate,
+
+        event.startDate,
+
         info.startAt,
+
+        event.startAt,
+
         info.startsAt,
 
+        event.startsAt,
+
         info.eventTime,
+
+        event.eventTime,
+
         info.eventDate,
 
-        event.timestamp,
-        info.timestamp
+        event.eventDate,
+
+        info.timestamp,
+
+        event.timestamp
 
     ];
 
 
-    let eventTimestamp = null;
-
-
-    for (const value of startFields) {
+    for (
+        const value of fields
+    ) {
 
         const timestamp =
             getTimestamp(value);
 
-        if (timestamp !== null) {
-
-            eventTimestamp =
-                timestamp;
-
-            break;
-        }
-    }
-
-
-    /*
-     * IMPORTANT:
-     *
-     * Do NOT hide an event simply because
-     * its start time has passed.
-     *
-     * A cricket/football match may still
-     * be live.
-     *
-     * Therefore explicit end time or an
-     * API status is preferred.
-     */
-
-
-    const statusValues = [
-
-        event.status,
-        event.eventStatus,
-
-        info.status,
-        info.eventStatus,
-
-        event.matchStatus,
-        info.matchStatus
-
-    ];
-
-
-    const endedStatuses = [
-
-        "ended",
-        "finished",
-        "completed",
-        "complete",
-        "closed",
-        "cancelled",
-        "canceled",
-        "expired",
-        "over"
-
-    ];
-
-
-    for (const status of statusValues) {
-
-        if (!status) continue;
-
-        const normalized =
-            String(status)
-                .trim()
-                .toLowerCase();
 
         if (
-            endedStatuses.includes(
-                normalized
-            )
+            timestamp !== null
         ) {
 
-            return true;
+            return timestamp;
         }
     }
 
 
-    return false;
+    return null;
 }
 
 
 /* =========================================================
-   FILTER ACTIVE EVENTS
+   GET EVENT END
 ========================================================= */
 
+function getEventEnd(event) {
+
+    const info =
+        event.eventInfo ||
+        {};
+
+
+    const fields = [
+
+        info.endTime,
+
+        event.endTime,
+
+        info.endDate,
+
+        event.endDate,
+
+        info.endAt,
+
+        event.endAt,
+
+        info.endsAt,
+
+        event.endsAt,
+
+        info.matchEndTime,
+
+        event.matchEndTime
+
+    ];
+
+
+    for (
+        const value of fields
+    ) {
+
+        const timestamp =
+            getTimestamp(value);
+
+
+        if (
+            timestamp !== null
+        ) {
+
+            return timestamp;
+        }
+    }
+
+
+    return null;
+}
+
+
 /* =========================================================
-   FILTER + SORT EVENTS
+   EVENT STATUS
+========================================================= */
+
+function getEventState(event) {
+
+    const now =
+        Date.now();
+
+
+    const startTime =
+        getEventStart(event);
+
+
+    const endTime =
+        getEventEnd(event);
+
+
+    /*
+     * END TIME PASSED
+     */
+
+    if (
+        endTime !== null &&
+        now >= endTime
+    ) {
+
+        return "ended";
+    }
+
+
+    /*
+     * START TIME NOT REACHED
+     */
+
+    if (
+        startTime !== null &&
+        now < startTime
+    ) {
+
+        return "upcoming";
+    }
+
+
+    /*
+     * START TIME REACHED
+     * AND END TIME NOT PASSED
+     */
+
+    return "live";
+}
+
+
+/* =========================================================
+   FILTER + SORT
    LIVE FIRST
    UPCOMING BY NEAREST START TIME
 ========================================================= */
 
 function getActiveEvents(events) {
 
-    const now = Date.now();
+    const now =
+        Date.now();
 
-    const activeEvents = events.filter(
-        event => {
 
-            const endTime =
-                getEventEnd(event);
+    const activeEvents =
+        events.filter(
+            event => {
 
-            /*
-             * Remove only when explicit
-             * end time has passed.
-             */
+                const endTime =
+                    getEventEnd(event);
 
-            if (
-                endTime !== null &&
-                now >= endTime
-            ) {
-                return false;
+
+                /*
+                 * Remove event only when
+                 * explicit end time has passed.
+                 */
+
+                if (
+                    endTime !== null &&
+                    now >= endTime
+                ) {
+
+                    return false;
+                }
+
+
+                return true;
             }
-
-            return true;
-        }
-    );
+        );
 
 
     /*
      * LIVE FIRST
      *
-     * Then UPCOMING:
-     * nearest start time first.
+     * UPCOMING AFTER LIVE
+     *
+     * UPCOMING sorted by nearest
+     * start time.
      */
 
     activeEvents.sort(
@@ -1493,13 +1968,14 @@ function getActiveEvents(events) {
 
 
             /*
-             * LIVE events always come first.
+             * LIVE before UPCOMING
              */
 
             if (
                 stateA === "live" &&
                 stateB !== "live"
             ) {
+
                 return -1;
             }
 
@@ -1508,25 +1984,26 @@ function getActiveEvents(events) {
                 stateA !== "live" &&
                 stateB === "live"
             ) {
+
                 return 1;
             }
 
 
             /*
-             * Both are live.
-             * Keep their existing order.
+             * Both LIVE
              */
 
             if (
                 stateA === "live" &&
                 stateB === "live"
             ) {
+
                 return 0;
             }
 
 
             /*
-             * Both are upcoming.
+             * Both UPCOMING
              *
              * Nearest start time first.
              */
@@ -1539,14 +2016,15 @@ function getActiveEvents(events) {
 
 
             /*
-             * Events without a valid
-             * start time go last.
+             * Missing start time
+             * goes last.
              */
 
             if (
                 startA === null &&
                 startB !== null
             ) {
+
                 return 1;
             }
 
@@ -1555,6 +2033,7 @@ function getActiveEvents(events) {
                 startA !== null &&
                 startB === null
             ) {
+
                 return -1;
             }
 
@@ -1563,6 +2042,7 @@ function getActiveEvents(events) {
                 startA === null &&
                 startB === null
             ) {
+
                 return 0;
             }
 
@@ -1576,6 +2056,143 @@ function getActiveEvents(events) {
 }
 
 
+/* =========================================================
+   FORMAT TIME
+========================================================= */
+
+function formatEventTime(
+    timestamp
+) {
+
+    if (
+        timestamp === null
+    ) {
+
+        return "";
+    }
+
+
+    const date =
+        new Date(timestamp);
+
+
+    return date.toLocaleString(
+        undefined,
+        {
+            day: "2-digit",
+
+            month: "short",
+
+            hour: "2-digit",
+
+            minute: "2-digit"
+        }
+    );
+}
+
+
+/* =========================================================
+   COUNTDOWN
+========================================================= */
+
+function getCountdown(
+    timestamp
+) {
+
+    if (
+        timestamp === null
+    ) {
+
+        return "";
+    }
+
+
+    const difference =
+        timestamp -
+        Date.now();
+
+
+    if (
+        difference <= 0
+    ) {
+
+        return "Starting now";
+    }
+
+
+    const totalSeconds =
+        Math.floor(
+            difference / 1000
+        );
+
+
+    const days =
+        Math.floor(
+            totalSeconds / 86400
+        );
+
+
+    const hours =
+        Math.floor(
+            (
+                totalSeconds % 86400
+            ) / 3600
+        );
+
+
+    const minutes =
+        Math.floor(
+            (
+                totalSeconds % 3600
+            ) / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    if (days > 0) {
+
+        return (
+            days +
+            "d " +
+            hours +
+            "h " +
+            minutes +
+            "m"
+        );
+    }
+
+
+    if (hours > 0) {
+
+        return (
+            hours +
+            "h " +
+            minutes +
+            "m"
+        );
+    }
+
+
+    if (minutes > 0) {
+
+        return (
+            minutes +
+            "m " +
+            seconds +
+            "s"
+        );
+    }
+
+
+    return (
+        seconds +
+        "s"
+    );
+}
+
 
 /* =========================================================
    LOAD EVENTS
@@ -1586,11 +2203,18 @@ async function loadEvents() {
     try {
 
         document.getElementById(
-            "events"
+            "liveEvents"
+        ).innerHTML = "";
+
+
+        document.getElementById(
+            "upcomingEvents"
         ).innerHTML = `
+
             <div class="empty">
                 ⏳ Loading events...
             </div>
+
         `;
 
 
@@ -1599,14 +2223,14 @@ async function loadEvents() {
 
 
         const allEvents =
-            Array.isArray(data.events)
+            Array.isArray(
+                data.events
+            )
+
                 ? data.events
+
                 : [];
 
-
-        /*
-         * Remove finished events.
-         */
 
         const events =
             getActiveEvents(
@@ -1614,20 +2238,40 @@ async function loadEvents() {
             );
 
 
+        const liveEvents =
+            events.filter(
+                event =>
+                    getEventState(event) ===
+                    "live"
+            );
+
+
+        const upcomingEvents =
+            events.filter(
+                event =>
+                    getEventState(event) ===
+                    "upcoming"
+            );
+
+
         setStatus(
             "✅ API connected — " +
-            events.length +
-            " active event" +
-            (
-                events.length === 1
-                    ? ""
-                    : "s"
-            ),
+            liveEvents.length +
+            " live • " +
+            upcomingEvents.length +
+            " upcoming",
             "success"
         );
 
 
-        renderEvents(events);
+        renderLiveEvents(
+            liveEvents
+        );
+
+
+        renderUpcomingEvents(
+            upcomingEvents
+        );
 
 
     } catch (error) {
@@ -1643,27 +2287,507 @@ async function loadEvents() {
 
 
         document.getElementById(
-            "events"
+            "liveEvents"
+        ).innerHTML = "";
+
+
+        document.getElementById(
+            "upcomingEvents"
         ).innerHTML = `
+
             <div class="empty">
-                ❌ ${escapeHTML(
-                    error.message
-                )}
+
+                ❌ ${
+                    escapeHTML(
+                        error.message
+                    )
+                }
+
             </div>
+
         `;
     }
 }
 
 
 /* =========================================================
-   RENDER EVENTS
+   TEAM LOGO
 ========================================================= */
 
-function renderEvents(events) {
+function getTeamLogo(
+    logo,
+    teamName
+) {
+
+    if (!logo) {
+
+        return `
+
+            <div class="team-logo">
+
+                <span class="team-fallback">
+
+                    ${escapeHTML(
+                        teamName ||
+                        "?"
+                    )}
+
+                </span>
+
+            </div>
+
+        `;
+    }
+
+
+    return `
+
+        <div class="team-logo">
+
+            <img
+                src="${escapeHTML(logo)}"
+                alt="${escapeHTML(teamName || "Team")}"
+                loading="lazy"
+                onerror="
+                    this.style.display='none';
+                    this.parentElement.innerHTML='<span class=&quot;team-fallback&quot;>${escapeHTML(teamName || "?")}</span>';
+                "
+            >
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   CREATE EVENT CARD
+========================================================= */
+
+function createEventCard(
+    event,
+    index
+) {
+
+    const info =
+        event.eventInfo ||
+        {};
+
+
+    /* EVENT */
+
+    const title =
+        info.eventName ||
+        event.eventName ||
+        "Unknown Event";
+
+
+    const category =
+        info.eventCat ||
+        event.eventCat ||
+        "";
+
+
+    /* TEAM A */
+
+    const teamA =
+        info.teamA ||
+        event.teamA ||
+        "Team A";
+
+
+    const teamAFlag =
+        info.teamAFlag ||
+        event.teamAFlag ||
+        "";
+
+
+    /* TEAM B */
+
+    const teamB =
+        info.teamB ||
+        event.teamB ||
+        "Team B";
+
+
+    const teamBFlag =
+        info.teamBFlag ||
+        event.teamBFlag ||
+        "";
+
+
+    /* STATE */
+
+    const state =
+        getEventState(event);
+
+
+    /* TIME */
+
+    const startTime =
+        getEventStart(event);
+
+
+    const streams =
+        Array.isArray(
+            event.streams
+        )
+
+            ? event.streams
+
+            : [];
+
+
+    /* =====================================================
+       STATUS
+    ====================================================== */
+
+    const statusHTML =
+
+        state === "upcoming"
+
+            ? `
+
+                <div class="event-status upcoming">
+                    Upcoming
+                </div>
+
+            `
+
+            : `
+
+                <div class="event-status live">
+                    Live
+                </div>
+
+            `;
+
+
+    /* =====================================================
+       INFO
+    ====================================================== */
+
+    let eventInfoHTML = "";
+
+
+    if (
+        state === "upcoming" &&
+        startTime !== null
+    ) {
+
+        eventInfoHTML = `
+
+            <span class="event-info-item upcoming-time">
+
+                🕐
+
+                ${formatEventTime(
+                    startTime
+                )}
+
+            </span>
+
+        `;
+
+    } else {
+
+        eventInfoHTML = `
+
+            <span class="event-info-item">
+
+                🔴 Live Now
+
+            </span>
+
+        `;
+    }
+
+
+    /* =====================================================
+       COUNTDOWN
+    ====================================================== */
+
+    let countdownHTML = "";
+
+
+    if (
+        state === "upcoming" &&
+        startTime !== null
+    ) {
+
+        countdownHTML = `
+
+            <div
+                class="countdown"
+                data-start-time="${startTime}"
+            >
+
+                Starts in
+                <strong>
+                    ${getCountdown(
+                        startTime
+                    )}
+                </strong>
+
+            </div>
+
+        `;
+    }
+
+
+    /* =====================================================
+       STREAMS
+    ====================================================== */
+
+    let streamHTML = "";
+
+
+    if (!streams.length) {
+
+        streamHTML = `
+
+            <div class="empty">
+                ❌ No streams available
+            </div>
+
+        `;
+
+    } else {
+
+        streamHTML =
+            `<div class="streams">`;
+
+
+        streams.forEach(
+            stream => {
+
+                const type =
+                    stream.type;
+
+
+                const name =
+                    stream.title ||
+                    (
+                        type === "dash"
+                            ? "DASH"
+                            : "HLS"
+                    );
+
+
+                const encodedStream =
+                    encodeURIComponent(
+                        JSON.stringify(
+                            stream
+                        )
+                    );
+
+
+                streamHTML += `
+
+                    <button
+                        class="stream-btn ${
+                            type === "dash"
+                                ? "dash"
+                                : "hls"
+                        }"
+                        data-stream="${encodedStream}"
+                        onclick="handleStreamClick(this)"
+                        type="button"
+                    >
+
+                        ${
+                            type === "dash"
+                                ? "▶ DASH"
+                                : "▶ HLS"
+                        }
+
+                        ${escapeHTML(
+                            name
+                        )}
+
+                    </button>
+
+                `;
+            }
+        );
+
+
+        streamHTML +=
+            `</div>`;
+    }
+
+
+    /* =====================================================
+       CARD
+    ====================================================== */
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "event";
+
+
+    card.innerHTML = `
+
+        <div class="event-top">
+
+            <div class="event-title-wrap">
+
+                <span class="event-number">
+                    ${index + 1}
+                </span>
+
+                <div>
+
+                    <div class="event-title">
+
+                        ${escapeHTML(
+                            title
+                        )}
+
+                    </div>
+
+                    ${
+                        category
+                            ? `
+
+                                <div class="event-category">
+
+                                    ${escapeHTML(
+                                        category
+                                    )}
+
+                                </div>
+
+                            `
+                            : ""
+                    }
+
+                </div>
+
+            </div>
+
+
+            ${statusHTML}
+
+        </div>
+
+
+        <!-- TEAMS -->
+
+        <div class="teams">
+
+
+            <!-- TEAM A -->
+
+            <div class="team">
+
+                ${getTeamLogo(
+                    teamAFlag,
+                    teamA
+                )}
+
+                <div class="team-name">
+
+                    ${escapeHTML(
+                        teamA
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <!-- VS -->
+
+            <div class="vs">
+                VS
+            </div>
+
+
+            <!-- TEAM B -->
+
+            <div class="team">
+
+                ${getTeamLogo(
+                    teamBFlag,
+                    teamB
+                )}
+
+                <div class="team-name">
+
+                    ${escapeHTML(
+                        teamB
+                    )}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- INFO -->
+
+        <div class="event-info">
+
+            ${eventInfoHTML}
+
+            ${
+                category
+                    ? `
+
+                        <span class="event-info-separator">
+                            •
+                        </span>
+
+                        <span class="event-info-item">
+
+                            🏏
+
+                            ${escapeHTML(
+                                category
+                            )}
+
+                        </span>
+
+                    `
+                    : ""
+            }
+
+        </div>
+
+
+        ${countdownHTML}
+
+
+        <!-- STREAMS -->
+
+        ${streamHTML}
+
+    `;
+
+
+    return card;
+}
+
+
+/* =========================================================
+   RENDER LIVE
+========================================================= */
+
+function renderLiveEvents(
+    events
+) {
 
     const container =
         document.getElementById(
-            "events"
+            "liveEvents"
         );
 
 
@@ -1673,9 +2797,13 @@ function renderEvents(events) {
     if (!events.length) {
 
         container.innerHTML = `
+
             <div class="empty">
-                📭 No live or upcoming events available.
+
+                📺 No live events right now.
+
             </div>
+
         `;
 
         return;
@@ -1685,190 +2813,59 @@ function renderEvents(events) {
     events.forEach(
         (event, index) => {
 
-            const info =
-                event.eventInfo || {};
-
-
-            const title =
-                info.eventName ||
-                event.eventName ||
-                "Unknown Event";
-
-
-            const teamA =
-                info.teamA ||
-                event.teamA ||
-                "";
-
-
-            const teamB =
-                info.teamB ||
-                event.teamB ||
-                "";
-
-
-            const streams =
-                Array.isArray(
-                    event.streams
+            container.appendChild(
+                createEventCard(
+                    event,
+                    index
                 )
-                    ? event.streams
-                    : [];
+            );
+
+        }
+    );
+}
 
 
-            const card =
-                document.createElement(
-                    "div"
-                );
+/* =========================================================
+   RENDER UPCOMING
+========================================================= */
+
+function renderUpcomingEvents(
+    events
+) {
+
+    const container =
+        document.getElementById(
+            "upcomingEvents"
+        );
 
 
-            card.className =
-                "event";
+    container.innerHTML = "";
 
 
-            let streamHTML = "";
+    if (!events.length) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                📅 No upcoming events.
+
+            </div>
+
+        `;
+
+        return;
+    }
 
 
-            if (!streams.length) {
-
-                streamHTML = `
-                    <div class="empty">
-                        ❌ No streams available
-                    </div>
-                `;
-
-            } else {
-
-                streamHTML =
-                    `<div class="streams">`;
-
-
-                streams.forEach(
-                    stream => {
-
-                        const type =
-                            stream.type;
-
-
-                        const name =
-                            stream.title ||
-                            (
-                                type === "dash"
-                                    ? "DASH"
-                                    : "HLS"
-                            );
-
-
-                        /*
-                         * Encode stream safely
-                         * into button dataset.
-                         */
-
-                        const encodedStream =
-                            encodeURIComponent(
-                                JSON.stringify(
-                                    stream
-                                )
-                            );
-
-
-                        streamHTML += `
-
-                            <button
-                                class="stream-btn ${
-                                    type === "dash"
-                                        ? "dash"
-                                        : "hls"
-                                }"
-                                data-stream="${encodedStream}"
-                                onclick="handleStreamClick(this)"
-                                type="button"
-                            >
-
-                                ${
-                                    type === "dash"
-                                        ? "▶ DASH"
-                                        : "▶ HLS"
-                                }
-
-                                ${escapeHTML(name)}
-
-                            </button>
-
-                        `;
-                    }
-                );
-
-
-                streamHTML +=
-                    `</div>`;
-            }
-
-
-            const matchup =
-                teamA && teamB
-                    ? `
-                        <span>
-                            ${escapeHTML(teamA)}
-                            <span class="separator">
-                                vs
-                            </span>
-                            ${escapeHTML(teamB)}
-                        </span>
-                    `
-                    : "";
-
-
-            const category =
-                info.eventCat ||
-                event.eventCat ||
-                "";
-
-
-            card.innerHTML = `
-
-                <div class="event-title">
-
-                    <span class="event-number">
-                        ${index + 1}
-                    </span>
-
-                    <span class="event-name">
-                        ${escapeHTML(title)}
-                    </span>
-
-                </div>
-
-
-                <div class="event-info">
-
-                    ${matchup}
-
-                    ${
-                        category
-                            ? `
-                                ${
-                                    matchup
-                                        ? '<span class="separator">•</span>'
-                                        : ''
-                                }
-
-                                <span>
-                                    ${escapeHTML(category)}
-                                </span>
-                            `
-                            : ""
-                    }
-
-                </div>
-
-
-                ${streamHTML}
-
-            `;
-
+    events.forEach(
+        (event, index) => {
 
             container.appendChild(
-                card
+                createEventCard(
+                    event,
+                    index
+                )
             );
 
         }
@@ -1880,7 +2877,9 @@ function renderEvents(events) {
    STREAM BUTTON
 ========================================================= */
 
-function handleStreamClick(button) {
+function handleStreamClick(
+    button
+) {
 
     try {
 
@@ -1892,7 +2891,9 @@ function handleStreamClick(button) {
             );
 
 
-        playStream(stream);
+        playStream(
+            stream
+        );
 
 
     } catch (error) {
@@ -1968,12 +2969,6 @@ async function initShaka() {
                 event.detail
             );
 
-
-            debug({
-                playerError:
-                    event.detail
-            });
-
         }
     );
 
@@ -2046,7 +3041,9 @@ async function destroyPlayer() {
    PLAY STREAM
 ========================================================= */
 
-async function playStream(stream) {
+async function playStream(
+    stream
+) {
 
     try {
 
@@ -2091,7 +3088,6 @@ async function playStream(stream) {
             stream.type === "hls" &&
             stream.m3u8
         ) {
-
 
             /*
              * Native HLS
@@ -2169,14 +3165,11 @@ async function playStream(stream) {
             stream.mpd
         ) {
 
-
             const player =
                 await initShaka();
 
 
-            /* =================================================
-               CLEAR KEY
-            ================================================= */
+            /* CLEAR KEY */
 
             if (stream.key) {
 
@@ -2210,10 +3203,6 @@ async function playStream(stream) {
                 const key =
                     keyParts[1];
 
-
-                /*
-                 * Configure ClearKey
-                 */
 
                 player.configure({
 
@@ -2286,17 +3275,6 @@ async function playStream(stream) {
         );
 
 
-        debug({
-
-            error:
-                error.message,
-
-            stream:
-                stream
-
-        });
-
-
         setStatus(
             "❌ Player: " +
             error.message,
@@ -2310,7 +3288,9 @@ async function playStream(stream) {
    ESCAPE HTML
 ========================================================= */
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
     return String(value)
 
@@ -2342,6 +3322,87 @@ function escapeHTML(value) {
 
 
 /* =========================================================
+   UPDATE COUNTDOWNS
+========================================================= */
+
+function updateCountdowns() {
+
+    document
+        .querySelectorAll(
+            ".countdown"
+        )
+        .forEach(
+            element => {
+
+                const timestamp =
+                    Number(
+                        element.dataset.startTime
+                    );
+
+
+                const countdown =
+                    getCountdown(
+                        timestamp
+                    );
+
+
+                element.innerHTML = `
+
+                    Starts in
+
+                    <strong>
+                        ${escapeHTML(
+                            countdown
+                        )}
+                    </strong>
+
+                `;
+
+            }
+        );
+}
+
+
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
+
+/*
+ * Refresh events every 60 seconds.
+ *
+ * This ensures:
+ *
+ * - Finished events disappear
+ * - Upcoming events become live
+ * - New events appear
+ * - Upcoming order stays correct
+ */
+
+setInterval(
+    () => {
+
+        loadEvents();
+
+    },
+    60000
+);
+
+
+/*
+ * Countdown updates every second.
+ */
+
+setInterval(
+    () => {
+
+        updateCountdowns();
+
+    },
+    1000
+);
+
+
+/* =========================================================
    START
 ========================================================= */
 
@@ -2359,23 +3420,3 @@ document.addEventListener(
 </body>
 
 </html>
-
-<!-- 
-"cat": "Live Events",
-        "eventInfo": {
-            "endTime": "2026/09/15 18:20:12 +0000",
-            "eventCat": "Cricket",
-            "eventLogo": "https://api.sofascore.com/api/v1/unique-tournament/11191/image/dark",
-            "eventName": "T20 International",
-            "eventType": "",
-            "startTime": "2026/09/15 14:00:56 +0000",
-            "teamA": "AFG",
-            "teamAFlag": "https://img.sofascore.com/api/v1/team/187575/image",
-            "teamB": "IND",
-            "teamBFlag": "https://img.sofascore.com/api/v1/team/187765/image"
-        },
-
-end time hogya to hta do
-start time nhi aaya h to upcoming m rhkdo 
-team a team b ki details lelo or inke logo lelo  -->
-bs ui hi change krni h player code
