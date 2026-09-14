@@ -433,7 +433,7 @@
 
 
         /* =====================================================
-           SECTION HEADER
+           SECTION
         ===================================================== */
 
         .section {
@@ -468,7 +468,12 @@
             font-size: 12px;
         }
 
-        .live-badge {
+
+        /* =====================================================
+           LIVE / UPCOMING SECTION BADGES
+        ===================================================== */
+
+        .section-badge {
             display: inline-flex;
             align-items: center;
 
@@ -478,16 +483,8 @@
 
             border-radius: 999px;
 
-            background:
-                rgba(16, 185, 129, 0.08);
-
-            border:
-                1px solid
-                rgba(16, 185, 129, 0.18);
-
-            color: #6ee7b7;
-
             font-size: 11px;
+
             font-weight: 800;
 
             text-transform: uppercase;
@@ -495,7 +492,18 @@
             letter-spacing: 0.5px;
         }
 
-        .live-badge::before {
+        .section-badge.live {
+            color: #6ee7b7;
+
+            background:
+                rgba(16, 185, 129, 0.08);
+
+            border:
+                1px solid
+                rgba(16, 185, 129, 0.18);
+        }
+
+        .section-badge.live::before {
             content: "";
 
             width: 6px;
@@ -508,6 +516,41 @@
             box-shadow:
                 0 0 10px
                 rgba(16, 185, 129, 0.8);
+        }
+
+        .section-badge.upcoming {
+            color: #fbbf24;
+
+            background:
+                rgba(245, 158, 11, 0.08);
+
+            border:
+                1px solid
+                rgba(245, 158, 11, 0.18);
+        }
+
+        .section-badge.upcoming::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #f59e0b;
+        }
+
+
+        /* =====================================================
+           EVENT GROUP
+        ===================================================== */
+
+        .event-group {
+            margin-bottom: 30px;
+        }
+
+        .event-group:last-child {
+            margin-bottom: 0;
         }
 
 
@@ -666,7 +709,7 @@
 
 
         /* =====================================================
-           EVENT STATUS BADGE
+           EVENT STATUS
         ===================================================== */
 
         .event-status {
@@ -780,10 +823,6 @@
             justify-content: center;
 
             gap: 8px;
-        }
-
-        .team:last-child {
-            flex-direction: column;
         }
 
         .team-logo {
@@ -1039,63 +1078,6 @@
 
 
         /* =====================================================
-           DEBUG
-        ===================================================== */
-
-        .debug-box {
-            margin-top: 30px;
-
-            border-radius: 15px;
-
-            border:
-                1px solid
-                #1e293b;
-
-            overflow: hidden;
-
-            background: #080c13;
-        }
-
-        .debug-header {
-            padding: 12px 15px;
-
-            background: #0f172a;
-
-            border-bottom:
-                1px solid
-                #1e293b;
-
-            color: #94a3b8;
-
-            font-size: 12px;
-
-            font-weight: 800;
-        }
-
-        pre {
-            margin: 0;
-
-            white-space: pre-wrap;
-
-            word-break: break-word;
-
-            padding: 15px;
-
-            color: #64748b;
-
-            background: #05070a;
-
-            font-size: 11px;
-
-            line-height: 1.6;
-
-            overflow-x: auto;
-
-            max-height: 420px;
-        }
-
-
-        /* =====================================================
            FOOTER
         ===================================================== */
 
@@ -1271,6 +1253,7 @@
             onclick="loadEvents()"
             type="button"
         >
+
             🔄
 
             <span>
@@ -1333,30 +1316,8 @@
 
     <section class="section">
 
-        <div class="section-header">
-
-            <div>
-
-                <h2 class="section-title">
-                    Live Events
-                </h2>
-
-                <p class="section-subtitle">
-                    Currently available matches and streams
-                </p>
-
-            </div>
-
-            <div class="live-badge">
-                Live
-            </div>
-
-        </div>
-
-
         <div
             id="events"
-            class="events"
         >
 
             <div class="empty">
@@ -1369,9 +1330,8 @@
 
 
     <!-- =====================================================
-         DEBUG
+         FOOTER
     ====================================================== -->
-
 
     <div class="footer">
         Sports Zone • Live Streaming
@@ -1386,7 +1346,6 @@
 /* =========================================================
    CONFIG
 ========================================================= */
-
 const API_URL =
     "https://sportlink-api.movieszonemedia.workers.dev";
 
