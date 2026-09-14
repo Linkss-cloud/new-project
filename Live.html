@@ -1,287 +1,412 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sportlink TV</title>
 
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.compiled.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-
-* {
-    box-sizing: border-box;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body {
-    margin: 0;
-    background: #080a0f;
-    color: #f8fafc;
-    font-family: Arial, sans-serif;
+body{
+    background:#080b10;
+    color:#f8fafc;
+    font-family:Inter,Arial,sans-serif;
 }
 
-header {
-    padding: 18px;
-    background: #10131a;
-    border-bottom: 1px solid #252b36;
+.header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(12,15,21,.96);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid #202631;
+    padding:16px;
 }
 
-header h1 {
-    margin: 0;
-    color: #f97316;
+.header-inner{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
 }
 
-header p {
-    margin: 5px 0 0;
-    color: #94a3b8;
+.logo{
+    font-size:21px;
+    font-weight:800;
+    color:#f97316;
 }
 
-.container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 20px;
+.logo span{
+    color:#fff;
 }
 
-.status {
-    padding: 12px;
-    margin-bottom: 18px;
-    border-radius: 10px;
-    background: #111827;
-    color: #94a3b8;
+.status{
+    font-size:12px;
+    color:#94a3b8;
 }
 
-.status.ok {
-    color: #10b981;
+.container{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+    padding:20px 15px 50px;
 }
 
-.status.error {
-    color: #ef4444;
+.toolbar{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    margin-bottom:20px;
+    scrollbar-width:none;
 }
 
-.events {
-    display: grid;
-    gap: 15px;
+.toolbar::-webkit-scrollbar{
+    display:none;
 }
 
-.event {
-    background: #11141c;
-    border: 1px solid #252b36;
-    border-radius: 16px;
-    overflow: hidden;
+.filter{
+    border:1px solid #26303d;
+    background:#11161f;
+    color:#94a3b8;
+    padding:9px 15px;
+    border-radius:30px;
+    white-space:nowrap;
+    cursor:pointer;
 }
 
-.event-image {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-    background: #1e293b;
+.filter.active{
+    background:#f97316;
+    color:#000;
+    border-color:#f97316;
+    font-weight:700;
 }
 
-.event-content {
-    padding: 16px;
+.events{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:14px;
 }
 
-.event-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 7px;
+.event-card{
+    background:#11161f;
+    border:1px solid #242c38;
+    border-radius:16px;
+    padding:16px;
+    cursor:pointer;
+    transition:.2s;
 }
 
-.event-category {
-    color: #94a3b8;
-    font-size: 13px;
-    margin-bottom: 12px;
+.event-card:hover{
+    border-color:#f97316;
+    transform:translateY(-2px);
 }
 
-.streams {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
+.event-card:active{
+    transform:scale(.98);
 }
 
-.stream-btn {
-    flex-shrink: 0;
-    padding: 10px 14px;
-    border: 0;
-    border-radius: 9px;
-    background: #1e293b;
-    color: white;
-    cursor: pointer;
+.event-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:13px;
 }
 
-.stream-btn:hover {
-    background: #f97316;
-    color: #000;
+.category{
+    color:#38bdf8;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
 }
 
-.badge {
-    font-size: 10px;
-    padding: 3px 6px;
-    margin-left: 5px;
-    border-radius: 5px;
-    background: #334155;
+.live{
+    color:#ef4444;
+    font-size:11px;
+    font-weight:700;
 }
 
-.player-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #000;
+.title{
+    font-size:16px;
+    font-weight:700;
+    line-height:1.35;
+    margin-bottom:10px;
 }
 
-.player-modal.open {
-    display: flex;
-    flex-direction: column;
+.teams{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    color:#cbd5e1;
+    font-size:13px;
 }
 
-.player-header {
-    height: 55px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 15px;
-    background: #0f1117;
+.vs{
+    color:#64748b;
+    font-size:11px;
+    font-weight:700;
 }
 
-.close-btn {
-    width: 35px;
-    height: 35px;
-    border: 0;
-    border-radius: 50%;
-    background: #1e293b;
-    color: white;
-    cursor: pointer;
+.stream-count{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #202936;
+    color:#94a3b8;
+    font-size:11px;
 }
 
-.player-title {
-    font-weight: bold;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.loading,
+.error,
+.empty{
+    padding:40px 20px;
+    text-align:center;
+    color:#94a3b8;
 }
 
-.player-area {
-    flex: 1;
-    min-height: 0;
-    background: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.error{
+    color:#ef4444;
 }
 
-video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+/* PLAYER */
+
+.player-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    background:#000;
+    display:none;
+    flex-direction:column;
 }
 
-.player-status {
-    position: absolute;
-    top: 65px;
-    right: 15px;
-    padding: 7px 12px;
-    background: #1e293b;
-    border-radius: 20px;
-    font-size: 12px;
+.player-overlay.open{
+    display:flex;
 }
 
-.loading {
-    text-align: center;
-    color: #64748b;
-    padding: 40px;
+.player-header{
+    height:58px;
+    flex-shrink:0;
+    background:#0d1118;
+    border-bottom:1px solid #202631;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 14px;
 }
 
+.back{
+    width:38px;
+    height:38px;
+    border:0;
+    border-radius:50%;
+    background:#1d2632;
+    color:#fff;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.player-title{
+    flex:1;
+    min-width:0;
+    font-size:14px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.player-area{
+    position:relative;
+    flex:1;
+    min-height:0;
+    background:#000;
+}
+
+video{
+    width:100%;
+    height:100%;
+    display:none;
+    background:#000;
+    object-fit:contain;
+}
+
+.streams{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    background:#0d1118;
+    padding:12px;
+    border-top:1px solid #202631;
+    flex-shrink:0;
+}
+
+.streams:empty{
+    display:none;
+}
+
+.stream-btn{
+    flex-shrink:0;
+    padding:9px 14px;
+    border-radius:25px;
+    border:1px solid #334155;
+    background:#17202c;
+    color:#cbd5e1;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.stream-btn.active{
+    background:#f97316;
+    border-color:#f97316;
+    color:#000;
+    font-weight:700;
+}
+
+.player-message{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+    color:#94a3b8;
+}
+
+.player-message.show{
+    display:flex;
+}
+
+.spinner{
+    width:30px;
+    height:30px;
+    border:3px solid #334155;
+    border-top-color:#f97316;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    margin:auto auto 12px;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+@media(max-width:650px){
+
+    .header-inner{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .events{
+        grid-template-columns:1fr;
+    }
+
+    .container{
+        padding:15px 12px 35px;
+    }
+}
 </style>
-
 </head>
 
 <body>
 
-<header>
+<header class="header">
+    <div class="header-inner">
+        <div class="logo">
+            ⚽ Sportlink <span>TV</span>
+        </div>
 
-<h1>⚽ Sportlink TV</h1>
-
-<p>Live Sports</p>
-
+        <div id="apiStatus" class="status">
+            Connecting...
+        </div>
+    </div>
 </header>
 
+<main class="container">
 
-<div class="container">
+    <div class="toolbar">
+        <button class="filter active" data-filter="all">
+            All
+        </button>
 
-<div
-    id="status"
-    class="status"
->
-Connecting...
-</div>
+        <button class="filter" data-filter="live">
+            🔴 Live
+        </button>
 
-<div
-    id="events"
-    class="events"
->
-<div class="loading">
-Loading events...
-</div>
-</div>
+        <button class="filter" data-filter="upcoming">
+            Upcoming
+        </button>
 
-</div>
+        <button class="filter" data-filter="recent">
+            Recent
+        </button>
+    </div>
+
+    <div id="events" class="events">
+        <div class="loading">
+            Loading events...
+        </div>
+    </div>
+
+</main>
 
 
 <!-- PLAYER -->
 
-<div
-    id="playerModal"
-    class="player-modal"
->
+<div id="playerOverlay" class="player-overlay">
 
-<div class="player-header">
+    <div class="player-header">
 
-<button
-    class="close-btn"
-    onclick="closePlayer()"
->
-✕
-</button>
+        <button id="backBtn" class="back">
+            ←
+        </button>
 
-<div
-    id="playerTitle"
-    class="player-title"
->
-Loading...
-</div>
+        <div id="playerTitle" class="player-title">
+            Loading...
+        </div>
 
-</div>
+    </div>
 
-<div class="player-area">
+    <div class="player-area">
 
-<video
-    id="video"
-    controls
-    playsinline
-></video>
+        <video
+            id="video"
+            controls
+            playsinline
+            webkit-playsinline>
+        </video>
 
-<div
-    id="playerStatus"
-    class="player-status"
->
-Idle
-</div>
+        <div id="playerMessage" class="player-message">
 
-</div>
+            <div>
+                <div class="spinner"></div>
+                <div id="messageText">
+                    Loading stream...
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="streams" class="streams"></div>
 
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.compiled.js"></script>
 
 
 <script>
@@ -295,58 +420,73 @@ const API_URL =
 
 
 /* =========================================================
-   STATE
+   GLOBALS
 ========================================================= */
 
 let token = null;
 
-let shakaPlayer = null;
+let allEvents = [];
 
-let hlsPlayer = null;
+let activeFilter = "all";
+
+let hls = null;
+
+let shakaPlayer = null;
 
 
 /* =========================================================
    ELEMENTS
 ========================================================= */
 
-const statusEl =
-    document.getElementById("status");
-
 const eventsEl =
     document.getElementById("events");
 
-const modal =
-    document.getElementById("playerModal");
+const apiStatus =
+    document.getElementById("apiStatus");
+
+const overlay =
+    document.getElementById("playerOverlay");
 
 const video =
     document.getElementById("video");
 
+const streamsEl =
+    document.getElementById("streams");
+
 const playerTitle =
     document.getElementById("playerTitle");
 
-const playerStatus =
-    document.getElementById("playerStatus");
+const playerMessage =
+    document.getElementById("playerMessage");
+
+const messageText =
+    document.getElementById("messageText");
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
 
 
 /* =========================================================
    STATUS
 ========================================================= */
 
-function setStatus(
-    text,
-    type = ""
-) {
+function setAPIStatus(text,color="#94a3b8"){
 
-    statusEl.textContent = text;
+    apiStatus.textContent = text;
 
-    statusEl.className =
-        "status " + type;
-}
-
-
-function setPlayerStatus(text) {
-
-    playerStatus.textContent = text;
+    apiStatus.style.color = color;
 }
 
 
@@ -354,23 +494,30 @@ function setPlayerStatus(text) {
    AUTH
 ========================================================= */
 
-async function getToken() {
+async function getToken(){
 
     const response =
         await fetch(
             API_URL + "/api/auth",
             {
-                method: "POST"
+                method:"POST",
+                headers:{
+                    "Accept":"application/json"
+                }
             }
         );
 
-    const data =
-        await response.json();
+    let data;
 
-    if (
-        !response.ok ||
-        !data.token
-    ) {
+    try{
+        data = await response.json();
+    }catch{
+        throw new Error(
+            "Invalid authentication response"
+        );
+    }
+
+    if(!response.ok){
 
         throw new Error(
             data.error ||
@@ -378,40 +525,52 @@ async function getToken() {
         );
     }
 
-    token =
-        data.token;
+    if(!data.token){
+
+        throw new Error(
+            "Token missing from API response"
+        );
+    }
+
+    token = data.token;
 
     return token;
 }
 
 
 /* =========================================================
-   EVENTS
+   GET EVENTS
 ========================================================= */
 
-async function getEvents() {
+async function fetchEvents(){
 
-    if (!token) {
+    if(!token){
+
         await getToken();
+
     }
 
     let response =
         await fetch(
             API_URL + "/api/events",
             {
-                headers: {
-                    Authorization:
-                        "Bearer " + token
+                method:"GET",
+                headers:{
+                    "Authorization":
+                        "Bearer " + token,
+
+                    "Accept":
+                        "application/json"
                 }
             }
         );
 
 
     /*
-     * Token expired.
+     * Token expired
      */
 
-    if (response.status === 401) {
+    if(response.status === 401){
 
         token = null;
 
@@ -421,20 +580,34 @@ async function getEvents() {
             await fetch(
                 API_URL + "/api/events",
                 {
-                    headers: {
-                        Authorization:
-                            "Bearer " + token
+                    headers:{
+                        "Authorization":
+                            "Bearer " + token,
+
+                        "Accept":
+                            "application/json"
                     }
                 }
             );
     }
 
 
-    const data =
-        await response.json();
+    let data;
+
+    try{
+
+        data =
+            await response.json();
+
+    }catch{
+
+        throw new Error(
+            "Invalid events response"
+        );
+    }
 
 
-    if (!response.ok) {
+    if(!response.ok){
 
         throw new Error(
             data.error ||
@@ -448,233 +621,358 @@ async function getEvents() {
 
 
 /* =========================================================
-   ESCAPE HTML
+   NORMALIZE EVENT
 ========================================================= */
 
-function escapeHTML(value) {
+function normalizeEvent(event){
 
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    const info =
+        event.eventInfo || {};
+
+
+    /*
+     * IMPORTANT:
+     *
+     * Worker returns resolved_streams
+     * while player expects streams.
+     */
+
+    const streams =
+        Array.isArray(
+            event.resolved_streams
+        )
+        ?
+        event.resolved_streams
+
+            .filter(
+                stream =>
+                    stream &&
+                    stream.link
+            )
+
+            .map(stream => {
+
+                const url =
+                    String(
+                        stream.link
+                    ).trim();
+
+                let type =
+                    stream.type;
+
+
+                if(type === "1"){
+
+                    type = "mpd";
+
+                }else if(type === "0"){
+
+                    type = "hls";
+
+                }else if(
+                    url.toLowerCase()
+                        .includes(".mpd")
+                ){
+
+                    type = "mpd";
+
+                }else{
+
+                    type = "hls";
+
+                }
+
+
+                return {
+
+                    url:url,
+
+                    title:
+                        stream.title ||
+                        "Stream",
+
+                    type:type,
+
+                    /*
+                     * Keep API metadata available
+                     * for your authorized playback setup.
+                     */
+
+                    api:
+                        stream.api || ""
+
+                };
+
+            })
+
+        :
+        (
+            Array.isArray(event.streams)
+                ? event.streams
+                : []
+        );
+
+
+    const eventName =
+        info.teamA &&
+        info.teamB
+        ?
+        `${info.teamA} vs ${info.teamB}`
+        :
+        (
+            info.eventName ||
+            event.title ||
+            event.name ||
+            "Live Event"
+        );
+
+
+    return {
+
+        ...event,
+
+        name:eventName,
+
+        category:
+            info.eventCat ||
+            event.category_name ||
+            "Sports",
+
+        teamA:
+            info.teamA || "",
+
+        teamB:
+            info.teamB || "",
+
+        streams:streams
+
+    };
+
 }
 
 
 /* =========================================================
-   RENDER
+   EVENT STATUS
 ========================================================= */
 
-function renderEvents(data) {
+function getEventStatus(event){
 
-    eventsEl.innerHTML = "";
+    const now =
+        Math.floor(
+            Date.now()/1000
+        );
+
+
+    /*
+     * If your API provides timestamps.
+     */
+
+    const start =
+        Number(
+            event.starts_at ||
+            event.start_at ||
+            0
+        );
+
+    const end =
+        Number(
+            event.ends_at ||
+            event.end_at ||
+            0
+        );
+
+
+    if(start && end){
+
+        if(now >= start && now <= end){
+
+            return "live";
+
+        }
+
+        if(now < start){
+
+            return "upcoming";
+
+        }
+
+        return "recent";
+
+    }
+
+
+    /*
+     * If no timestamps are available,
+     * don't hide the event.
+     */
+
+    return "live";
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function filteredEvents(){
+
+    if(activeFilter === "all"){
+
+        return allEvents;
+
+    }
+
+    return allEvents.filter(
+        event =>
+            getEventStatus(event)
+            === activeFilter
+    );
+}
+
+
+/* =========================================================
+   RENDER EVENTS
+========================================================= */
+
+function renderEvents(){
 
     const events =
-        Array.isArray(data.events)
-            ? data.events
-            : [];
+        filteredEvents();
 
 
-    if (!events.length) {
+    if(!events.length){
 
-        eventsEl.innerHTML =
-            '<div class="loading">No events available.</div>';
+        eventsEl.innerHTML = `
+            <div class="empty">
+                No events found.
+            </div>
+        `;
 
         return;
     }
 
 
-    events.forEach(event => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "event";
+    eventsEl.innerHTML = "";
 
 
-        const title =
-            event.title ||
-            "Live Event";
+    events.forEach(
+        (event,index) => {
+
+            const card =
+                document.createElement("div");
 
 
-        const category =
-            event.category ||
-            "Sports";
+            card.className =
+                "event-card";
 
 
-        let imageHTML = "";
-
-        if (event.image) {
-
-            imageHTML = `
-                <img
-                    class="event-image"
-                    src="${escapeHTML(event.image)}"
-                    alt=""
-                    loading="lazy"
-                >
-            `;
-        }
+            const status =
+                getEventStatus(event);
 
 
-        const streams =
-            Array.isArray(event.streams)
-                ? event.streams
-                : [];
+            const streamCount =
+                event.streams.length;
 
 
-        let streamHTML = "";
+            card.innerHTML = `
+
+                <div class="event-top">
+
+                    <div class="category">
+                        ${escapeHTML(
+                            event.category
+                        )}
+                    </div>
+
+                    <div class="live">
+                        ${
+                            status === "live"
+                            ? "● LIVE"
+                            : status.toUpperCase()
+                        }
+                    </div>
+
+                </div>
 
 
-        streams.forEach(
-            (stream, index) => {
-
-                const type =
-                    stream.type === "dash"
-                        ? "DASH"
-                        : "HLS";
-
-
-                const button =
-                    document.createElement("button");
-
-                button.className =
-                    "stream-btn";
-
-                button.innerHTML =
-                    `▶ ${escapeHTML(
-                        stream.title ||
-                        "Stream " + (index + 1)
+                <div class="title">
+                    ${escapeHTML(
+                        event.name
                     )}
-                    <span class="badge">
-                        ${type}
-                    </span>`;
+                </div>
 
 
-                button.addEventListener(
-                    "click",
-                    () => {
+                ${
+                    event.teamA ||
+                    event.teamB
+                    ?
+                    `
+                    <div class="teams">
 
-                        openPlayer(
-                            stream,
-                            title
-                        );
+                        <span>
+                            ${escapeHTML(
+                                event.teamA ||
+                                "TBA"
+                            )}
+                        </span>
 
-                    }
-                );
+                        <span class="vs">
+                            VS
+                        </span>
 
+                        <span>
+                            ${escapeHTML(
+                                event.teamB ||
+                                "TBA"
+                            )}
+                        </span>
 
-                if (!streamHTML) {
-
-                    streamHTML =
-                        '<div class="streams"></div>';
+                    </div>
+                    `
+                    :
+                    ""
                 }
 
 
-                card.appendChild(
-                    document.createElement("div")
-                );
+                <div class="stream-count">
 
-                setTimeout(() => {
-
-                    const streamBox =
-                        card.querySelector(
-                            ".streams"
-                        );
-
-                    if (streamBox) {
-                        streamBox.appendChild(
-                            button
-                        );
+                    ${
+                        streamCount
+                        ? `▶ ${streamCount}
+                           stream${streamCount > 1 ? "s" : ""}`
+                        : "⚠ No stream available"
                     }
 
-                }, 0);
-            }
-        );
-
-
-        card.innerHTML = `
-            ${imageHTML}
-
-            <div class="event-content">
-
-                <div class="event-title">
-                    ${escapeHTML(title)}
                 </div>
 
-                <div class="event-category">
-                    ${escapeHTML(category)}
-                </div>
-
-                <div class="streams"></div>
-
-            </div>
-        `;
+            `;
 
 
-        /*
-         * Add stream buttons after innerHTML.
-         */
+            /*
+             * IMPORTANT:
+             *
+             * Click handler is attached
+             * directly to the card.
+             */
 
-        const streamBox =
-            card.querySelector(
-                ".streams"
+            card.addEventListener(
+                "click",
+                () => {
+
+                    openEvent(
+                        event
+                    );
+
+                }
             );
 
 
-        streams.forEach(
-            (stream, index) => {
+            eventsEl.appendChild(
+                card
+            );
 
-                const type =
-                    stream.type === "dash"
-                        ? "DASH"
-                        : "HLS";
-
-
-                const button =
-                    document.createElement(
-                        "button"
-                    );
-
-                button.className =
-                    "stream-btn";
-
-
-                button.innerHTML =
-                    `▶ ${escapeHTML(
-                        stream.title ||
-                        "Stream " + (index + 1)
-                    )}
-                    <span class="badge">
-                        ${type}
-                    </span>`;
-
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        openPlayer(
-                            stream,
-                            title
-                        );
-
-                    }
-                );
-
-
-                streamBox.appendChild(
-                    button
-                );
-            }
-        );
-
-
-        eventsEl.appendChild(card);
-
-    });
+        }
+    );
 }
 
 
@@ -682,170 +980,233 @@ function renderEvents(data) {
    DESTROY PLAYER
 ========================================================= */
 
-async function destroyPlayer() {
+async function destroyPlayer(){
 
-    if (shakaPlayer) {
+    if(hls){
 
-        try {
+        try{
+            hls.destroy();
+        }catch(e){}
+
+        hls = null;
+
+    }
+
+
+    if(shakaPlayer){
+
+        try{
             await shakaPlayer.destroy();
-        } catch {}
+        }catch(e){}
 
         shakaPlayer = null;
+
     }
 
 
-    if (hlsPlayer) {
+    try{
 
-        try {
-            hlsPlayer.destroy();
-        } catch {}
+        video.pause();
 
-        hlsPlayer = null;
-    }
+    }catch(e){}
 
-
-    video.pause();
 
     video.removeAttribute("src");
 
     video.load();
+
+    video.style.display =
+        "none";
 }
 
 
 /* =========================================================
-   OPEN PLAYER
+   PLAYER MESSAGE
 ========================================================= */
 
-async function openPlayer(
-    stream,
-    title
-) {
+function showMessage(text){
 
-    if (
-        !stream ||
-        !stream.url
-    ) {
+    messageText.textContent =
+        text;
+
+    playerMessage.classList.add(
+        "show"
+    );
+
+}
+
+
+function hideMessage(){
+
+    playerMessage.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   OPEN EVENT
+========================================================= */
+
+async function openEvent(event){
+
+    const streams =
+        event.streams || [];
+
+
+    if(!streams.length){
+
+        alert(
+            "No stream available for this event."
+        );
+
         return;
+
     }
 
 
-    modal.classList.add("open");
+    overlay.classList.add(
+        "open"
+    );
+
 
     playerTitle.textContent =
-        title || stream.title || "Player";
+        event.name;
 
 
-    await destroyPlayer();
+    streamsEl.innerHTML = "";
 
 
-    /*
-     * DASH
-     */
+    streams.forEach(
+        (stream,index) => {
 
-    if (
-        stream.type === "dash"
-    ) {
-
-        await playDASH(
-            stream.url
-        );
-
-        return;
-    }
+            const button =
+                document.createElement(
+                    "button"
+                );
 
 
-    /*
-     * HLS
-     */
-
-    if (
-        stream.type === "hls"
-    ) {
-
-        playHLS(
-            stream.url
-        );
-
-        return;
-    }
+            button.className =
+                "stream-btn" +
+                (
+                    index === 0
+                    ? " active"
+                    : ""
+                );
 
 
-    setPlayerStatus(
-        "Unknown stream type"
-    );
-}
+            button.textContent =
+                stream.title ||
+                `Stream ${index + 1}`;
 
 
-/* =========================================================
-   SHAKA / DASH
-========================================================= */
+            button.addEventListener(
+                "click",
+                () => {
 
-async function playDASH(url) {
-
-    setPlayerStatus(
-        "Loading DASH..."
-    );
-
-
-    if (
-        !window.shaka ||
-        !shaka.Player.isBrowserSupported()
-    ) {
-
-        setPlayerStatus(
-            "DASH not supported"
-        );
-
-        return;
-    }
+                    document
+                        .querySelectorAll(
+                            ".stream-btn"
+                        )
+                        .forEach(
+                            btn =>
+                                btn.classList
+                                    .remove(
+                                        "active"
+                                    )
+                        );
 
 
-    shaka.polyfill.installAll();
+                    button.classList.add(
+                        "active"
+                    );
 
 
-    shakaPlayer =
-        new shaka.Player(video);
+                    playStream(
+                        stream
+                    );
 
-
-    shakaPlayer.addEventListener(
-        "error",
-        event => {
-
-            console.error(
-                "Shaka error:",
-                event.detail
+                }
             );
 
-            setPlayerStatus(
-                "DASH playback error"
+
+            streamsEl.appendChild(
+                button
             );
+
         }
     );
 
 
-    try {
+    /*
+     * Automatically play first stream.
+     */
 
-        await shakaPlayer.load(
+    await playStream(
+        streams[0]
+    );
+
+}
+
+
+/* =========================================================
+   PLAY STREAM
+========================================================= */
+
+async function playStream(stream){
+
+    if(!stream || !stream.url){
+
+        showMessage(
+            "Stream URL unavailable"
+        );
+
+        return;
+
+    }
+
+
+    await destroyPlayer();
+
+    showMessage(
+        "Loading stream..."
+    );
+
+
+    const url =
+        stream.url.trim();
+
+
+    const type =
+        stream.type ||
+        (
+            url.toLowerCase()
+                .includes(".mpd")
+            ?
+            "mpd"
+            :
+            "hls"
+        );
+
+
+    if(
+        type === "mpd" ||
+        type === "dash"
+    ){
+
+        await playDASH(
             url
         );
 
+    }else{
 
-        await video.play();
-
-        setPlayerStatus(
-            "● LIVE"
+        await playHLS(
+            url
         );
 
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-        setPlayerStatus(
-            "DASH unavailable"
-        );
     }
+
 }
 
 
@@ -853,120 +1214,233 @@ async function playDASH(url) {
    HLS
 ========================================================= */
 
-function playHLS(url) {
+async function playHLS(url){
 
-    setPlayerStatus(
-        "Loading HLS..."
-    );
-
-
-    /*
-     * Chrome / Android / Desktop
-     */
-
-    if (
-        window.Hls &&
-        Hls.isSupported()
-    ) {
-
-        hlsPlayer =
-            new Hls({
-                enableWorker: true,
-                lowLatencyMode: true,
-                backBufferLength: 30
-            });
-
-
-        hlsPlayer.loadSource(
-            url
-        );
-
-
-        hlsPlayer.attachMedia(
-            video
-        );
-
-
-        hlsPlayer.on(
-            Hls.Events.MANIFEST_PARSED,
-            () => {
-
-                video
-                    .play()
-                    .catch(() => {});
-
-
-                setPlayerStatus(
-                    "● LIVE"
-                );
-            }
-        );
-
-
-        hlsPlayer.on(
-            Hls.Events.ERROR,
-            (_, data) => {
-
-                if (
-                    data.fatal
-                ) {
-
-                    console.error(
-                        "HLS error:",
-                        data
-                    );
-
-                    setPlayerStatus(
-                        "HLS playback error"
-                    );
-                }
-            }
-        );
-
-
-        return;
-    }
+    video.style.display =
+        "block";
 
 
     /*
      * Safari / native HLS
      */
 
-    if (
+    if(
         video.canPlayType(
             "application/vnd.apple.mpegurl"
         )
-    ) {
+    ){
 
         video.src = url;
 
 
-        video.addEventListener(
-            "loadedmetadata",
+        video.onloadedmetadata =
+            async () => {
+
+                hideMessage();
+
+                try{
+                    await video.play();
+                }catch(e){}
+
+            };
+
+
+        video.onerror =
             () => {
 
-                video
-                    .play()
-                    .catch(() => {});
-
-                setPlayerStatus(
-                    "● LIVE"
+                showMessage(
+                    "HLS playback failed."
                 );
 
-            },
-            {
-                once: true
+            };
+
+
+        return;
+
+    }
+
+
+    /*
+     * HLS.js
+     */
+
+    if(
+        window.Hls &&
+        Hls.isSupported()
+    ){
+
+        hls =
+            new Hls({
+
+                enableWorker:true,
+
+                lowLatencyMode:true,
+
+                backBufferLength:30
+
+            });
+
+
+        hls.loadSource(
+            url
+        );
+
+
+        hls.attachMedia(
+            video
+        );
+
+
+        hls.on(
+            Hls.Events.MANIFEST_PARSED,
+            async () => {
+
+                hideMessage();
+
+                try{
+
+                    await video.play();
+
+                }catch(e){}
+
+            }
+        );
+
+
+        hls.on(
+            Hls.Events.ERROR,
+            (_,data) => {
+
+                if(
+                    data &&
+                    data.fatal
+                ){
+
+                    showMessage(
+                        "HLS stream error."
+                    );
+
+                }
+
             }
         );
 
 
         return;
+
     }
 
 
-    setPlayerStatus(
-        "HLS not supported"
+    showMessage(
+        "HLS is not supported by this browser."
     );
+
+}
+
+
+/* =========================================================
+   DASH / SHAKA
+========================================================= */
+
+async function playDASH(url){
+
+    video.style.display =
+        "block";
+
+
+    if(
+        !window.shaka ||
+        !shaka.Player
+    ){
+
+        showMessage(
+            "Shaka Player unavailable."
+        );
+
+        return;
+
+    }
+
+
+    shaka.polyfill.installAll();
+
+
+    if(
+        !shaka.Player
+            .isBrowserSupported()
+    ){
+
+        showMessage(
+            "DASH is not supported by this browser."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        shakaPlayer =
+            new shaka.Player(
+                video
+            );
+
+
+        shakaPlayer.addEventListener(
+            "error",
+            event => {
+
+                console.error(
+                    "Shaka error:",
+                    event.detail
+                );
+
+
+                showMessage(
+                    "DASH playback error."
+                );
+
+            }
+        );
+
+
+        await shakaPlayer.load(
+            url
+        );
+
+
+        hideMessage();
+
+
+        try{
+
+            await video.play();
+
+        }catch(e){
+
+            /*
+             * Browser autoplay policy may
+             * require the user to press play.
+             */
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "DASH load error:",
+            error
+        );
+
+
+        showMessage(
+            "Unable to load DASH stream."
+        );
+
+    }
+
 }
 
 
@@ -974,18 +1448,29 @@ function playHLS(url) {
    CLOSE PLAYER
 ========================================================= */
 
-async function closePlayer() {
-
-    modal.classList.remove(
-        "open"
-    );
+async function closePlayer(){
 
     await destroyPlayer();
 
-    setPlayerStatus(
-        "Idle"
+    streamsEl.innerHTML = "";
+
+    overlay.classList.remove(
+        "open"
     );
+
 }
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+document
+    .getElementById("backBtn")
+    .addEventListener(
+        "click",
+        closePlayer
+    );
 
 
 /* =========================================================
@@ -996,12 +1481,15 @@ document.addEventListener(
     "keydown",
     event => {
 
-        if (
+        if(
             event.key === "Escape" &&
-            modal.classList.contains("open")
-        ) {
+            overlay.classList.contains(
+                "open"
+            )
+        ){
 
             closePlayer();
+
         }
 
     }
@@ -1009,57 +1497,121 @@ document.addEventListener(
 
 
 /* =========================================================
-   START
+   FILTER BUTTONS
 ========================================================= */
 
-async function init() {
+document
+    .querySelectorAll(".filter")
+    .forEach(
+        button => {
 
-    try {
+            button.addEventListener(
+                "click",
+                () => {
 
-        setStatus(
-            "🔐 Authenticating..."
+                    document
+                        .querySelectorAll(
+                            ".filter"
+                        )
+                        .forEach(
+                            btn =>
+                                btn.classList
+                                    .remove(
+                                        "active"
+                                    )
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    activeFilter =
+                        button.dataset.filter;
+
+
+                    renderEvents();
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+async function init(){
+
+    try{
+
+        setAPIStatus(
+            "Authenticating..."
         );
 
 
         const data =
-            await getEvents();
+            await fetchEvents();
 
 
-        setStatus(
-            "✅ API connected — " +
-            (data.count || 0) +
-            " events",
-            "ok"
+        /*
+         * Convert API events to frontend events.
+         */
+
+        allEvents =
+            (
+                Array.isArray(
+                    data.events
+                )
+                ?
+                data.events
+                :
+                []
+            )
+            .map(
+                normalizeEvent
+            );
+
+
+        setAPIStatus(
+            `● ${allEvents.length} events`,
+            "#10b981"
         );
 
 
-        renderEvents(
-            data
-        );
+        renderEvents();
 
 
-    } catch (error) {
+    }catch(error){
 
         console.error(
             error
         );
 
 
-        setStatus(
-            "❌ " +
-            error.message,
-            "error"
+        setAPIStatus(
+            "API Error",
+            "#ef4444"
         );
 
 
         eventsEl.innerHTML = `
-            <div class="loading">
-                ${escapeHTML(
+
+            <div class="error">
+
+                ❌ ${escapeHTML(
                     error.message
                 )}
+
             </div>
+
         `;
+
     }
+
 }
 
 
