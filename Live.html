@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure API Test</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0a0c10;
+            color: #f1f5f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #f97316;
+        }
+
+        h2 {
+            margin-top: 25px;
+        }
+
+        .status {
+            padding: 14px;
+            margin: 15px 0;
+            border-radius: 10px;
+            background: #111827;
+            border: 1px solid #1f2937;
+        }
+
+        .success {
+            color: #10b981;
+            border-color: #064e3b;
+        }
+
+        .error {
+            color: #ef4444;
+            border-color: #7f1d1d;
+        }
+
+        .event {
+            background: #11141c;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .event h3 {
+            margin: 0 0 10px;
+            color: #38bdf8;
+        }
+
+        .event p {
+            margin: 5px 0;
+            color: #cbd5e1;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: #05070a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        button {
+            background: #f97316;
+            color: #000;
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #fb923c;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔐 Secure API Test</h1>
+
+    <div id="status" class="status">
+        Starting...
+    </div>
+
+    <button onclick="testAPI()">
+        🔄 Test API Again
+    </button>
+
+    <h2>📺 Events</h2>
+
+    <div id="events">
+        Loading...
+    </div>
+
+    <h2>🛠 Debug Response</h2>
+
+    <pre id="debug">Waiting...</pre>
+
+</div>
+
+<script>
+
+/* =========================================================
+   WORKER URL
+   ========================================================= */
+
+const API_URL =
+    "https://YOUR-WORKER.workers.dev";
+
+
+/* =========================================================
+   TOKEN
+   ========================================================= */
+
+let API_TOKEN = null;
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+function setStatus(message, type = "") {
+
+    const status =
+        document.getElementById("status");
+
+    status.textContent = message;
+
+    status.className =
+        "status " + type;
+}
+
+
+/* =========================================================
+   GET TOKEN
+   ========================================================= */
+
+async function getToken() {
+
+    setStatus(
+        "🔑 Getting secure token..."
+    );
+
+    const response =
+        await fetch(
+            API_URL + "/api/auth",
+            {
+                method: "POST"
+            }
+        );
+
+    const data =
+        await response.json();
+
+    document.getElementById("debug")
+        .textContent =
+        JSON.stringify(
+            data,
+            null,
+            2
+        );
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.error ||
+            "Token request failed"
+        );
+    }
+
+    if (!data.token) {
+
+        throw new Error(
+            "Server did not return token"
+        );
+    }
+
+    API_TOKEN =
+        data.token;
+
+    return API_TOKEN;
+}
+
+
+/* =========================================================
+   GET EVENTS
+   ========================================================= */
+
+async function getEvents() {
+
+    if (!API_TOKEN) {
+
+        await getToken();
+
+    }
+
+    setStatus(
+        "📡 Getting events..."
+    );
+
+    let response =
+        await fetch(
+            API_URL + "/api/events",
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization":
+                        "Bearer " + API_TOKEN
+                }
+            }
+        );
+
+
+    /*
+     * Token expired
+     */
+
+    if (response.status === 401) {
+
+        API_TOKEN = null;
+
+        await getToken();
+
+        response =
+            await fetch(
+                API_URL + "/api/events",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + API_TOKEN
+                    }
+                }
+            );
+    }
+
+
+    const data =
+        await response.json();
+
+
+    document.getElementById("debug")
+        .textContent =
+        JSON.stringify(
+            data,
+            null,
+            2
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.error ||
+            "Events request failed"
+        );
+    }
+
+
+    return data;
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+/* =========================================================
+   RENDER EVENTS
+   ========================================================= */
+
+function renderEvents(data) {
+
+    const container =
+        document.getElementById("events");
+
+    container.innerHTML = "";
+
+
+    const events =
+        Array.isArray(data.events)
+            ? data.events
+            : [];
+
+
+    if (!events.length) {
+
+        container.innerHTML = `
+            <div class="event">
+                <p>❌ No events found.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    events.forEach(
+        (event, index) => {
+
+            const info =
+                event.eventInfo || {};
+
+
+            const name =
+                info.eventName ||
+                event.title ||
+                event.name ||
+                "Unknown Event";
+
+
+            const category =
+                info.eventCat ||
+                event.category_name ||
+                "Sports";
+
+
+            const teamA =
+                info.teamA || "";
+
+
+            const teamB =
+                info.teamB || "";
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "event";
+
+
+            div.innerHTML = `
+
+                <h3>
+                    ${index + 1}.
+                    ${escapeHTML(name)}
+                </h3>
+
+                <p>
+                    <strong>Category:</strong>
+                    ${escapeHTML(category)}
+                </p>
+
+                <p>
+                    <strong>ID:</strong>
+                    ${escapeHTML(
+                        String(
+                            event.id || ""
+                        )
+                    )}
+                </p>
+
+                ${
+                    teamA
+                        ? `
+                            <p>
+                                <strong>Team A:</strong>
+                                ${escapeHTML(teamA)}
+                            </p>
+                          `
+                        : ""
+                }
+
+                ${
+                    teamB
+                        ? `
+                            <p>
+                                <strong>Team B:</strong>
+                                ${escapeHTML(teamB)}
+                            </p>
+                          `
+                        : ""
+                }
+
+            `;
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+}
+
+
+/* =========================================================
+   TEST API
+   ========================================================= */
+
+async function testAPI() {
+
+    try {
+
+        document.getElementById(
+            "events"
+        ).innerHTML = `
+            <div class="event">
+                <p>⏳ Connecting to secure API...</p>
+            </div>
+        `;
+
+
+        document.getElementById(
+            "debug"
+        ).textContent =
+            "Loading...";
+
+
+        const data =
+            await getEvents();
+
+
+        setStatus(
+            "✅ API WORKING — " +
+            (
+                data.count ||
+                0
+            ) +
+            " events received.",
+            "success"
+        );
+
+
+        renderEvents(data);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        setStatus(
+            "❌ " +
+            error.message,
+            "error"
+        );
+
+
+        document.getElementById(
+            "events"
+        ).innerHTML = `
+            <div class="event">
+                <h3>❌ API Error</h3>
+
+                <p>
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </p>
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+testAPI();
+
+</script>
+
+</body>
+</html>
