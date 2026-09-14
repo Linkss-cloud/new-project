@@ -1,30 +1,41 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sports Zone</title>
+
+    <!-- Shaka Player UI -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js"
+        crossorigin="anonymous">
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css"
+        crossorigin="anonymous"
     >
 
-    <title>Secure Sports API</title>
-
-    <!-- Shaka Player -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.16.4/shaka-player.compiled.min.js"></script>
-
     <style>
-
         * {
             box-sizing: border-box;
         }
 
+        html,
         body {
             margin: 0;
+            padding: 0;
             background: #080b10;
             color: #f8fafc;
             font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
         }
 
         .container {
@@ -134,17 +145,35 @@
             border: 1px solid #1f2937;
         }
 
-        video {
-            width: 100%;
-            display: block;
-            background: #000;
-            max-height: 600px;
-        }
-
         .player-header {
             padding: 12px 15px;
             background: #111827;
             color: #e2e8f0;
+        }
+
+        .shaka-video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            background: #000;
+        }
+
+        .shaka-video-container video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            object-fit: contain;
+        }
+
+        .shaka-spinner-container,
+        .shaka-spinner,
+        .shaka-spinner-svg {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
         }
 
         pre {
@@ -169,6 +198,19 @@
             border-radius: 10px;
         }
 
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            .event-title {
+                font-size: 16px;
+            }
+
+            .stream-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -176,7 +218,7 @@
 
 <div class="container">
 
-    <h1>🔐 Secure Sports API</h1>
+    <h1>🏏 Sports Zone</h1>
 
     <div id="status" class="status loading">
         Connecting...
@@ -186,55 +228,41 @@
         🔄 Reload Events
     </button>
 
+    <div id="playerBox" class="player-box">
 
-    <!-- PLAYER -->
-
-    <div
-        id="playerBox"
-        class="player-box"
-    >
-
-        <div
-            id="playerTitle"
-            class="player-header"
-        >
+        <div id="playerTitle" class="player-header">
             Player
         </div>
 
-        <video
-            id="video"
-            controls
-            playsinline
-        ></video>
+        <div
+            class="shaka-video-container"
+            data-shaka-player
+        >
+            <video
+                id="video"
+                autoplay
+                playsinline
+                preload="metadata"
+            ></video>
+        </div>
 
     </div>
-
-
-    <!-- EVENTS -->
 
     <div class="section">
 
         <h2>📺 Events</h2>
 
-        <div
-            id="events"
-            class="events"
-        >
+        <div id="events" class="events">
             Loading...
         </div>
 
     </div>
 
-
-    <!-- DEBUG -->
-
     <div class="section">
 
         <h2>🛠 Debug</h2>
 
-        <pre id="debug">
-Waiting...
-        </pre>
+        <pre id="debug">Waiting...</pre>
 
     </div>
 
@@ -250,29 +278,18 @@ Waiting...
 const API_URL =
     "https://sportlink-api.movieszonemedia.workers.dev";
 
-
-/*
- * JWT token
- */
-
 let API_TOKEN = null;
 
-
-/*
- * Shaka instance
- */
-
 let shakaPlayer = null;
+
+let shakaUI = null;
 
 
 /* =========================================================
    STATUS
    ========================================================= */
 
-function setStatus(
-    message,
-    type = ""
-) {
+function setStatus(message, type = "") {
 
     const element =
         document.getElementById("status");
@@ -291,9 +308,7 @@ function setStatus(
 
 function debug(data) {
 
-    document.getElementById(
-        "debug"
-    ).textContent =
+    document.getElementById("debug").textContent =
         typeof data === "string"
             ? data
             : JSON.stringify(
@@ -315,7 +330,6 @@ async function getToken() {
         "loading"
     );
 
-
     const response =
         await fetch(
             API_URL + "/api/auth",
@@ -323,7 +337,6 @@ async function getToken() {
                 method: "POST"
             }
         );
-
 
     let data;
 
@@ -339,7 +352,6 @@ async function getToken() {
         );
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -348,7 +360,6 @@ async function getToken() {
         );
     }
 
-
     if (!data.token) {
 
         throw new Error(
@@ -356,10 +367,8 @@ async function getToken() {
         );
     }
 
-
     API_TOKEN =
         data.token;
-
 
     return API_TOKEN;
 }
@@ -376,7 +385,6 @@ async function fetchEvents() {
         await getToken();
     }
 
-
     let response =
         await fetch(
             API_URL + "/api/events",
@@ -385,22 +393,20 @@ async function fetchEvents() {
 
                 headers: {
                     "Authorization":
-                        "Bearer " + API_TOKEN
+                        "Bearer " +
+                        API_TOKEN
                 }
             }
         );
 
 
-    /*
-     * Token expired
-     */
+    /* TOKEN EXPIRED */
 
     if (response.status === 401) {
 
         API_TOKEN = null;
 
         await getToken();
-
 
         response =
             await fetch(
@@ -410,7 +416,8 @@ async function fetchEvents() {
 
                     headers: {
                         "Authorization":
-                            "Bearer " + API_TOKEN
+                            "Bearer " +
+                            API_TOKEN
                     }
                 }
             );
@@ -492,7 +499,8 @@ async function loadEvents() {
 
 
         setStatus(
-            "❌ " + error.message,
+            "❌ " +
+            error.message,
             "error"
         );
 
@@ -501,7 +509,9 @@ async function loadEvents() {
             "events"
         ).innerHTML = `
             <div class="empty">
-                ❌ ${escapeHTML(error.message)}
+                ❌ ${escapeHTML(
+                    error.message
+                )}
             </div>
         `;
     }
@@ -555,12 +565,6 @@ function renderEvents(events) {
                 info.teamB || "";
 
 
-            /*
-             * NEW WORKER FORMAT
-             *
-             * event.streams
-             */
-
             const streams =
                 Array.isArray(
                     event.streams
@@ -597,7 +601,7 @@ function renderEvents(events) {
 
 
                 streams.forEach(
-                    (stream, streamIndex) => {
+                    stream => {
 
                         const type =
                             stream.type;
@@ -612,6 +616,19 @@ function renderEvents(events) {
                             );
 
 
+                        /*
+                         * Encode stream safely
+                         * into button dataset.
+                         */
+
+                        const encodedStream =
+                            encodeURIComponent(
+                                JSON.stringify(
+                                    stream
+                                )
+                            );
+
+
                         streamHTML += `
 
                             <button
@@ -620,9 +637,8 @@ function renderEvents(events) {
                                         ? "dash"
                                         : "hls"
                                 }"
-                                onclick='playStream(
-                                    ${JSON.stringify(stream)}
-                                )'
+                                data-stream="${encodedStream}"
+                                onclick="handleStreamClick(this)"
                             >
 
                                 ${
@@ -663,9 +679,10 @@ function renderEvents(events) {
                                 teamA +
                                 " vs " +
                                 teamB
-                              )
+                            )
                             : ""
                     }
+
 
                     ${
                         info.eventCat
@@ -690,6 +707,172 @@ function renderEvents(events) {
 
         }
     );
+}
+
+
+/* =========================================================
+   STREAM BUTTON
+   ========================================================= */
+
+function handleStreamClick(button) {
+
+    try {
+
+        const stream =
+            JSON.parse(
+                decodeURIComponent(
+                    button.dataset.stream
+                )
+            );
+
+
+        playStream(stream);
+
+
+    } catch (error) {
+
+        console.error(
+            "Stream parse error:",
+            error
+        );
+
+
+        setStatus(
+            "❌ Invalid stream data",
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   INITIALIZE SHAKA
+   ========================================================= */
+
+async function initShaka() {
+
+    shaka.polyfill.installAll();
+
+
+    if (
+        !shaka.Player.isBrowserSupported()
+    ) {
+
+        throw new Error(
+            "DASH is not supported by this browser."
+        );
+    }
+
+
+    const video =
+        document.getElementById(
+            "video"
+        );
+
+
+    const container =
+        document.querySelector(
+            ".shaka-video-container"
+        );
+
+
+    shakaPlayer =
+        new shaka.Player();
+
+
+    await shakaPlayer.attach(
+        video
+    );
+
+
+    shakaUI =
+        new shaka.ui.Overlay(
+            shakaPlayer,
+            container,
+            video
+        );
+
+
+    shakaPlayer.addEventListener(
+        "error",
+        event => {
+
+            console.error(
+                "Shaka error:",
+                event.detail
+            );
+
+
+            debug({
+                playerError:
+                    event.detail
+            });
+
+        }
+    );
+
+
+    shakaPlayer.configure({
+
+        streaming: {
+
+            lowLatencyMode: true,
+
+            bufferingGoal: 15,
+
+            rebufferingGoal: 2,
+
+            bufferBehind: 15
+
+        }
+
+    });
+
+
+    return shakaPlayer;
+}
+
+
+/* =========================================================
+   DESTROY PLAYER
+   ========================================================= */
+
+async function destroyPlayer() {
+
+    if (shakaPlayer) {
+
+        try {
+
+            await shakaPlayer.destroy();
+
+        } catch (error) {
+
+            console.error(
+                "Destroy error:",
+                error
+            );
+        }
+
+
+        shakaPlayer = null;
+
+        shakaUI = null;
+    }
+
+
+    const video =
+        document.getElementById(
+            "video"
+        );
+
+
+    video.pause();
+
+    video.removeAttribute(
+        "src"
+    );
+
+    video.load();
 }
 
 
@@ -731,39 +914,25 @@ async function playStream(stream) {
             );
 
 
-        /*
-         * Destroy previous Shaka
-         */
-
-        if (shakaPlayer) {
-
-            await shakaPlayer.destroy();
-
-            shakaPlayer = null;
-        }
-
-
-        /*
-         * Reset video
-         */
-
-        video.pause();
-
-        video.removeAttribute(
-            "src"
-        );
-
-        video.load();
+        await destroyPlayer();
 
 
         /* =================================================
            HLS
+
+           type 0
+
+           {
+               type: "hls",
+               m3u8: "..."
+           }
            ================================================= */
 
         if (
             stream.type === "hls" &&
             stream.m3u8
         ) {
+
 
             /*
              * Native HLS
@@ -778,27 +947,70 @@ async function playStream(stream) {
                 video.src =
                     stream.m3u8;
 
+
                 await video.play()
-                    .catch(() => {});
+                    .catch(
+                        () => {}
+                    );
+
+
+                setStatus(
+                    "▶ HLS playing — " +
+                    (
+                        stream.title ||
+                        "Stream"
+                    ),
+                    "success"
+                );
+
 
                 return;
             }
 
 
             /*
-             * Browsers without native HLS
-             *
-             * hls.js would normally be used here.
+             * Shaka HLS fallback
              */
 
-            throw new Error(
-                "This browser does not support native HLS playback."
+            const player =
+                await initShaka();
+
+
+            await player.load(
+                stream.m3u8
             );
+
+
+            await video.play()
+                .catch(
+                    () => {}
+                );
+
+
+            setStatus(
+                "▶ HLS playing — " +
+                (
+                    stream.title ||
+                    "Stream"
+                ),
+                "success"
+            );
+
+
+            return;
         }
 
 
         /* =================================================
            DASH
+
+           type 1
+
+           {
+               type: "dash",
+               mpd: "...",
+               key: "KEY_ID:KEY"
+           }
            ================================================= */
 
         if (
@@ -806,69 +1018,113 @@ async function playStream(stream) {
             stream.mpd
         ) {
 
-            if (
-                !window.shaka
-            ) {
 
-                throw new Error(
-                    "Shaka Player failed to load."
-                );
-            }
+            const player =
+                await initShaka();
 
 
-            if (
-                !shaka.Player.isBrowserSupported()
-            ) {
+            /* =================================================
+               CLEAR KEY
 
-                throw new Error(
-                    "DASH is not supported by this browser."
-                );
-            }
+               api:
 
+               KEY_ID:KEY
 
-            shakaPlayer =
-                new shaka.Player(
-                    video
-                );
+               Example:
 
+               82dfca238e8c4b430a3269db71965db9:
+               a00b28caf4ac628e77a553d440c0ddca
+               ================================================= */
 
-            shakaPlayer.addEventListener(
-                "error",
-                event => {
+            if (stream.key) {
 
-                    console.error(
-                        "Shaka error:",
-                        event.detail
+                const keyParts =
+                    String(
+                        stream.key
+                    )
+                    .split(":")
+                    .map(
+                        value =>
+                            value.trim()
                     );
 
-                    debug({
-                        playerError:
-                            event.detail
-                    });
+
+                if (
+                    keyParts.length !== 2 ||
+                    !keyParts[0] ||
+                    !keyParts[1]
+                ) {
+
+                    throw new Error(
+                        "Invalid ClearKey format. Expected KEY_ID:KEY"
+                    );
                 }
-            );
+
+
+                const keyId =
+                    keyParts[0];
+
+
+                const key =
+                    keyParts[1];
+
+
+                /*
+                 * Configure ClearKey
+                 */
+
+                player.configure({
+
+                    drm: {
+
+                        clearKeys: {
+
+                            [keyId]:
+                                key
+
+                        }
+
+                    }
+
+                });
+
+
+                console.log(
+                    "ClearKey configured:",
+                    keyId
+                );
+            }
 
 
             /*
-             * IMPORTANT:
-             *
-             * If the stream requires DRM,
-             * use your authorized DRM
-             * license server here.
-             *
-             * Do not put private
-             * license credentials
-             * directly into public HTML.
+             * Load MPD
              */
 
+            console.log(
+                "Loading DASH:",
+                stream.mpd
+            );
 
-            await shakaPlayer.load(
+
+            await player.load(
                 stream.mpd
             );
 
 
             await video.play()
-                .catch(() => {});
+                .catch(
+                    () => {}
+                );
+
+
+            setStatus(
+                "▶ DASH playing — " +
+                (
+                    stream.title ||
+                    "Stream"
+                ),
+                "success"
+            );
 
 
             return;
@@ -886,6 +1142,17 @@ async function playStream(stream) {
             "Player error:",
             error
         );
+
+
+        debug({
+
+            error:
+                error.message,
+
+            stream:
+                stream
+
+        });
 
 
         setStatus(
@@ -948,4 +1215,5 @@ document.addEventListener(
 </script>
 
 </body>
+
 </html>
