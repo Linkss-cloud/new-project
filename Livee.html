@@ -1843,17 +1843,138 @@ function getEventState(event) {
 
 
 /* =========================================================
-   FILTER ACTIVE EVENTS
+   FILTER + SORT EVENTS
+   LIVE FIRST
+   UPCOMING BY NEAREST START TIME
 ========================================================= */
 
 function getActiveEvents(events) {
 
-    return events.filter(
-        event =>
-            getEventState(event) !==
-            "ended"
+    const now = Date.now();
+
+    const activeEvents = events.filter(
+        event => {
+
+            const endTime =
+                getEventEnd(event);
+
+            /*
+             * Remove only when explicit
+             * end time has passed.
+             */
+
+            if (
+                endTime !== null &&
+                now >= endTime
+            ) {
+                return false;
+            }
+
+            return true;
+        }
     );
+
+
+    /*
+     * LIVE FIRST
+     *
+     * Then UPCOMING:
+     * nearest start time first.
+     */
+
+    activeEvents.sort(
+        (a, b) => {
+
+            const stateA =
+                getEventState(a);
+
+            const stateB =
+                getEventState(b);
+
+
+            /*
+             * LIVE events always come first.
+             */
+
+            if (
+                stateA === "live" &&
+                stateB !== "live"
+            ) {
+                return -1;
+            }
+
+
+            if (
+                stateA !== "live" &&
+                stateB === "live"
+            ) {
+                return 1;
+            }
+
+
+            /*
+             * Both are live.
+             * Keep their existing order.
+             */
+
+            if (
+                stateA === "live" &&
+                stateB === "live"
+            ) {
+                return 0;
+            }
+
+
+            /*
+             * Both are upcoming.
+             *
+             * Nearest start time first.
+             */
+
+            const startA =
+                getEventStart(a);
+
+            const startB =
+                getEventStart(b);
+
+
+            /*
+             * Events without a valid
+             * start time go last.
+             */
+
+            if (
+                startA === null &&
+                startB !== null
+            ) {
+                return 1;
+            }
+
+
+            if (
+                startA !== null &&
+                startB === null
+            ) {
+                return -1;
+            }
+
+
+            if (
+                startA === null &&
+                startB === null
+            ) {
+                return 0;
+            }
+
+
+            return startA - startB;
+        }
+    );
+
+
+    return activeEvents;
 }
+
 
 
 /* =========================================================
