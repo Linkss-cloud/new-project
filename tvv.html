@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,
+               maximum-scale=1,user-scalable=no">
+
+<title>SPORTLINK</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #070710;
+  color: #e2e8f0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+#loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #070710;
+  z-index: 100;
+}
+
+.loader {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #25253d;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#list {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(135deg,#6366f1,#ec4899);
+  font-size: 20px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+#search {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 12px;
+  border: 1px solid #25253d;
+  outline: none;
+  background: #111122;
+  color: white;
+  margin-bottom: 15px;
+}
+
+#search:focus {
+  border-color: #6366f1;
+}
+
+#channels {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fill,minmax(145px,1fr));
+  gap: 12px;
+}
+
+.channel {
+  position: relative;
+  min-height: 125px;
+  padding: 15px;
+  border-radius: 15px;
+  background: #101020;
+  border: 1px solid #25253d;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  transition: .2s;
+}
+
+.channel:hover {
+  transform: translateY(-2px);
+  border-color: #6366f1;
+}
+
+.channel img {
+  max-width: 90px;
+  max-height: 48px;
+  object-fit: contain;
+}
+
+.channel-name {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.source {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  padding: 3px 7px;
+  border-radius: 8px;
+  font-size: 8px;
+  background: #1d1d38;
+  color: #818cf8;
+}
+
+#player {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: none;
+}
+
+#video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+#back {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 10;
+  border: 0;
+  border-radius: 10px;
+  padding: 9px 13px;
+  color: white;
+  background: rgba(0,0,0,.65);
+  cursor: pointer;
+}
+
+#message {
+  position: fixed;
+  left: 50%;
+  bottom: 25px;
+  transform: translateX(-50%);
+  padding: 10px 15px;
+  border-radius: 10px;
+  background: rgba(20,20,35,.95);
+  color: #cbd5e1;
+  font-size: 12px;
+  display: none;
+  z-index: 200;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <div id="loading">
+    <div class="loader"></div>
+  </div>
+
+  <section id="list">
+
+    <header>
+      <div class="logo">⚡</div>
+
+      <div>
+        <h1>SPORTLINK</h1>
+        <div class="subtitle">
+          Unified FC · WC · JTV · ST · SY
+        </div>
+      </div>
+    </header>
+
+    <input
+      id="search"
+      type="search"
+      placeholder="Search channels..."
+      autocomplete="off">
+
+    <div id="channels"></div>
+
+  </section>
+
+  <section id="player">
+
+    <button id="back">← Back</button>
+
+    <video
+      id="video"
+      controls
+      playsinline
+      webkit-playsinline>
+    </video>
+
+  </section>
+
+</div>
+
+<div id="message"></div>
+
+<script>
+"use strict";
+
+/*
+ * CHANGE THIS TO YOUR WORKER URL.
+ */
+const WORKER_URL =
+  "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev";
+
+/*
+ * ---------------------------------------------------------
+ * SOURCE ROUTER
+ * ---------------------------------------------------------
+ */
+
+function getSource(id) {
+
+  const value =
+    String(id || "")
+      .trim()
+      .toLowerCase();
+
+  if (value.startsWith("fc-"))
+    return "fc";
+
+  if (value.startsWith("wc-"))
+    return "wc";
+
+  if (value.startsWith("jtv-"))
+    return "jtv";
+
+  if (value.startsWith("st-"))
+    return "st";
+
+  if (value.startsWith("sy-"))
+    return "sy";
+
+  return null;
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * UI
+ * ---------------------------------------------------------
+ */
+
+const loading =
+  document.getElementById("loading");
+
+const list =
+  document.getElementById("list");
+
+const channelsEl =
+  document.getElementById("channels");
+
+const search =
+  document.getElementById("search");
+
+const player =
+  document.getElementById("player");
+
+const video =
+  document.getElementById("video");
+
+const back =
+  document.getElementById("back");
+
+const message =
+  document.getElementById("message");
+
+
+function showMessage(text) {
+
+  message.textContent = text;
+  message.style.display = "block";
+
+  clearTimeout(showMessage.timer);
+
+  showMessage.timer =
+    setTimeout(() => {
+      message.style.display = "none";
+    }, 4000);
+}
+
+
+function showLoading(value) {
+  loading.style.display =
+    value ? "flex" : "none";
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * API
+ * ---------------------------------------------------------
+ */
+
+async function api(id) {
+
+  const url =
+    WORKER_URL +
+    "?id=" +
+    encodeURIComponent(id);
+
+  const response =
+    await fetch(url, {
+      method: "GET",
+      cache: "no-store"
+    });
+
+  if (!response.ok) {
+    throw new Error(
+      "API error " + response.status
+    );
+  }
+
+  const result =
+    await response.json();
+
+  if (!result.ok) {
+    throw new Error(
+      result.error || "API error"
+    );
+  }
+
+  return result;
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * NORMALIZE CHANNEL DATA
+ *
+ * Your individual JSON formats can be converted here.
+ * ---------------------------------------------------------
+ */
+
+function normalizeChannel(item, source) {
+
+  if (!item)
+    return null;
+
+  const id =
+    item.id ||
+    item.channel_id ||
+    item.channelId;
+
+  if (!id)
+    return null;
+
+  return {
+    id: String(id),
+    source: source,
+
+    name:
+      item.name ||
+      item.channel_name ||
+      item.title ||
+      id,
+
+    logo:
+      item.logo ||
+      item.logo_url ||
+      item.tvg_logo ||
+      ""
+  };
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * LOAD ALL AUTHORIZED CHANNEL LISTS
+ * ---------------------------------------------------------
+ */
+
+async function loadChannels() {
+
+  /*
+   * Replace these with your own channel-list APIs if
+   * your worker uses separate list endpoints.
+   *
+   * The router itself remains identical.
+   */
+
+  const result = [];
+
+  /*
+   * Example structure:
+   *
+   * result.push(
+   *   ...fcChannels.map(x =>
+   *     normalizeChannel(x,"fc"))
+   * );
+   *
+   * Do the same for wc/jtv/st/sy.
+   */
+
+  return result.filter(Boolean);
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * RENDER CHANNELS
+ * ---------------------------------------------------------
+ */
+
+let allChannels = [];
+
+
+function renderChannels(items) {
+
+  channelsEl.innerHTML = "";
+
+  if (!items.length) {
+
+    channelsEl.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        color:#64748b;
+        padding:50px 20px;">
+        No channels found
+      </div>
+    `;
+
+    return;
+  }
+
+  const fragment =
+    document.createDocumentFragment();
+
+  items.forEach(channel => {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "channel";
+
+    card.dataset.id =
+      channel.id;
+
+    const source =
+      document.createElement("span");
+
+    source.className = "source";
+
+    source.textContent =
+      channel.source.toUpperCase();
+
+    card.appendChild(source);
+
+    if (channel.logo) {
+
+      const img =
+        document.createElement("img");
+
+      img.src =
+        channel.logo;
+
+      img.alt =
+        channel.name;
+
+      img.loading =
+        "lazy";
+
+      img.onerror =
+        () => img.remove();
+
+      card.appendChild(img);
+    }
+
+    const name =
+      document.createElement("div");
+
+    name.className =
+      "channel-name";
+
+    name.textContent =
+      channel.name;
+
+    card.appendChild(name);
+
+    card.addEventListener(
+      "click",
+      () => openChannel(channel.id)
+    );
+
+    fragment.appendChild(card);
+  });
+
+  channelsEl.appendChild(fragment);
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * SEARCH
+ * ---------------------------------------------------------
+ */
+
+search.addEventListener(
+  "input",
+  () => {
+
+    const q =
+      search.value
+        .trim()
+        .toLowerCase();
+
+    const filtered =
+      allChannels.filter(channel =>
+        channel.name
+          .toLowerCase()
+          .includes(q)
+      );
+
+    renderChannels(filtered);
+  }
+);
+
+
+/*
+ * ---------------------------------------------------------
+ * PLAYER ROUTING
+ * ---------------------------------------------------------
+ */
+
+async function openChannel(id) {
+
+  const source =
+    getSource(id);
+
+  if (!source) {
+
+    showMessage(
+      "Unknown stream source: " + id
+    );
+
+    return;
+  }
+
+  showMessage(
+    "Loading " +
+    source.toUpperCase() +
+    " player..."
+  );
+
+  try {
+
+    const result =
+      await api(id);
+
+    switch (source) {
+
+      case "fc":
+        await startFCPlayer(result);
+        break;
+
+      case "wc":
+        await startWCPlayer(result);
+        break;
+
+      case "jtv":
+        await startJTVPlayer(result);
+        break;
+
+      case "st":
+        await startSTPlayer(result);
+        break;
+
+      case "sy":
+        await startSYPlayer(result);
+        break;
+
+      default:
+        throw new Error(
+          "Unsupported source"
+        );
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    showMessage(
+      error.message ||
+      "Unable to load channel"
+    );
+  }
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * COMMON AUTHORIZED PLAYER
+ *
+ * This accepts a normal browser-playable URL returned by
+ * your own API.
+ * ---------------------------------------------------------
+ */
+
+async function playAuthorizedStream(result) {
+
+  const data =
+    result.data || {};
+
+  const streamUrl =
+    data.stream_url ||
+    data.url ||
+    data.playback_url;
+
+  if (!streamUrl) {
+
+    throw new Error(
+      "No authorized playback URL returned"
+    );
+  }
+
+  list.style.display = "none";
+  player.style.display = "block";
+
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+
+  video.src =
+    streamUrl;
+
+  try {
+    await video.play();
+  } catch (_) {
+    showMessage(
+      "Press play to start"
+    );
+  }
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * SOURCE-SPECIFIC PLAYERS
+ *
+ * Plug your existing authorized FC/WC/JTV/ST/SY player
+ * implementations into these five functions.
+ * ---------------------------------------------------------
+ */
+
+async function startFCPlayer(result) {
+
+  /*
+   * FC-specific player code goes here.
+   *
+   * The routing has already identified this as FC.
+   */
+
+  return playAuthorizedStream(result);
+}
+
+
+async function startWCPlayer(result) {
+
+  /*
+   * WC-specific player code goes here.
+   */
+
+  return playAuthorizedStream(result);
+}
+
+
+async function startJTVPlayer(result) {
+
+  /*
+   * JTV-specific player code goes here.
+   */
+
+  return playAuthorizedStream(result);
+}
+
+
+async function startSTPlayer(result) {
+
+  /*
+   * ST-specific player code goes here.
+   */
+
+  return playAuthorizedStream(result);
+}
+
+
+async function startSYPlayer(result) {
+
+  /*
+   * SY-specific player code goes here.
+   */
+
+  return playAuthorizedStream(result);
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * BACK
+ * ---------------------------------------------------------
+ */
+
+back.addEventListener(
+  "click",
+  () => {
+
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+
+    player.style.display = "none";
+    list.style.display = "block";
+
+    history.replaceState(
+      null,
+      "",
+      location.pathname
+    );
+  }
+);
+
+
+/*
+ * ---------------------------------------------------------
+ * DIRECT ?id=... SUPPORT
+ * ---------------------------------------------------------
+ */
+
+async function boot() {
+
+  showLoading(true);
+
+  try {
+
+    const id =
+      new URLSearchParams(
+        location.search
+      ).get("id");
+
+    if (id) {
+
+      /*
+       * Direct links:
+       *
+       * ?id=fc-123
+       * ?id=wc-123
+       * ?id=jtv-123
+       * ?id=st-123
+       * ?id=sy-123
+       */
+
+      showLoading(false);
+
+      await openChannel(id);
+
+      return;
+    }
+
+    /*
+     * No ID = channel-list mode.
+     *
+     * Populate allChannels from your authorized
+     * channel-list API here.
+     */
+
+    allChannels =
+      await loadChannels();
+
+    renderChannels(
+      allChannels
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    showMessage(
+      error.message ||
+      "Unable to initialize"
+    );
+
+  } finally {
+
+    showLoading(false);
+  }
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  boot
+);
+</script>
+
+</body>
+</html>
