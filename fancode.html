@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+
+<title>SPORTLINK - FANCODE</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- SHAKA PLAYER -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
+
+<style>
+body{
+background:#0a0f1c;
+font-family:'Poppins',sans-serif;
+color:#edf2f7;
+}
+
+button{
+font-family:'Poppins',sans-serif;
+}
+
+*{
+-webkit-user-select:none;
+-moz-user-select:none;
+-ms-user-select:none;
+user-select:none;
+-webkit-tap-highlight-color:transparent;
+}
+
+/* ---------- MATCH LIST ---------- */
+
+.match-tile{
+background:#131d2f;
+border-radius:32px;
+border:1px solid #253247;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+box-shadow:0 15px 30px -10px rgba(0,0,0,0.8);
+transition:.25s;
+}
+
+.match-tile:hover{
+background:#17253b;
+border-color:#3b82f6;
+transform:scale(1.02) translateY(-4px);
+box-shadow:0 25px 40px -8px #1e3a8a40;
+}
+
+.img-wrapper{
+overflow:hidden;
+height:210px;
+position:relative;
+}
+
+.match-img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.live-badge{
+background:#b91c1c;
+color:white;
+font-size:12px;
+padding:4px 10px;
+border-radius:20px;
+position:absolute;
+top:12px;
+left:12px;
+animation:liveBlink 1s infinite;
+}
+
+@keyframes liveBlink{
+0%{opacity:1;}
+50%{opacity:0.3;}
+100%{opacity:1;}
+}
+
+.scheduled-badge{
+background:rgba(0,0,0,.6);
+color:white;
+font-size:12px;
+padding:4px 10px;
+border-radius:20px;
+position:absolute;
+top:12px;
+left:12px;
+}
+
+.watch-btn{
+background:#2563eb;
+border-radius:50px;
+padding:12px;
+font-weight:600;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+margin-top:12px;
+cursor:pointer;
+}
+
+.watch-btn:hover{
+background:#1d4ed8;
+}
+
+.not-live{
+background:#334155;
+cursor:not-allowed;
+pointer-events:none;
+}
+
+.match-time{
+font-size:13px;
+color:#9ca3af;
+margin-top:6px;
+}
+
+/* ---------- QUALITY MODAL ---------- */
+
+#qualityModal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(6px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+#qualityModal.hidden{
+display:none;
+}
+
+#qualityModal .modal-content{
+width:90%;
+max-width:360px;
+background:#111827;
+border-radius:18px;
+padding:22px;
+text-align:center;
+box-shadow:0 20px 40px rgba(0,0,0,.7);
+}
+
+#qualityModal h2{
+font-size:20px;
+font-weight:600;
+margin-bottom:18px;
+color:#f9fafb;
+}
+
+#qualityList{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.quality-item{
+background:#1f2937;
+border-radius:12px;
+padding:14px 16px;
+font-size:16px;
+font-weight:500;
+color:#e5e7eb;
+display:flex;
+align-items:center;
+justify-content:space-between;
+cursor:pointer;
+transition:.2s;
+}
+
+.quality-item::after{
+content:">";
+font-size:12px;
+opacity:.7;
+}
+
+.quality-item:hover{
+background:#2563eb;
+color:white;
+transform:translateY(-1px);
+}
+
+#qualityModal .btn{
+margin-top:16px;
+background:#ef4444;
+color:white;
+border:none;
+border-radius:10px;
+padding:10px;
+font-size:14px;
+font-weight:600;
+cursor:pointer;
+width:100%;
+}
+
+#qualityModal .btn:hover{
+background:#dc2626;
+}
+
+/* ---------- PLAYER VIEW ---------- */
+
+#playerView{
+position:fixed;
+inset:0;
+background:#000;
+z-index:5000;
+display:none;
+}
+
+#playerView.active{
+display:block;
+}
+
+#playerView .shaka-video-container{
+width:100%;
+height:100%;
+}
+
+#playerView video{
+width:100%;
+height:100%;
+object-fit:contain;
+background:#000;
+}
+
+.loading-overlay{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+background:#000;
+color:#fff;
+z-index:2000;
+font-size:16px;
+gap:12px;
+}
+
+.spinner{
+border:4px solid rgba(255,255,255,.2);
+border-top:4px solid #3b82f6;
+border-radius:50%;
+width:40px;
+height:40px;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg)}
+100%{transform:rotate(360deg)}
+}
+
+#backBtn{
+position:absolute;
+top:14px;
+left:14px;
+z-index:999999;
+background:rgba(15,23,42,.75);
+backdrop-filter:blur(6px);
+color:#fff;
+border:1px solid rgba(255,255,255,.15);
+border-radius:50px;
+padding:9px 18px;
+font-size:14px;
+font-weight:600;
+display:flex;
+align-items:center;
+gap:8px;
+cursor:pointer;
+transition:.2s;
+}
+
+#backBtn:hover{
+background:#2563eb;
+border-color:#2563eb;
+}
+</style>
+</head>
+
+<body class="p-5 max-w-7xl mx-auto">
+
+<!-- ===================== LIST VIEW ===================== -->
+<div id="listView">
+
+  <!-- HEADER -->
+  <div class="text-center mt-4 mb-8">
+    <div class="inline-flex items-center justify-center gap-3 bg-[#131d2f] py-3 px-7 rounded-full border border-blue-900/50">
+      <span class="text-3xl font-black tracking-tight text-white">Sportlink</span>
+    </div>
+    <p class="text-gray-500 text-sm mt-3 tracking-wide">FANCODE LIVE WEB</p>
+  </div>
+
+  <!-- MATCH GRID -->
+  <div id="matches-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6"></div>
+
+</div>
+
+<!-- ===================== PLAYER VIEW ===================== -->
+<div id="playerView"></div>
+
+<!-- ===================== QUALITY MODAL ===================== -->
+<div id="qualityModal" class="hidden">
+  <div class="modal-content">
+    <h2>Select Quality</h2>
+    <div id="qualityList"></div>
+    <button onclick="closeQuality()" class="btn">Close</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+============================================================ */
+const DATA_URL = 'https://raw.githubusercontent.com/kajju027/Fancode-Events-Json/refs/heads/main/fancode.json';
+
+const container  = document.getElementById("matches-container");
+const playerView = document.getElementById("playerView");
+
+let allMatches = [];
+
+/* ============================================================
+   LOAD MATCHES
+============================================================ */
+fetch(DATA_URL)
+  .then(res => res.json())
+  .then(data => {
+    allMatches = data.matches || [];
+    container.innerHTML = "";
+
+    const matches = allMatches.sort((a, b) => {
+      const aLive = (a.status || "").toUpperCase() === "LIVE";
+      const bLive = (b.status || "").toUpperCase() === "LIVE";
+      return bLive - aLive;
+    });
+
+    matches.forEach((m, index) => {
+      const isLive = (m.status || "").toUpperCase() === "LIVE";
+      const img = m.image || "https://www.fancode.com/skillup-uploads/cms-media/Cricket_Fallback_Old_match-card.jpg";
+      const card = document.createElement("div");
+      card.className = "match-tile";
+      card.innerHTML = `
+        <div class="img-wrapper">
+          <img src="${img}" class="match-img" loading="lazy">
+          ${isLive
+            ? '<span class="live-badge"><i class="fas fa-circle"></i> LIVE</span>'
+            : '<span class="scheduled-badge"><i class="far fa-calendar"></i> SCHEDULED</span>'}
+        </div>
+        <div class="p-5 flex flex-col flex-1">
+          <h3 class="text-xl font-bold">${m.title || 'Match'}</h3>
+          <div class="text-sm text-gray-400 mt-2">${m.tournament || ''}</div>
+          <div class="match-time">${formatDate(m.startTime)}</div>
+          ${isLive
+            ? `<div onclick="openQuality(${index})" class="watch-btn"><i class="fas fa-play"></i> WATCH NOW</div>`
+            : `<div class="watch-btn not-live"><i class="far fa-clock"></i> NOT LIVE</div>`}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  })
+  .catch(() => {
+    container.innerHTML = "<p class='text-center col-span-full'>Failed to load matches</p>";
+  });
+
+/* ============================================================
+   DATE FORMAT
+============================================================ */
+function formatDate(time) {
+  if (!time) return "";
+  const parts = time.match(/(\d{2}):(\d{2}):(\d{2})\s*(AM|PM)\s*(\d{2})-(\d{2})-(\d{4})/i);
+  if (parts) {
+    let [, hh, mm, ss, ampm, dd, mo, yyyy] = parts;
+    hh = parseInt(hh, 10);
+    if (ampm.toUpperCase() === 'PM' && hh < 12) hh += 12;
+    if (ampm.toUpperCase() === 'AM' && hh === 12) hh = 0;
+    const d = new Date(yyyy, parseInt(mo, 10) - 1, parseInt(dd, 10), hh, parseInt(mm, 10), parseInt(ss, 10));
+    return d.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  }
+  const d = new Date(time);
+  if (isNaN(d)) return time;
+  return d.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
+/* ============================================================
+   QUALITY MODAL
+============================================================ */
+function openQuality(index) {
+  const match = allMatches[index];
+  const streams = match.auto_streams && match.auto_streams.ENGLISH && match.auto_streams.ENGLISH.streams;
+
+  if (!streams || Object.keys(streams).length === 0) {
+    alert("Stream not available");
+    return;
+  }
+
+  const list = document.getElementById("qualityList");
+  list.innerHTML = "";
+
+  const order = ['1080p','720p','540p','480p','360p','240p'];
+  const sortedKeys = Object.keys(streams).sort((a, b) => order.indexOf(b) - order.indexOf(a));
+
+  sortedKeys.forEach(q => {
+    const btn = document.createElement("div");
+    btn.className = "quality-item";
+    btn.innerText = q;
+    btn.onclick = function () {
+      closeQuality();
+      playStream(streams[q]);
+    };
+    list.appendChild(btn);
+  });
+
+  document.getElementById("qualityModal").classList.remove("hidden");
+}
+
+function closeQuality() {
+  document.getElementById("qualityModal").classList.add("hidden");
+}
+
+/* ============================================================
+   PLAYER
+============================================================ */
+let shakaPlayer = null;
+let shakaUI     = null;
+
+function playerMarkup() {
+  return `
+    <div class="shaka-video-container" data-shaka-player>
+      <video id="video" autoplay playsinline></video>
+      <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <span>Analyzing the video...</span>
+      </div>
+    </div>
+    <button id="backBtn"><i class="fas fa-chevron-left"></i> Back</button>
+  `;
+}
+
+function mountPlayer() {
+  playerView.innerHTML = playerMarkup();
+  playerView.classList.add("active");
+  document.body.style.overflow = "hidden";
+
+  const refs = {
+    video:     document.getElementById("video"),
+    loading:   document.getElementById("loading"),
+    container: playerView.querySelector(".shaka-video-container")
+  };
+
+  refs.video.addEventListener("playing", () => { refs.loading.style.display = "none"; });
+  refs.video.addEventListener("waiting", () => { refs.loading.style.display = "flex"; });
+
+  document.getElementById("backBtn").onclick = closePlayer;
+
+  return refs;
+}
+
+function cleanupShaka() {
+  try { if (shakaUI) shakaUI.destroy(); } catch (e) {}
+  try { if (shakaPlayer) shakaPlayer.destroy(); } catch (e) {}
+  shakaUI = null;
+  shakaPlayer = null;
+}
+
+async function playStream(url) {
+  if (!url) { alert("Stream URL missing"); return; }
+
+  cleanupShaka();
+  let refs = mountPlayer();
+  const { video, loading, container } = refs;
+
+  const canUseShaka = window.shaka && shaka.Player && shaka.Player.isBrowserSupported();
+
+  if (canUseShaka) {
+    try {
+      shakaPlayer = new shaka.Player(video);
+      shakaUI = new shaka.ui.Overlay(shakaPlayer, container, video);
+
+      shakaUI.configure({
+        controlPanelElements: [
+          'play_pause',
+          'mute',
+          'time_and_duration',
+          'spacer',
+          'quality',
+          'language',
+          'picture_in_picture',
+          'fullscreen',
+          'overflow_menu'
+        ],
+        addSeekBar: true
+      });
+
+      shakaPlayer.configure({
+        streaming: {
+          bufferingGoal: 10,
+          rebufferingGoal: 2,
+          bufferBehind: 30
+        }
+      });
+
+      await shakaPlayer.load(url);
+
+      video.play().catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+
+      return;
+
+    } catch (e) {
+      console.warn("Shaka failed, falling back to native playback:", e);
+      cleanupShaka();
+      // rebuild DOM (shaka may have altered it)
+      refs = mountPlayer();
+    }
+  }
+
+  // ---- Native fallback ----
+  const v = refs.video;
+  const l = refs.loading;
+  v.controls = true;
+  v.src = url;
+  v.play().catch(() => {
+    v.muted = true;
+    v.play().catch(() => {});
+  });
+  v.addEventListener("playing", () => { l.style.display = "none"; });
+  v.addEventListener("error", () => {
+    l.innerHTML = "<span style='color:#f87171'>Playback failed</span>";
+  });
+}
+
+function closePlayer() {
+  cleanupShaka();
+
+  try {
+    const v = document.getElementById("video");
+    if (v) {
+      v.pause();
+      v.removeAttribute("src");
+      v.load();
+    }
+  } catch (e) {}
+
+  playerView.classList.remove("active");
+  playerView.innerHTML = "";
+  document.body.style.overflow = "";
+}
+
+/* Close player with ESC (only when not fullscreen) */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && playerView.classList.contains("active") && !document.fullscreenElement) {
+    closePlayer();
+  }
+});
+</script>
+
+</body>
+</html>
