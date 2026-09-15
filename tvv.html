@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,
-               maximum-scale=1,user-scalable=no">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,
+           maximum-scale=1,user-scalable=no">
 
 <title>SPORTLINK</title>
 
@@ -218,6 +220,7 @@ h1 {
 
       <div>
         <h1>SPORTLINK</h1>
+
         <div class="subtitle">
           Unified FC · WC · JTV · ST · SY
         </div>
@@ -236,7 +239,9 @@ h1 {
 
   <section id="player">
 
-    <button id="back">← Back</button>
+    <button id="back">
+      ← Back
+    </button>
 
     <video
       id="video"
@@ -254,49 +259,18 @@ h1 {
 <script>
 "use strict";
 
-/*
- * CHANGE THIS TO YOUR WORKER URL.
- */
+
+// ============================================================
+// CONFIG
+// ============================================================
+
 const WORKER_URL =
   "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev";
 
-/*
- * ---------------------------------------------------------
- * SOURCE ROUTER
- * ---------------------------------------------------------
- */
 
-function getSource(id) {
-
-  const value =
-    String(id || "")
-      .trim()
-      .toLowerCase();
-
-  if (value.startsWith("fc-"))
-    return "fc";
-
-  if (value.startsWith("wc-"))
-    return "wc";
-
-  if (value.startsWith("jtv-"))
-    return "jtv";
-
-  if (value.startsWith("st-"))
-    return "st";
-
-  if (value.startsWith("sy-"))
-    return "sy";
-
-  return null;
-}
-
-
-/*
- * ---------------------------------------------------------
- * UI
- * ---------------------------------------------------------
- */
+// ============================================================
+// ELEMENTS
+// ============================================================
 
 const loading =
   document.getElementById("loading");
@@ -323,12 +297,51 @@ const message =
   document.getElementById("message");
 
 
+// ============================================================
+// SOURCE ROUTER
+// ============================================================
+
+function getSource(id) {
+
+  const value =
+    String(id || "")
+      .trim()
+      .toLowerCase();
+
+  const sources = [
+    "fc",
+    "wc",
+    "jtv",
+    "st",
+    "sy"
+  ];
+
+  for (const source of sources) {
+    if (
+      value.startsWith(
+        source + "-"
+      )
+    ) {
+      return source;
+    }
+  }
+
+  return null;
+}
+
+
+// ============================================================
+// MESSAGE
+// ============================================================
+
 function showMessage(text) {
 
   message.textContent = text;
   message.style.display = "block";
 
-  clearTimeout(showMessage.timer);
+  clearTimeout(
+    showMessage.timer
+  );
 
   showMessage.timer =
     setTimeout(() => {
@@ -337,43 +350,123 @@ function showMessage(text) {
 }
 
 
-function showLoading(value) {
-  loading.style.display =
-    value ? "flex" : "none";
-}
+// ============================================================
+// AUTH
+// ============================================================
 
+async function authenticate() {
 
-/*
- * ---------------------------------------------------------
- * API
- * ---------------------------------------------------------
- */
+  const existing =
+    sessionStorage.getItem(
+      "sportlink_token"
+    );
 
-async function api(id) {
-
-  const url =
-    WORKER_URL +
-    "?id=" +
-    encodeURIComponent(id);
+  if (existing) {
+    return existing;
+  }
 
   const response =
-    await fetch(url, {
-      method: "GET",
-      cache: "no-store"
-    });
+    await fetch(
+      WORKER_URL +
+      "/api/auth",
+      {
+        method: "POST",
+        cache: "no-store"
+      }
+    );
 
   if (!response.ok) {
     throw new Error(
-      "API error " + response.status
+      "Authentication failed"
     );
   }
 
   const result =
     await response.json();
 
-  if (!result.ok) {
+  if (
+    !result.success ||
+    !result.token
+  ) {
     throw new Error(
-      result.error || "API error"
+      result.error ||
+      "Authentication failed"
+    );
+  }
+
+  sessionStorage.setItem(
+    "sportlink_token",
+    result.token
+  );
+
+  return result.token;
+}
+
+
+// ============================================================
+// API
+// ============================================================
+
+async function api(id) {
+
+  const source =
+    getSource(id);
+
+  if (!source) {
+    throw new Error(
+      "Unknown source: " + id
+    );
+  }
+
+  const token =
+    await authenticate();
+
+  const url =
+    WORKER_URL +
+    "/api/events?ssid=" +
+    encodeURIComponent(source) +
+    "&id=" +
+    encodeURIComponent(id);
+
+  const response =
+    await fetch(
+      url,
+      {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+          "Authorization":
+            "Bearer " + token
+        }
+      }
+    );
+
+  if (
+    response.status === 401
+  ) {
+    sessionStorage.removeItem(
+      "sportlink_token"
+    );
+
+    throw new Error(
+      "Session expired. Please try again."
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      "API error " +
+      response.status
+    );
+  }
+
+  const result =
+    await response.json();
+
+  if (!result.success) {
+    throw new Error(
+      result.error ||
+      "API error"
     );
   }
 
@@ -381,204 +474,9 @@ async function api(id) {
 }
 
 
-/*
- * ---------------------------------------------------------
- * NORMALIZE CHANNEL DATA
- *
- * Your individual JSON formats can be converted here.
- * ---------------------------------------------------------
- */
-
-function normalizeChannel(item, source) {
-
-  if (!item)
-    return null;
-
-  const id =
-    item.id ||
-    item.channel_id ||
-    item.channelId;
-
-  if (!id)
-    return null;
-
-  return {
-    id: String(id),
-    source: source,
-
-    name:
-      item.name ||
-      item.channel_name ||
-      item.title ||
-      id,
-
-    logo:
-      item.logo ||
-      item.logo_url ||
-      item.tvg_logo ||
-      ""
-  };
-}
-
-
-/*
- * ---------------------------------------------------------
- * LOAD ALL AUTHORIZED CHANNEL LISTS
- * ---------------------------------------------------------
- */
-
-async function loadChannels() {
-
-  /*
-   * Replace these with your own channel-list APIs if
-   * your worker uses separate list endpoints.
-   *
-   * The router itself remains identical.
-   */
-
-  const result = [];
-
-  /*
-   * Example structure:
-   *
-   * result.push(
-   *   ...fcChannels.map(x =>
-   *     normalizeChannel(x,"fc"))
-   * );
-   *
-   * Do the same for wc/jtv/st/sy.
-   */
-
-  return result.filter(Boolean);
-}
-
-
-/*
- * ---------------------------------------------------------
- * RENDER CHANNELS
- * ---------------------------------------------------------
- */
-
-let allChannels = [];
-
-
-function renderChannels(items) {
-
-  channelsEl.innerHTML = "";
-
-  if (!items.length) {
-
-    channelsEl.innerHTML = `
-      <div style="
-        grid-column:1/-1;
-        text-align:center;
-        color:#64748b;
-        padding:50px 20px;">
-        No channels found
-      </div>
-    `;
-
-    return;
-  }
-
-  const fragment =
-    document.createDocumentFragment();
-
-  items.forEach(channel => {
-
-    const card =
-      document.createElement("div");
-
-    card.className = "channel";
-
-    card.dataset.id =
-      channel.id;
-
-    const source =
-      document.createElement("span");
-
-    source.className = "source";
-
-    source.textContent =
-      channel.source.toUpperCase();
-
-    card.appendChild(source);
-
-    if (channel.logo) {
-
-      const img =
-        document.createElement("img");
-
-      img.src =
-        channel.logo;
-
-      img.alt =
-        channel.name;
-
-      img.loading =
-        "lazy";
-
-      img.onerror =
-        () => img.remove();
-
-      card.appendChild(img);
-    }
-
-    const name =
-      document.createElement("div");
-
-    name.className =
-      "channel-name";
-
-    name.textContent =
-      channel.name;
-
-    card.appendChild(name);
-
-    card.addEventListener(
-      "click",
-      () => openChannel(channel.id)
-    );
-
-    fragment.appendChild(card);
-  });
-
-  channelsEl.appendChild(fragment);
-}
-
-
-/*
- * ---------------------------------------------------------
- * SEARCH
- * ---------------------------------------------------------
- */
-
-search.addEventListener(
-  "input",
-  () => {
-
-    const q =
-      search.value
-        .trim()
-        .toLowerCase();
-
-    const filtered =
-      allChannels.filter(channel =>
-        channel.name
-          .toLowerCase()
-          .includes(q)
-      );
-
-    renderChannels(filtered);
-  }
-);
-
-
-/*
- * ---------------------------------------------------------
- * PLAYER ROUTING
- * ---------------------------------------------------------
- */
+// ============================================================
+// OPEN CHANNEL
+// ============================================================
 
 async function openChannel(id) {
 
@@ -586,9 +484,8 @@ async function openChannel(id) {
     getSource(id);
 
   if (!source) {
-
     showMessage(
-      "Unknown stream source: " + id
+      "Unknown stream source"
     );
 
     return;
@@ -597,7 +494,7 @@ async function openChannel(id) {
   showMessage(
     "Loading " +
     source.toUpperCase() +
-    " player..."
+    "..."
   );
 
   try {
@@ -605,33 +502,9 @@ async function openChannel(id) {
     const result =
       await api(id);
 
-    switch (source) {
-
-      case "fc":
-        await startFCPlayer(result);
-        break;
-
-      case "wc":
-        await startWCPlayer(result);
-        break;
-
-      case "jtv":
-        await startJTVPlayer(result);
-        break;
-
-      case "st":
-        await startSTPlayer(result);
-        break;
-
-      case "sy":
-        await startSYPlayer(result);
-        break;
-
-      default:
-        throw new Error(
-          "Unsupported source"
-        );
-    }
+    await playAuthorizedStream(
+      result
+    );
 
   } catch (error) {
 
@@ -645,45 +518,51 @@ async function openChannel(id) {
 }
 
 
-/*
- * ---------------------------------------------------------
- * COMMON AUTHORIZED PLAYER
- *
- * This accepts a normal browser-playable URL returned by
- * your own API.
- * ---------------------------------------------------------
- */
+// ============================================================
+// PLAY AUTHORIZED STREAM
+// ============================================================
 
-async function playAuthorizedStream(result) {
+async function playAuthorizedStream(
+  result
+) {
 
   const data =
     result.data || {};
 
   const streamUrl =
     data.stream_url ||
-    data.url ||
-    data.playback_url;
+    data.playback_url ||
+    data.url;
 
   if (!streamUrl) {
-
     throw new Error(
       "No authorized playback URL returned"
     );
   }
 
-  list.style.display = "none";
-  player.style.display = "block";
+  list.style.display =
+    "none";
+
+  player.style.display =
+    "block";
 
   video.pause();
-  video.removeAttribute("src");
+
+  video.removeAttribute(
+    "src"
+  );
+
   video.load();
 
   video.src =
     streamUrl;
 
   try {
+
     await video.play();
+
   } catch (_) {
+
     showMessage(
       "Press play to start"
     );
@@ -691,83 +570,27 @@ async function playAuthorizedStream(result) {
 }
 
 
-/*
- * ---------------------------------------------------------
- * SOURCE-SPECIFIC PLAYERS
- *
- * Plug your existing authorized FC/WC/JTV/ST/SY player
- * implementations into these five functions.
- * ---------------------------------------------------------
- */
-
-async function startFCPlayer(result) {
-
-  /*
-   * FC-specific player code goes here.
-   *
-   * The routing has already identified this as FC.
-   */
-
-  return playAuthorizedStream(result);
-}
-
-
-async function startWCPlayer(result) {
-
-  /*
-   * WC-specific player code goes here.
-   */
-
-  return playAuthorizedStream(result);
-}
-
-
-async function startJTVPlayer(result) {
-
-  /*
-   * JTV-specific player code goes here.
-   */
-
-  return playAuthorizedStream(result);
-}
-
-
-async function startSTPlayer(result) {
-
-  /*
-   * ST-specific player code goes here.
-   */
-
-  return playAuthorizedStream(result);
-}
-
-
-async function startSYPlayer(result) {
-
-  /*
-   * SY-specific player code goes here.
-   */
-
-  return playAuthorizedStream(result);
-}
-
-
-/*
- * ---------------------------------------------------------
- * BACK
- * ---------------------------------------------------------
- */
+// ============================================================
+// BACK
+// ============================================================
 
 back.addEventListener(
   "click",
   () => {
 
     video.pause();
-    video.removeAttribute("src");
+
+    video.removeAttribute(
+      "src"
+    );
+
     video.load();
 
-    player.style.display = "none";
-    list.style.display = "block";
+    player.style.display =
+      "none";
+
+    list.style.display =
+      "block";
 
     history.replaceState(
       null,
@@ -778,55 +601,54 @@ back.addEventListener(
 );
 
 
-/*
- * ---------------------------------------------------------
- * DIRECT ?id=... SUPPORT
- * ---------------------------------------------------------
- */
+// ============================================================
+// DIRECT ?id=... SUPPORT
+// ============================================================
 
 async function boot() {
 
-  showLoading(true);
+  loading.style.display =
+    "flex";
 
   try {
 
-    const id =
+    const params =
       new URLSearchParams(
         location.search
-      ).get("id");
+      );
+
+    const id =
+      params.get("id");
 
     if (id) {
 
-      /*
-       * Direct links:
-       *
-       * ?id=fc-123
-       * ?id=wc-123
-       * ?id=jtv-123
-       * ?id=st-123
-       * ?id=sy-123
-       */
+      list.style.display =
+        "none";
 
-      showLoading(false);
-
-      await openChannel(id);
+      await openChannel(
+        id
+      );
 
       return;
     }
 
     /*
-     * No ID = channel-list mode.
+     * List mode.
      *
-     * Populate allChannels from your authorized
-     * channel-list API here.
+     * The Worker currently provides item-by-ID access.
+     * Put your own authorized channel catalog here if
+     * you want the home page to display all channels.
      */
 
-    allChannels =
-      await loadChannels();
-
-    renderChannels(
-      allChannels
-    );
+    channelsEl.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        color:#64748b;
+        padding:50px 20px;">
+        Open a channel link using ?id=...
+      </div>
+    `;
 
   } catch (error) {
 
@@ -839,10 +661,53 @@ async function boot() {
 
   } finally {
 
-    showLoading(false);
+    loading.style.display =
+      "none";
   }
 }
 
+
+// ============================================================
+// SEARCH
+// ============================================================
+
+search.addEventListener(
+  "input",
+  () => {
+
+    const query =
+      search.value
+        .trim()
+        .toLowerCase();
+
+    const cards =
+      document.querySelectorAll(
+        ".channel"
+      );
+
+    cards.forEach(card => {
+
+      const name =
+        card
+          .querySelector(
+            ".channel-name"
+          )
+          ?.textContent
+          .toLowerCase() || "";
+
+      card.style.display =
+        !query ||
+        name.includes(query)
+          ? ""
+          : "none";
+    });
+  }
+);
+
+
+// ============================================================
+// START
+// ============================================================
 
 document.addEventListener(
   "DOMContentLoaded",
