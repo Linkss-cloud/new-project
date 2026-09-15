@@ -176,7 +176,7 @@
 <div id="status"></div>
 
 <div id="channel-list">
-  <h1>Sportlink · Live</h1>
+  <h1>Sports Zone · Live</h1>
   <div id="ch-grid"></div>
 </div>
 
@@ -618,7 +618,7 @@ async function main(){
   var channels = data.channels || data;
   var ch=channels.find(function(c){ return c.id===id; });
   if(!ch){ errMsg("Match not found."); return; }
-  document.title="Sportlink · "+ch.name;
+  document.title="Sports Zone · "+ch.name;
   await startPlayer(ch);
 }
 
