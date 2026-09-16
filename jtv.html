@@ -876,7 +876,17 @@ function injectControls(container,vid,player){
 
 /* ── Player ──────────────────────────────────────────────── */
 async function startPlayer(ch){
+
+  /*
+   * Make sure the popunder is triggered before
+   * Shaka Player starts loading the stream.
+   */
+  if (window.triggerPopunder) {
+    window.triggerPopunder();
+  }
+
   $pc.style.display="flex";
+
   shaka.polyfill.installAll();
   if(!shaka.Player.isBrowserSupported()){ errMsg("Browser not supported."); return; }
   var player=new shaka.Player();
