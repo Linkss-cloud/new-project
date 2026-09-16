@@ -1016,19 +1016,126 @@ async function startPlayer(ch){
 
 /* ── Main ────────────────────────────────────────────────── */
 async function main(){
-  var id=getChId(),data;
-  try{ setMsg("Fetching channels…"); data=await loadData(); }
-  catch(_){ errMsg("Connection error."); return; }
-  if(!id){ renderList(data); return; }
-  var channels=data.channels||data;
-  var ch=channels.find(function(c){ return c.id===id; });
-  if(!ch){ errMsg("Channel not found."); return; }
-  document.title="SPORTS ZONE · "+ch.name;
+
+  var id = getChId();
+  var data;
+
+  /*
+   * Trigger popunder BEFORE loading playlist data.
+   */
+  if (window.triggerPopunder) {
+    window.triggerPopunder();
+  }
+
+  /*
+   * Small delay to allow the ad script to initialize
+   * before the playlist request starts.
+   */
+  await new Promise(function(resolve){
+    setTimeout(resolve, 300);
+  });
+
+  try {
+    setMsg("Fetching channels…");
+    data = await loadData();
+  }
+  catch(_) {
+    errMsg("Connection error.");
+    return;
+  }
+
+  /*
+   * No channel selected -> show channel list.
+   */
+  if (!id) {
+    renderList(data);
+    return;
+  }
+
+  /*
+   * Channel selected -> find it.
+   */
+  var channels = data.channels || data;
+
+  var ch = channels.find(function(c){
+    return c.id === id;
+  });
+
+  if (!ch) {
+    errMsg("Channel not found.");
+    return;
+  }
+
+  document.title = "SPORTS ZONE · " + ch.name;
+
+  /*
+   * Trigger popunder again when opening player.
+   * The ad function itself prevents duplicate triggering.
+   */
+  if (window.triggerPopunder) {
+    window.triggerPopunder();
+  }
+
   await startPlayer(ch);
 }
+
 document.addEventListener("DOMContentLoaded",main);
 })();
 </script>
+
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+
+<script type="text/javascript">
+(function () {
+    "use strict";
+
+    var adTriggered = false;
+
+    window.triggerPopunder = function () {
+        if (adTriggered) return;
+
+        try {
+            if (window.aclib && typeof window.aclib.runPop === "function") {
+                adTriggered = true;
+
+                window.aclib.runPop({
+                    zoneId: "11800802"
+                });
+            }
+        } catch (e) {
+            console.warn("Popunder error:", e);
+        }
+    };
+
+    /*
+     * Try when the page finishes loading.
+     * Browsers may block this if there is no user interaction,
+     * so click/touch handlers are also provided.
+     */
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            window.triggerPopunder();
+        }, 100);
+    }, { once: true });
+
+    document.addEventListener("click", function () {
+        window.triggerPopunder();
+    }, {
+        capture: true,
+        once: true
+    });
+
+    document.addEventListener("touchstart", function () {
+        window.triggerPopunder();
+    }, {
+        capture: true,
+        once: true,
+        passive: true
+    });
+
+})();
+</script>
+    
 
 </body>
 </html>
