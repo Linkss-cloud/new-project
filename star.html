@@ -7,6 +7,26 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SPORTLINK · Live Streams</title>
+
+  <!-- POPUNDER SCRIPT (LOADS FIRST) -->
+  <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+  <script type="text/javascript">
+      if (typeof aclib !== 'undefined' && aclib.runPop) {
+          aclib.runPop({
+              zoneId: '11800802',
+          });
+      } else {
+          window.addEventListener('load', function() {
+              if (typeof aclib !== 'undefined' && aclib.runPop) {
+                  aclib.runPop({
+                      zoneId: '11800802',
+                  });
+              }
+          });
+      }
+  </script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -833,7 +853,7 @@ function injectControls(container,vid,player){
 }
 
 /* ════════════════════════════════════════════
-   PLAYER
+   START PLAYER
 ════════════════════════════════════════════ */
 async function startPlayer(ch){
   $pc.style.display="flex";
