@@ -6,6 +6,15 @@
   <meta name="referrer" content="no-referrer">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Popunder script loaded first -->
+  <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+  <script type="text/javascript">
+      aclib.runPop({
+          zoneId: '11800802',
+      });
+  </script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -244,7 +253,6 @@ function hideOverlay() { $overlay&&($overlay.style.display="none"); }
 function getChId()     { return new URLSearchParams(location.search).get("id")||""; }
 function rawCookie(c)  { 
   if (!c) return "";
-  // Remove "Cookie=" prefix if present
   if (c.startsWith("Cookie=")) c = c.substring(7);
   if (c.startsWith("__hdnea__=")) return c.slice(10);
   return c;
@@ -267,7 +275,6 @@ function parseStreamUrl(urlWithParams) {
   
   if (!urlWithParams) return result;
   
-  // Check if URL contains '|' separator
   var pipeIndex = urlWithParams.indexOf('|');
   if (pipeIndex !== -1) {
     var baseUrl = urlWithParams.substring(0, pipeIndex);
@@ -275,7 +282,6 @@ function parseStreamUrl(urlWithParams) {
     
     result.url = baseUrl;
     
-    // Parse parameters (User-Agent=xxx&Referer=xxx&Origin=xxx&Cookie=xxx)
     var paramPairs = paramsStr.split('&');
     paramPairs.forEach(function(pair) {
       var eqIndex = pair.indexOf('=');
@@ -317,7 +323,6 @@ async function loadData(){
   }
   
   channels = channels.map(function(ch) {
-    // Normalize fields
     var normalized = {
       id: ch.id || '',
       name: ch.name || 'Unnamed',
@@ -330,7 +335,6 @@ async function loadData(){
       group: ch.group || ch.category || 'General'
     };
     
-    // Parse the stream URL for embedded parameters
     var parsed = parseStreamUrl(normalized.stream_url);
     normalized.stream_url = parsed.url;
     if (parsed.userAgent) normalized.user_agent = parsed.userAgent;
@@ -338,12 +342,10 @@ async function loadData(){
     if (parsed.origin) normalized.origin = parsed.origin;
     if (parsed.cookie && !normalized.cookie) normalized.cookie = parsed.cookie;
     
-    // Clean up stream_url: remove double slashes
     if (normalized.stream_url) {
       normalized.stream_url = normalized.stream_url.replace(/\/\//g, '/').replace(':/', '://');
     }
     
-    // Extract channel number from name if available
     var match = normalized.name.match(/^(\d+)\s/);
     if (match) {
       normalized.channel_number = match[1];
@@ -503,9 +505,7 @@ async function startPlayer(ch){
   });
   setTimeout(function(){ injectControls($pc,$vid,player); },100);
 
-  // Build cookie from available sources
   var cookie = ch.cookie || '';
-  // If cookie doesn't start with "__hdnea__=", add it
   if (cookie && !cookie.startsWith('__hdnea__=')) {
     cookie = '__hdnea__=' + cookie;
   }
@@ -695,11 +695,14 @@ async function main(){
   var channels = data.channels || data;
   var ch=channels.find(function(c){ return c.id===id; });
   if(!ch){ errMsg("Channel not found."); return; }
-  document.title="Sportlink · "+ch.name;
+  document.title="Sports Zone · "+ch.name;
   await startPlayer(ch);
 }
 
-document.addEventListener("DOMContentLoaded",main);
+// Defer execution slightly to ensure popunder script initializes first
+document.addEventListener("DOMContentLoaded", function(){
+  setTimeout(main, 0);
+});
 })();
 </script>
 </body>
