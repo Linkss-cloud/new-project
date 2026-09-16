@@ -2,37 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-
-  <meta name="viewport"
-        content="width=device-width,initial-scale=1,
-        maximum-scale=1,user-scalable=no,
-        viewport-fit=cover">
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box
-    }
+    *{margin:0;padding:0;box-sizing:border-box}
 
     html,body{
       width:100%;
       height:100%;
       background:#0a0a0a;
       overflow:hidden;
-      font-family:
-        'Segoe UI',
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
+      font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
       -webkit-user-select:none;
-      user-select:none
+      user-select:none;
+      -webkit-touch-callout:none
     }
 
     #overlay{
@@ -47,14 +36,10 @@
       gap:14px
     }
 
-    #overlay svg{
-      animation:spin 1s linear infinite
-    }
+    #overlay svg{animation:spin 1s linear infinite}
 
     @keyframes spin{
-      to{
-        transform:rotate(360deg)
-      }
+      to{transform:rotate(360deg)}
     }
 
     #overlay p{
@@ -74,10 +59,9 @@
       display:none;
       flex-direction:column;
       overflow-y:auto;
-      padding:
-        max(24px,env(safe-area-inset-top))
-        16px
-        max(24px,env(safe-area-inset-bottom))
+      padding:max(24px,env(safe-area-inset-top))
+              16px
+              max(24px,env(safe-area-inset-bottom))
     }
 
     #channel-list h1{
@@ -93,8 +77,7 @@
 
     #ch-grid{
       display:grid;
-      grid-template-columns:
-        repeat(auto-fill,minmax(160px,1fr));
+      grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
       gap:14px
     }
 
@@ -110,24 +93,29 @@
       align-items:center;
       text-align:center;
       gap:10px;
+      transition:background .25s,border-color .25s,transform .2s,box-shadow .25s;
+      -webkit-tap-highlight-color:transparent;
       min-height:120px;
-      justify-content:center;
-      transition:
-        background .25s,
-        border-color .25s,
-        transform .2s
+      justify-content:center
     }
 
     .ch-card:hover{
       background:#1a0a0a;
-      border-color:#4a1a1a
+      border-color:#4a1a1a;
+      box-shadow:0 4px 20px rgba(239,68,68,.08)
     }
 
     .ch-card:active{
-      transform:scale(.96)
+      transform:scale(.96);
+      background:#2a1010
     }
 
-    .ch-logo{
+    .ch-card:focus-visible{
+      outline:2px solid #ef4444;
+      outline-offset:2px
+    }
+
+    .ch-card .ch-logo{
       width:100%;
       max-width:120px;
       height:auto;
@@ -135,38 +123,41 @@
       object-fit:contain;
       border-radius:6px;
       background:rgba(255,255,255,.03);
-      padding:4px
+      padding:4px;
+      transition:opacity .3s
     }
 
-    .ch-name{
+    .ch-card .ch-name{
       color:#e0e0e0;
       font-size:12px;
       font-weight:500;
-      line-height:1.3
+      line-height:1.3;
+      letter-spacing:.2px
     }
 
-    .ch-badge{
+    .ch-card .ch-badge{
       font-size:9px;
-      color:#ef4444;
-      border:1px solid #ef4444;
+      color:#666;
+      background:rgba(255,255,255,.05);
       padding:2px 10px;
       border-radius:10px;
-      letter-spacing:.3px
+      letter-spacing:.3px;
+      text-transform:uppercase
     }
 
-    .ch-placeholder{
+    .ch-card .ch-placeholder{
       width:100%;
       max-width:120px;
       height:60px;
-      background:
-        linear-gradient(135deg,#1a1a1a,#111);
+      background:linear-gradient(135deg,#1a1a1a,#111);
       border-radius:6px;
       display:flex;
       align-items:center;
       justify-content:center;
       color:#333;
       font-size:11px;
-      font-weight:600
+      font-weight:600;
+      letter-spacing:.5px
     }
 
     #pc{
@@ -175,23 +166,20 @@
       background:#000;
       display:none;
       align-items:center;
-      justify-content:center
+      justify-content:center;
+      touch-action:manipulation
     }
 
     video{
       width:100%;
       height:100%;
       object-fit:contain;
-      background:#000
+      background:#000;
+      will-change:transform
     }
 
-    video.mode-fill{
-      object-fit:fill
-    }
-
-    video.mode-cover{
-      object-fit:cover
-    }
+    video.mode-fill{object-fit:fill}
+    video.mode-cover{object-fit:cover}
 
     #status{
       position:fixed;
@@ -202,34 +190,109 @@
       background:rgba(8,8,8,.9);
       border:1px solid rgba(255,255,255,.05);
       font-size:11px;
+      font-weight:500;
+      letter-spacing:.02em;
       border-radius:20px;
       pointer-events:none;
       opacity:0;
       transition:opacity .3s;
       max-width:260px;
-      text-align:right
+      text-align:right;
+      backdrop-filter:blur(4px);
+      -webkit-backdrop-filter:blur(4px)
     }
 
-    #status.show{
-      opacity:1
+    #status.show{opacity:1}
+    #status.ok{color:#ef4444}
+    #status.warn{color:#fb923c}
+    #status.err{color:#f87171}
+
+    .sp-btn{
+      background:transparent!important;
+      border:none!important;
+      cursor:pointer!important;
+      padding:0 8px!important;
+      opacity:.8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      height:100%;
+      min-width:36px;
+      transition:opacity .15s,color .15s;
+      color:#fff!important;
+      -webkit-tap-highlight-color:transparent
     }
 
-    #status.ok{
-      color:#ef4444
+    .sp-btn:hover{opacity:1}
+
+    .sp-btn:active{
+      opacity:1;
+      transform:scale(.92)
     }
 
-    #status.warn{
-      color:#fb923c
+    .sp-btn:focus-visible{
+      outline:2px solid #ef4444;
+      outline-offset:2px;
+      border-radius:6px
     }
 
-    #status.err{
-      color:#f87171
+    .sp-btn svg{
+      width:18px;
+      height:18px;
+      display:block;
+      pointer-events:none;
+      flex-shrink:0
     }
 
-    @media(max-width:400px){
+    .sp-btn.active{
+      opacity:1;
+      color:#ef4444!important
+    }
+
+    .fit-ratio{
+      font-size:11px;
+      font-weight:600;
+      letter-spacing:.2px;
+      line-height:1;
+      white-space:nowrap;
+      pointer-events:none
+    }
+
+    .shaka-controls-container button{
+      color:#fff!important
+    }
+
+    .shaka-video-container{
+      background-color:#000!important
+    }
+
+    .shaka-controls-container .shaka-play-button,
+    .shaka-controls-container .shaka-mute-button,
+    .shaka-controls-container .shaka-volume-bar,
+    .shaka-controls-container .shaka-fullscreen-button,
+    .shaka-controls-container .shaka-overflow-menu-button{
+      color:#ef4444!important
+    }
+
+    .shaka-controls-container .shaka-seek-bar .shaka-seek-bar-played{
+      background:#ef4444!important
+    }
+
+    .shaka-controls-container .shaka-seek-bar .shaka-seek-bar-buffered{
+      background:#7f1d1d!important
+    }
+
+    @media (max-width:400px){
+      .fit-ratio{font-size:9px}
+
+      .sp-btn{
+        padding:0 6px!important;
+        gap:3px
+      }
+
       #ch-grid{
-        grid-template-columns:
-          repeat(auto-fill,minmax(130px,1fr));
+        grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
         gap:10px
       }
 
@@ -238,23 +301,27 @@
         padding:12px 8px
       }
 
-      .ch-logo{
+      .ch-card .ch-logo{
         max-height:45px
       }
     }
 
-    @media(min-width:768px){
+    @media (min-width:768px){
       #ch-grid{
-        grid-template-columns:
-          repeat(auto-fill,minmax(200px,1fr));
+        grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
         gap:18px
       }
 
       .ch-card{
-        min-height:140px
+        min-height:140px;
+        padding:20px 16px
       }
 
-      .ch-name{
+      .ch-card .ch-logo{
+        max-height:70px
+      }
+
+      .ch-card .ch-name{
         font-size:14px
       }
     }
@@ -263,35 +330,81 @@
 
 <body>
 
+<!-- Popunder/ad script -->
+<script id="aclib" type="text/javascript"
+        src="//acscdn.com/script/aclib.js"></script>
+
+<script>
+(function(){
+  function initPopunder(){
+    try{
+      if(window.aclib &&
+         typeof window.aclib.runPop === "function"){
+
+        window.aclib.runPop({
+          zoneId:"11800802"
+        });
+
+      }
+    }catch(e){
+      console.warn("Popunder error:",e);
+    }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener(
+      "DOMContentLoaded",
+      initPopunder,
+      {once:true}
+    );
+  }else{
+    initPopunder();
+  }
+})();
+</script>
+
+
 <div id="overlay">
-  <svg width="36" height="36"
-       viewBox="0 0 40 40"
-       fill="none">
-    <circle cx="20" cy="20" r="16"
-            stroke="#161616"
-            stroke-width="4"/>
-    <path d="M20 4a16 16 0 0 1 16 16"
-          stroke="#ef4444"
-          stroke-width="4"
-          stroke-linecap="round"/>
+  <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
+    <circle
+      cx="20"
+      cy="20"
+      r="16"
+      stroke="#161616"
+      stroke-width="4"
+    />
+    <path
+      d="M20 4a16 16 0 0 1 16 16"
+      stroke="#ef4444"
+      stroke-width="4"
+      stroke-linecap="round"
+    />
   </svg>
 
   <p id="loadMsg">Loading…</p>
 </div>
 
+
 <div id="status"></div>
 
+
 <div id="channel-list">
-  <h1>Sports Zone · Live</h1>
+  <h1>Sportlink · Live</h1>
   <div id="ch-grid"></div>
 </div>
 
+
 <div id="pc">
-  <video id="v"
-         playsinline
-         webkit-playsinline
-         preload="none"></video>
+  <video
+    id="v"
+    playsinline
+    webkit-playsinline
+    preload="none"
+    x5-video-player-type="h5"
+    x5-video-player-fullscreen="true">
+  </video>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 
@@ -323,58 +436,168 @@ var $pc =
 var $vid =
   document.getElementById("v");
 
-var statusTimer = null;
+var _stTmr = null;
 
 
-/*
- * Put any permitted pre-load initialization
- * here. main() waits for this before requesting
- * the channel JSON.
- */
-async function preLoadStep(){
-  return true;
+function getTier(){
+
+  var mem =
+    navigator.deviceMemory || 4;
+
+  var cores =
+    navigator.hardwareConcurrency || 4;
+
+  var mob =
+    /Android|iPhone|iPad|iPod/i.test(
+      navigator.userAgent
+    );
+
+  var conn =
+    navigator.connection ||
+    navigator.mozConnection ||
+    navigator.webkitConnection;
+
+  var net =
+    conn ?
+    (conn.effectiveType || "4g") :
+    "4g";
+
+  if(!mob)
+    return "high";
+
+  if(
+    mem <= 1.5 ||
+    cores <= 2 ||
+    net === "slow-2g" ||
+    net === "2g"
+  )
+    return "low";
+
+  if(
+    mem <= 3 ||
+    cores <= 4
+  )
+    return "mid";
+
+  return "high";
 }
 
 
-function setMsg(message){
-  if($loadMsg){
-    $loadMsg.textContent = message;
+var TIER = getTier();
+
+
+var PROF = {
+
+  low:{
+    buf:5,
+    reBuf:1.5,
+    behind:15,
+    maxH:480,
+    maxBw:1200000,
+    bwEst:400000
+  },
+
+  mid:{
+    buf:8,
+    reBuf:1.5,
+    behind:25,
+    maxH:720,
+    maxBw:3500000,
+    bwEst:1000000
+  },
+
+  high:{
+    buf:12,
+    reBuf:1.5,
+    behind:30,
+    maxH:1080,
+    maxBw:0,
+    bwEst:2000000
   }
-}
+
+}[TIER];
 
 
-function hideOverlay(){
-  if($overlay){
-    $overlay.style.display = "none";
-  }
-}
+var FITS =
+  ["contain","fill","cover"];
+
+var MODE_LABEL = {
+  contain:"Fit",
+  fill:"Fill",
+  cover:"Zoom"
+};
 
 
-function toast(message,type,duration){
+var FICO = {
 
-  $status.textContent = message;
+  contain:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<rect x="2" y="3" width="20" height="14" rx="2"/>' +
+    '<line x1="2" y1="21" x2="22" y2="21"/>' +
+    '</svg>',
+
+  fill:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>' +
+    '<path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>' +
+    '</svg>',
+
+  cover:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<rect x="2" y="3" width="20" height="14" rx="2"/>' +
+    '<path d="M6 7l3 3m0 0H7m2 0V8m9-1l-3 3m0 0h2m-2 0V8M6 13l3-3m0 0H7m2 0v2m9 1l-3-3m0 0h2m-2 0v2"/>' +
+    '</svg>'
+
+};
+
+
+var PIP_ICON =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<rect x="3" y="5" width="18" height="14" rx="2"/>' +
+  '<rect x="12" y="12" width="7" height="5" rx="1" fill="currentColor" stroke="none"/>' +
+  '</svg>';
+
+
+function toast(msg,type,dur){
+
+  $status.textContent = msg;
 
   $status.className =
     "show " + (type || "ok");
 
-  if(statusTimer){
-    clearTimeout(statusTimer);
+  if(_stTmr)
+    clearTimeout(_stTmr);
+
+  if(dur !== 0){
+
+    _stTmr = setTimeout(function(){
+
+      $status.className =
+        $status.className
+        .replace("show","")
+        .trim();
+
+      _stTmr = null;
+
+    },dur || 4000);
+
   }
+}
 
-  if(duration !== 0){
 
-    statusTimer =
-      setTimeout(function(){
+function setMsg(m){
 
-        $status.className =
-          $status.className
-            .replace("show","")
-            .trim();
+  if($loadMsg)
+    $loadMsg.textContent = m;
 
-        statusTimer = null;
+}
 
-      },duration || 4000);
-  }
+
+function hideOverlay(){
+
+  if($overlay)
+    $overlay.style.display = "none";
+
 }
 
 
@@ -383,67 +606,77 @@ function getChId(){
   return new URLSearchParams(
     location.search
   ).get("id") || "";
+
 }
 
 
 async function loadData(){
 
-  var response =
-    await fetch(API,{
+  var r = await fetch(
+    API,
+    {
       cache:"no-store",
       headers:{
         Accept:"application/json"
       }
-    });
+    }
+  );
 
-  if(!response.ok){
+  if(!r.ok)
     throw new Error(
-      "HTTP " + response.status
+      "HTTP " + r.status
     );
-  }
 
-  var data =
-    await response.json();
+  var data = await r.json();
 
   if(
     !Array.isArray(data) ||
     !data.length
-  ){
+  )
     throw new Error(
       "No channels found"
     );
-  }
+
+  var channels =
+    data.map(function(item,index){
+
+      return {
+
+        id:
+          item.id ||
+          "ch_" + index,
+
+        name:
+          item.name ||
+          "Channel " + (index + 1),
+
+        logo:
+          item.logo || "",
+
+        stream_url:
+          item.url || "",
+
+        key_id:
+          item.KeyId ||
+          "00000000000000000000000000000000",
+
+        key:
+          item.Key ||
+          "00000000000000000000000000000000",
+
+        status:"LIVE",
+
+        time:"",
+
+        cover_image:
+          item.logo || ""
+
+      };
+
+    });
 
   return {
-    channels:data.map(
-      function(item,index){
-
-        return {
-          id:
-            item.id ||
-            "ch_" + index,
-
-          name:
-            item.name ||
-            "Channel " +
-            (index + 1),
-
-          logo:
-            item.logo || "",
-
-          stream_url:
-            item.url || "",
-
-          key_id:
-            item.KeyId || "",
-
-          key:
-            item.Key || "",
-
-          status:"LIVE"
-        };
-      }
-    )
+    channels:channels
   };
 }
 
@@ -455,32 +688,35 @@ function renderList(data){
   var channels =
     data.channels || data;
 
-  var fragment =
+  var f =
     document.createDocumentFragment();
 
   channels.forEach(function(ch){
 
-    var card =
+    var a =
       document.createElement("a");
 
-    card.className =
+    a.className =
       "ch-card";
 
-    card.href =
+    a.href =
       "?id=" +
       encodeURIComponent(ch.id);
 
-    var logo;
+    var logoHtml = "";
 
-    if(ch.logo){
+    if(
+      ch.logo &&
+      ch.logo.trim()
+    ){
 
-      logo =
-        '<img class="ch-logo" ' +
-        'src="' +
+      logoHtml =
+        '<img class="ch-logo" src="' +
         ch.logo +
         '" alt="' +
         ch.name +
-        '" loading="lazy">';
+        '" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'">';
 
     }else{
 
@@ -488,66 +724,474 @@ function renderList(data){
         ch.name
           .split(" ")
           .slice(0,2)
-          .map(function(word){
-            return word[0];
+          .map(function(w){
+            return w[0];
           })
           .join("");
 
-      logo =
+      logoHtml =
         '<div class="ch-placeholder">' +
         initials +
-        "</div>";
+        '</div>';
+
     }
 
-    card.innerHTML =
-      logo +
+
+    var badgeHtml = "";
+
+    if(
+      ch.status &&
+      ch.status.toUpperCase() === "LIVE"
+    ){
+
+      badgeHtml =
+        '<span class="ch-badge" ' +
+        'style="color:#ef4444;border:1px solid #ef4444;">' +
+        '● LIVE' +
+        '</span>';
+
+    }else if(ch.time){
+
+      badgeHtml =
+        '<span class="ch-badge">' +
+        ch.time +
+        '</span>';
+
+    }
+
+
+    a.innerHTML =
+      logoHtml +
       '<span class="ch-name">' +
       ch.name +
-      "</span>" +
-      '<span class="ch-badge">● LIVE</span>';
+      '</span>' +
+      badgeHtml;
 
-    fragment.appendChild(card);
+    f.appendChild(a);
+
   });
 
-  $grid.appendChild(fragment);
+  $grid.appendChild(f);
 
   $list.style.display =
     "flex";
 }
 
 
-function errMsg(message){
+function errMsg(msg){
 
-  setMsg(message);
+  setMsg(msg);
 
   $overlay.style.display =
     "flex";
 
   toast(
-    message,
+    msg,
     "err",
     0
   );
+
 }
 
 
-/*
- * Player initialization is separated so
- * another permitted initialization step can
- * happen immediately before it.
- */
-async function prePlayerStep(){
-  return true;
+function shakaErrStr(e){
+
+  if(!e)
+    return "Unknown error";
+
+  var c = {
+    1:"Network",
+    2:"Text",
+    3:"Media",
+    4:"Manifest",
+    5:"Streaming",
+    6:"DRM",
+    7:"Player"
+  };
+
+  var s =
+    (c[e.category] || "Err") +
+    " " +
+    e.category +
+    ":" +
+    e.code;
+
+  if(
+    e.data &&
+    e.data[0] &&
+    typeof e.data[0] === "string"
+  ){
+
+    s +=
+      " — " +
+      e.data[0].slice(0,72);
+
+  }
+
+  return s;
+}
+
+
+function ratioLabel(w,h){
+
+  if(!w || !h)
+    return "";
+
+  function gcd(a,b){
+    return b ?
+      gcd(b,a%b) :
+      a;
+  }
+
+  var g =
+    gcd(w,h) || 1;
+
+  var rw =
+    w / g;
+
+  var rh =
+    h / g;
+
+  var common = {
+    "16:9":16/9,
+    "4:3":4/3,
+    "21:9":21/9,
+    "1:1":1,
+    "9:16":9/16,
+    "3:2":3/2,
+    "5:4":5/4,
+    "2:1":2
+  };
+
+  var real =
+    w / h;
+
+  var best = null;
+
+  var bestDiff = .02;
+
+  Object.keys(common)
+    .forEach(function(k){
+
+      var d =
+        Math.abs(
+          common[k] - real
+        );
+
+      if(d < bestDiff){
+
+        bestDiff = d;
+        best = k;
+
+      }
+
+    });
+
+  if(best)
+    return best;
+
+  if(
+    rw <= 40 &&
+    rh <= 40
+  )
+    return rw + ":" + rh;
+
+  return real.toFixed(2) + ":1";
+}
+
+
+function injectControls(
+  container,
+  vid,
+  player
+){
+
+  var panel =
+    container.querySelector(
+      ".shaka-controls-button-panel"
+    );
+
+  if(!panel)
+    return;
+
+  var anchor =
+    panel.querySelector(
+      ".shaka-fullscreen-button"
+    );
+
+  var fitIdx = 0;
+
+  var fitBtn =
+    document.createElement("button");
+
+  fitBtn.className =
+    "sp-btn sp-fit-btn";
+
+  fitBtn.title =
+    "Video fit: Fit";
+
+  fitBtn.innerHTML =
+    '<span class="fit-icon">' +
+    FICO.contain +
+    '</span>' +
+    '<span class="fit-ratio">--</span>';
+
+  if(anchor)
+    panel.insertBefore(
+      fitBtn,
+      anchor
+    );
+  else
+    panel.appendChild(fitBtn);
+
+
+  function applyFit(i){
+
+    fitIdx = i;
+
+    var m =
+      FITS[i];
+
+    vid.classList.remove(
+      "mode-fill",
+      "mode-cover"
+    );
+
+    if(m === "fill")
+      vid.classList.add(
+        "mode-fill"
+      );
+
+    if(m === "cover")
+      vid.classList.add(
+        "mode-cover"
+      );
+
+    var ic =
+      fitBtn.querySelector(
+        ".fit-icon"
+      );
+
+    if(ic)
+      ic.innerHTML =
+        FICO[m];
+
+    fitBtn.title =
+      "Video fit: " +
+      MODE_LABEL[m];
+
+  }
+
+
+  fitBtn.addEventListener(
+    "click",
+    function(e){
+
+      e.stopPropagation();
+
+      applyFit(
+        (fitIdx + 1) %
+        FITS.length
+      );
+
+    }
+  );
+
+
+  [
+    "fullscreenchange",
+    "webkitfullscreenchange"
+  ].forEach(function(ev){
+
+    document.addEventListener(
+      ev,
+      function(){
+
+        if(
+          !(
+            document.fullscreenElement ||
+            document.webkitFullscreenElement
+          )
+        )
+          applyFit(0);
+
+      }
+    );
+
+  });
+
+
+  function updateRatio(){
+
+    var lbl =
+      ratioLabel(
+        vid.videoWidth,
+        vid.videoHeight
+      );
+
+    var badge =
+      fitBtn.querySelector(
+        ".fit-ratio"
+      );
+
+    if(
+      badge &&
+      lbl
+    )
+      badge.textContent =
+        lbl;
+
+  }
+
+
+  vid.addEventListener(
+    "loadedmetadata",
+    updateRatio
+  );
+
+  vid.addEventListener(
+    "resize",
+    updateRatio
+  );
+
+  updateRatio();
+
+
+  var pipOk =
+    !!(
+      document.pictureInPictureEnabled ||
+      (
+        vid.webkitSupportsPresentationMode &&
+        typeof vid.webkitSetPresentationMode ===
+          "function"
+      )
+    );
+
+
+  if(pipOk){
+
+    var pipBtn =
+      document.createElement(
+        "button"
+      );
+
+    pipBtn.className =
+      "sp-btn sp-pip-btn";
+
+    pipBtn.title =
+      "Picture in Picture";
+
+    pipBtn.innerHTML =
+      PIP_ICON;
+
+    panel.insertBefore(
+      pipBtn,
+      fitBtn
+    );
+
+
+    function setPipState(active){
+
+      pipBtn.classList.toggle(
+        "active",
+        active
+      );
+
+      pipBtn.title =
+        active ?
+        "Exit Picture in Picture" :
+        "Picture in Picture";
+
+    }
+
+
+    pipBtn.addEventListener(
+      "click",
+      async function(e){
+
+        e.stopPropagation();
+
+        try{
+
+          if(
+            document.pictureInPictureEnabled
+          ){
+
+            if(
+              document.pictureInPictureElement
+            )
+              await document.exitPictureInPicture();
+            else
+              await vid.requestPictureInPicture();
+
+          }else if(
+            vid.webkitSupportsPresentationMode
+          ){
+
+            vid.webkitSetPresentationMode(
+              vid.webkitPresentationMode ===
+              "picture-in-picture" ?
+              "inline" :
+              "picture-in-picture"
+            );
+
+          }
+
+        }catch(_){
+
+          toast(
+            "PiP unavailable",
+            "warn",
+            2500
+          );
+
+        }
+
+      }
+    );
+
+
+    vid.addEventListener(
+      "enterpictureinpicture",
+      function(){
+        setPipState(true);
+      }
+    );
+
+
+    vid.addEventListener(
+      "leavepictureinpicture",
+      function(){
+        setPipState(false);
+      }
+    );
+
+
+    if(
+      vid.webkitPresentationMode !==
+      undefined
+    ){
+
+      vid.addEventListener(
+        "webkitpresentationmodechanged",
+        function(){
+
+          setPipState(
+            vid.webkitPresentationMode ===
+            "picture-in-picture"
+          );
+
+        }
+      );
+
+    }
+
+  }
+
 }
 
 
 async function startPlayer(ch){
-
-  /*
-   * Anything that is supposed to happen before
-   * player initialization belongs here.
-   */
-  await prePlayerStep();
 
   $pc.style.display =
     "flex";
@@ -565,10 +1209,14 @@ async function startPlayer(ch){
     return;
   }
 
+
   var player =
     new shaka.Player();
 
-  await player.attach($vid);
+  await player.attach(
+    $vid
+  );
+
 
   new shaka.ui.Overlay(
     player,
@@ -591,7 +1239,20 @@ async function startPlayer(ch){
       buffered:"#7f1d1d",
       played:"#ef4444"
     }
+
   });
+
+
+  setTimeout(
+    function(){
+      injectControls(
+        $pc,
+        $vid,
+        player
+      );
+    },
+    100
+  );
 
 
   var keyId =
@@ -603,51 +1264,182 @@ async function startPlayer(ch){
   var url =
     ch.stream_url;
 
-
-  player.configure({
-
-    drm:{
-      clearKeys:{
-        [keyId]:key
-      }
-    },
-
-    manifest:{
-      defaultPresentationDelay:4,
-      ignoreTextStreamFailures:true
-    },
-
-    streaming:{
-      lowLatencyMode:false,
-      bufferingGoal:8,
-      rebufferingGoal:1.5,
-      bufferBehind:25,
-      safeSeekOffset:4,
-      stallEnabled:true,
-      stallThreshold:1,
-      stallSkip:.3
-    },
-
-    abr:{
-      enabled:true,
-      defaultBandwidthEstimate:1000000,
-      switchInterval:4
-    }
-  });
-
-
-  var refreshing =
+  var restrictionsRelaxed =
     false;
 
-  var retries =
-    0;
+
+  function buildCfg(){
+
+    var restr = {};
+
+    if(!restrictionsRelaxed){
+
+      if(PROF.maxH < 1080)
+        restr.maxHeight =
+          PROF.maxH;
+
+      if(PROF.maxBw > 0)
+        restr.maxBandwidth =
+          PROF.maxBw;
+
+    }
+
+
+    return {
+
+      drm:{
+        clearKeys:{
+          [keyId]:key
+        }
+      },
+
+      manifest:{
+        defaultPresentationDelay:4,
+        ignoreTextStreamFailures:true,
+
+        retryParameters:{
+          maxAttempts:5,
+          baseDelay:500,
+          backoffFactor:2,
+          fuzzFactor:.5,
+          timeout:30000
+        }
+      },
+
+      streaming:{
+        lowLatencyMode:false,
+        bufferingGoal:PROF.buf,
+        rebufferingGoal:PROF.reBuf,
+        bufferBehind:PROF.behind,
+        safeSeekOffset:4,
+        stallEnabled:true,
+        stallThreshold:1,
+        stallSkip:.3,
+        inaccurateManifestTolerance:0,
+
+        retryParameters:{
+          maxAttempts:5,
+          baseDelay:500,
+          backoffFactor:2,
+          fuzzFactor:.5,
+          timeout:30000
+        }
+      },
+
+      abr:{
+        enabled:true,
+        defaultBandwidthEstimate:
+          PROF.bwEst,
+        switchInterval:4,
+        restrictions:restr
+      }
+
+    };
+
+  }
+
+
+  player.configure(
+    buildCfg()
+  );
+
+
+  player.getNetworkingEngine()
+    .registerRequestFilter(
+      function(type,req){
+
+        req.headers["Referer"] =
+          "https://www.zee.com/";
+
+        req.headers["User-Agent"] =
+          "Mozilla/5.0 (Linux; Android 11; SM-G991B) " +
+          "AppleWebKit/537.36 (KHTML, like Gecko) " +
+          "Chrome/124.0.0.0 Mobile Safari/537.36";
+
+      }
+    );
+
+
+  var refreshing = false;
+  var retries = 0;
+  var edgeTried = false;
+  var lastTry = 0;
+  var started = false;
+
+
+  function unmuteOnce(){
+
+    $vid.muted = false;
+
+  }
+
+
+  $pc.addEventListener(
+    "pointerdown",
+    unmuteOnce,
+    {
+      capture:true,
+      once:true
+    }
+  );
+
+
+  $pc.addEventListener(
+    "click",
+    unmuteOnce,
+    {
+      capture:true,
+      once:true
+    }
+  );
+
+
+  $pc.addEventListener(
+    "keydown",
+    unmuteOnce,
+    {
+      capture:true,
+      once:true
+    }
+  );
+
+
+  function goLiveEdge(){
+
+    if(refreshing)
+      return;
+
+    try{
+
+      player.goToLive();
+
+      edgeTried = true;
+
+      toast(
+        "Syncing…",
+        "warn",
+        2000
+      );
+
+    }catch(_){
+
+      reload();
+
+    }
+
+  }
 
 
   async function reload(){
 
-    if(refreshing){
+    var now =
+      Date.now();
+
+    if(
+      refreshing ||
+      now - lastTry < 1500
+    )
       return;
-    }
 
     if(retries >= 5){
 
@@ -660,8 +1452,13 @@ async function startPlayer(ch){
       return;
     }
 
+
     refreshing = true;
+
+    lastTry = now;
+
     retries++;
+
 
     toast(
       "Reconnecting… (" +
@@ -671,26 +1468,27 @@ async function startPlayer(ch){
       0
     );
 
+
     try{
 
-      var data =
+      var d =
         await loadData();
 
       var channels =
-        data.channels || data;
+        d.channels || d;
 
       var fresh =
         channels.find(
-          function(item){
-            return item.id === ch.id;
+          function(c){
+            return c.id === ch.id;
           }
         );
 
-      if(!fresh){
+      if(!fresh)
         throw new Error(
-          "Channel not found"
+          "missing"
         );
-      }
+
 
       keyId =
         fresh.key_id;
@@ -701,20 +1499,20 @@ async function startPlayer(ch){
       url =
         fresh.stream_url;
 
-      player.configure({
-        drm:{
-          clearKeys:{
-            [keyId]:key
-          }
-        }
-      });
+
+      player.configure(
+        buildCfg()
+      );
 
       await player.load(url);
 
-      await $vid.play()
-        .catch(function(){});
+      $vid.play().catch(
+        function(){}
+      );
 
       retries = 0;
+
+      edgeTried = false;
 
       toast(
         "● Live",
@@ -722,7 +1520,7 @@ async function startPlayer(ch){
         4000
       );
 
-    }catch(error){
+    }catch(_){
 
       setTimeout(
         reload,
@@ -739,28 +1537,107 @@ async function startPlayer(ch){
     }finally{
 
       refreshing = false;
+
     }
+
   }
+
+
+  var RECOVERABLE = [
+    1001,
+    1002,
+    1003,
+    4012,
+    6006,
+    6007,
+    7000,
+    7001,
+    7002
+  ];
 
 
   player.addEventListener(
     "error",
-    function(event){
+    function(ev){
 
-      var error =
-        event.detail;
+      var err =
+        ev.detail;
 
-      toast(
-        "Player error: " +
-        (error &&
-         error.code ?
-         error.code :
-         "unknown"),
-        "err",
-        5000
-      );
+      var code =
+        err && err.code;
 
-      reload();
+
+      if(
+        code === 4014 &&
+        !restrictionsRelaxed
+      ){
+
+        restrictionsRelaxed =
+          true;
+
+        refreshing = true;
+
+        player.configure(
+          buildCfg()
+        );
+
+        toast(
+          "Playing best available quality",
+          "warn",
+          2500
+        );
+
+
+        player.load(url)
+
+          .then(
+            function(){
+
+              $vid.play().catch(
+                function(){}
+              );
+
+              toast(
+                "● Live",
+                "ok",
+                4000
+              );
+
+            }
+          )
+
+          .catch(
+            function(){
+              reload();
+            }
+          )
+
+          .finally(
+            function(){
+              refreshing = false;
+            }
+          );
+
+        return;
+      }
+
+
+      if(
+        RECOVERABLE.indexOf(code) !== -1
+      ){
+
+        reload();
+
+      }else{
+
+        toast(
+          shakaErrStr(err),
+          "err",
+          6000
+        );
+
+      }
+
     }
   );
 
@@ -777,7 +1654,9 @@ async function startPlayer(ch){
       0
     );
 
-    await player.load(url);
+    await player.load(
+      url
+    );
 
     hideOverlay();
 
@@ -787,7 +1666,7 @@ async function startPlayer(ch){
       5000
     );
 
-  }catch(error){
+  }catch(_){
 
     hideOverlay();
 
@@ -806,33 +1685,186 @@ async function startPlayer(ch){
   }
 
 
-  $vid.addEventListener(
-    "playing",
-    function(){
+  var stallTmr = null;
+
+
+  function onStall(){
+
+    if(
+      !started ||
+      stallTmr ||
+      refreshing
+    )
+      return;
+
+
+    toast(
+      "Buffering…",
+      "warn",
+      0
+    );
+
+
+    stallTmr =
+      setTimeout(
+        function(){
+
+          stallTmr = null;
+
+          if(!edgeTried)
+            goLiveEdge();
+          else
+            reload();
+
+        },
+        5000
+      );
+
+  }
+
+
+  function onPlaying(){
+
+    started = true;
+
+    if(stallTmr){
+
+      clearTimeout(
+        stallTmr
+      );
+
+      stallTmr = null;
+
+    }
+
+    edgeTried = false;
+
+    if(!refreshing){
 
       toast(
         "● Live",
         "ok",
         3000
       );
+
     }
-  );
+
+  }
 
 
   $vid.addEventListener(
     "waiting",
+    onStall
+  );
+
+  $vid.addEventListener(
+    "stalled",
+    onStall
+  );
+
+  $vid.addEventListener(
+    "playing",
+    onPlaying
+  );
+
+  $vid.addEventListener(
+    "error",
     function(){
 
-      if(!refreshing){
+      if(!refreshing)
+        reload();
 
-        toast(
-          "Buffering…",
-          "warn",
-          3000
-        );
-      }
     }
   );
+
+
+  document.addEventListener(
+    "visibilitychange",
+    function(){
+
+      if(!document.hidden){
+
+        setTimeout(
+          function(){
+
+            if(
+              started &&
+              $vid.paused &&
+              !refreshing
+            ){
+
+              $vid.play().catch(
+                function(){}
+              );
+
+            }
+
+          },
+          400
+        );
+
+      }
+
+    }
+  );
+
+
+  var netConn =
+    navigator.connection ||
+    navigator.mozConnection ||
+    navigator.webkitConnection;
+
+
+  if(netConn){
+
+    netConn.addEventListener(
+      "change",
+      function(){
+
+        if(
+          !player ||
+          restrictionsRelaxed
+        )
+          return;
+
+        var t =
+          netConn.effectiveType ||
+          "4g";
+
+        var h =
+          t === "slow-2g" ||
+          t === "2g" ?
+          240 :
+          t === "3g" ?
+          480 :
+          PROF.maxH;
+
+
+        try{
+
+          player.configure(
+            "abr.restrictions.maxHeight",
+            h
+          );
+
+        }catch(_){}
+
+
+        if(h < PROF.maxH){
+
+          toast(
+            "Slow network — reducing quality",
+            "warn",
+            3000
+          );
+
+        }
+
+      }
+    );
+
+  }
+
 }
 
 
@@ -844,17 +1876,6 @@ async function main(){
   var data;
 
 
-  /*
-   * STEP 1:
-   * Pre-load initialization.
-   */
-  await preLoadStep();
-
-
-  /*
-   * STEP 2:
-   * Fetch channel JSON.
-   */
   try{
 
     setMsg(
@@ -864,7 +1885,7 @@ async function main(){
     data =
       await loadData();
 
-  }catch(error){
+  }catch(_){
 
     errMsg(
       "Connection error."
@@ -874,10 +1895,6 @@ async function main(){
   }
 
 
-  /*
-   * STEP 3:
-   * Show channel list.
-   */
   if(!id){
 
     renderList(data);
@@ -886,21 +1903,19 @@ async function main(){
   }
 
 
-  /*
-   * STEP 4:
-   * Find selected channel.
-   */
   var channels =
     data.channels || data;
 
-  var channel =
+
+  var ch =
     channels.find(
-      function(item){
-        return item.id === id;
+      function(c){
+        return c.id === id;
       }
     );
 
-  if(!channel){
+
+  if(!ch){
 
     errMsg(
       "Channel not found."
@@ -912,14 +1927,11 @@ async function main(){
 
   document.title =
     "Sportlink · " +
-    channel.name;
+    ch.name;
 
 
-  /*
-   * STEP 5:
-   * Player initialization.
-   */
-  await startPlayer(channel);
+  await startPlayer(ch);
+
 }
 
 
