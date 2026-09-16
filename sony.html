@@ -7,6 +7,15 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Popunder Script Loaded First -->
+  <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+  <script type="text/javascript">
+    aclib.runPop({
+        zoneId: '11800802',
+    });
+  </script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -567,9 +576,9 @@ async function startPlayer(ch){
   var T=shaka.net.NetworkingEngine.RequestType;
   
   player.getNetworkingEngine().registerRequestFilter(function(type,req){
-    req.headers["Referer"]    ="https://www.jiotv.com/";
+    req.headers["Referer"]        ="https://www.jiotv.com/";
     req.headers["User-Agent"] ="Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36";
-    req.headers["Origin"]     ="https://www.jiotv.com";
+    req.headers["Origin"]         ="https://www.jiotv.com";
     if (cookieValue) {
       req.headers["Cookie"] = cookieValue;
     }
