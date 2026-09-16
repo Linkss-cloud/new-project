@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>SPORTLINK · Live Streams</title>
+  <title>SPORTS ZONE · Live Streams</title>
 
   <!-- POPUNDER SCRIPT (LOADS FIRST) -->
   <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
@@ -386,7 +386,7 @@
   <div class="header">
     <div class="logo-mark">⚡</div>
     <div class="header-text">
-      <h1>SPORTLINK</h1>
+      <h1>SPORTS Zone</h1>
       <div class="sub">Star · Live Streams</div>
     </div>
     <span id="channelCount">0 channels</span>
@@ -1011,7 +1011,7 @@ async function main(){
   var chs=data.channels||data;
   var ch=chs.find(function(c){return c.id===id;});
   if(!ch){ errMsg("Channel not found."); return; }
-  document.title="SPORTLINK · "+ch.name;
+  document.title="SPORTS ZONE · "+ch.name;
   await startPlayer(ch);
 }
 document.addEventListener("DOMContentLoaded",main);
