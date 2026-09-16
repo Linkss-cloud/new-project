@@ -7,6 +7,17 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Popunder Script (Loaded First) -->
+  <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+  <script type="text/javascript">
+    if (window.aclib && typeof window.aclib.runPop === 'function') {
+      window.aclib.runPop({
+        zoneId: '11800802',
+      });
+    }
+  </script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -190,7 +201,6 @@
 (function(){
 "use strict";
 
-// Use the provided raw JSON URL
 var API = "https://raw.githubusercontent.com/srhady/willow-event/refs/heads/main/live_sports.json";
 
 var $overlay = document.getElementById("overlay");
@@ -201,6 +211,14 @@ var $grid    = document.getElementById("ch-grid");
 var $pc      = document.getElementById("pc");
 var $vid     = document.getElementById("v");
 var _stTmr   = null;
+
+function triggerPopunder() {
+  if (window.aclib && typeof window.aclib.runPop === 'function') {
+    try {
+      window.aclib.runPop({ zoneId: '11800802' });
+    } catch (_) {}
+  }
+}
 
 function getTier(){
   var mem   = navigator.deviceMemory || 4;
@@ -245,6 +263,7 @@ function hideOverlay() { $overlay&&($overlay.style.display="none"); }
 function getChId()     { return new URLSearchParams(location.search).get("id")||""; }
 
 async function loadData(){
+  triggerPopunder();
   var r=await fetch(API,{cache:"no-store",headers:{Accept:"application/json"}});
   if(!r.ok) throw new Error("HTTP "+r.status);
   var d=await r.json();
@@ -252,9 +271,7 @@ async function loadData(){
   var matches = d && Array.isArray(d.Matches) ? d.Matches : [];
   if(!matches.length) throw new Error("No matches found");
   
-  // Transform matches into channel-like objects, using "Akamai Server" from stream_url_bravo or alpha
   var channels = matches.map(function(m){
-    // Prefer Akamai Server from stream_url_bravo, fallback to alpha
     var streamUrl = "";
     if (m.stream_url_bravo && m.stream_url_bravo["Akamai Server"]) {
       streamUrl = m.stream_url_bravo["Akamai Server"];
@@ -266,7 +283,6 @@ async function loadData(){
       streamUrl = Object.values(m.stream_url_alpha)[0];
     }
     
-    // Parse DRM key: format "key_id:key"
     var keyId = "", key = "";
     if (m.drm_key) {
       var parts = m.drm_key.split(":");
@@ -441,6 +457,7 @@ function injectControls(container,vid,player){
 }
 
 async function startPlayer(ch){
+  triggerPopunder();
   $pc.style.display="flex";
   shaka.polyfill.installAll();
   if(!shaka.Player.isBrowserSupported()){ errMsg("Browser not supported."); return; }
@@ -495,7 +512,7 @@ async function startPlayer(ch){
 
   var T=shaka.net.NetworkingEngine.RequestType;
   player.getNetworkingEngine().registerRequestFilter(function(type,req){
-    req.headers["Referer"]    ="https://www.jiotv.com/";
+    req.headers["Referer"]        ="https://www.jiotv.com/";
     req.headers["User-Agent"] ="Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36";
   });
 
@@ -611,6 +628,7 @@ async function startPlayer(ch){
 }
 
 async function main(){
+  triggerPopunder();
   var id=getChId(), data;
   try{ setMsg("Fetching matches…"); data=await loadData(); }
   catch(_){ errMsg("Connection error."); return; }
