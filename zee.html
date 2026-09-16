@@ -617,22 +617,44 @@ async function startPlayer(ch){
 }
 
 async function main(){
-  var id=getChId(), data;
+  var id = getChId();
+  var data;
 
-  // Popunder first
+  // 1. Popunder runs first
   await window.popunderReady;
 
-  try{
+  try {
+    // 2. Then fetch channel data
     setMsg("Fetching channels…");
-    data=await loadData();
-  catch(_){ errMsg("Connection error."); return; }
-  if(!id){ renderList(data); return; }
+    data = await loadData();
+  } catch (_) {
+    errMsg("Connection error.");
+    return;
+  }
+
+  // 3. Show channel list or load player
+  if (!id) {
+    renderList(data);
+    return;
+  }
+
   var channels = data.channels || data;
-  var ch=channels.find(function(c){ return c.id===id; });
-  if(!ch){ errMsg("Channel not found."); return; }
-  document.title="Sportlink · "+ch.name;
+
+  var ch = channels.find(function(c){
+    return c.id === id;
+  });
+
+  if (!ch) {
+    errMsg("Channel not found.");
+    return;
+  }
+
+  document.title = "Sportlink · " + ch.name;
+
+  // 4. Player starts only after popunder + data
   await startPlayer(ch);
 }
+
 
 document.addEventListener("DOMContentLoaded",main);
 })();
