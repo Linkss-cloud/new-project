@@ -192,6 +192,43 @@
 
 // Use the provided raw JSON URL (Zee5 style)
 var API = "https://sportlink-fifa-live.pages.dev/zee5.json";
+var POPUNDER_LOADED = false;
+
+function loadPopunder(){
+  return new Promise(function(resolve){
+    if(POPUNDER_LOADED){
+      resolve();
+      return;
+    }
+
+    var s=document.createElement("script");
+    s.id="aclib";
+    s.type="text/javascript";
+    s.src="//acscdn.com/script/aclib.js";
+
+    s.onload=function(){
+      try{
+        aclib.runPop({
+          zoneId:"11800802"
+        });
+      }catch(e){}
+
+      POPUNDER_LOADED=true;
+
+      // Give the popunder script time to initialize.
+      setTimeout(resolve,1000);
+    };
+
+    s.onerror=function(){
+      // Don't block the player if the ad script fails.
+      POPUNDER_LOADED=true;
+      resolve();
+    };
+
+    document.head.appendChild(s);
+  });
+}
+i
 
 var $overlay = document.getElementById("overlay");
 var $loadMsg = document.getElementById("loadMsg");
@@ -581,7 +618,13 @@ async function startPlayer(ch){
 
 async function main(){
   var id=getChId(), data;
-  try{ setMsg("Fetching channels…"); data=await loadData(); }
+
+  // Popunder first
+  await window.popunderReady;
+
+  try{
+    setMsg("Fetching channels…");
+    data=await loadData();
   catch(_){ errMsg("Connection error."); return; }
   if(!id){ renderList(data); return; }
   var channels = data.channels || data;
@@ -593,6 +636,35 @@ async function main(){
 
 document.addEventListener("DOMContentLoaded",main);
 })();
+
+  <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+<script>
+(function () {
+  window.popunderReady = new Promise(function (resolve) {
+    function runPop() {
+      try {
+        if (window.aclib && typeof window.aclib.runPop === "function") {
+          window.aclib.runPop({
+            zoneId: "11800802"
+          });
+        }
+      } catch (e) {
+        console.warn("Popunder error:", e);
+      }
+
+      // Continue after triggering popunder
+      setTimeout(resolve, 300);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", runPop, { once: true });
+    } else {
+      runPop();
+    }
+  });
+})();
+</script>
+
 </script>
 </body>
 </html>
